@@ -1,11 +1,14 @@
-const CACHE_NAME = "randos-lorraine-v1";
+const CACHE_NAME = "randos-lorraine-v2";
 
 const ASSETS = [
   "./",
   "./index.html",
   "./css/styles.css",
   "./js/app.js",
-  "./data/randos.json",
+  "./js/storage.js",
+  "./js/qrcode.min.js",
+  "./data/rando-prochaine.json",
+  "./data/info.json",
   "./manifest.webmanifest",
   "./icons/icon.svg",
 ];

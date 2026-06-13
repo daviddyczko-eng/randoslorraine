@@ -1,0 +1,84 @@
+{
+  "avant-depart": {
+    "title": "Avant le départ",
+    "sections": [
+      {
+        "heading": "Équipement",
+        "items": [
+          "Chaussures de randonnée adaptées",
+          "Vêtements en fonction de la météo",
+          "Eau (1,5 L minimum) et encas",
+          "Sac à dos, couverture de survie, sifflet"
+        ]
+      },
+      {
+        "heading": "Documents",
+        "items": [
+          "Carte d'adhérent Rando's Lorraine (QR code)",
+          "Pièce d'identité",
+          "Certificat médical si demandé"
+        ]
+      },
+      {
+        "heading": "Rappels",
+        "items": [
+          "Arriver 15 minutes avant l'heure d'accueil",
+          "Prévenir l'organisateur en cas d'absence",
+          "Respecter les consignes du chef de randonnée"
+        ]
+      }
+    ]
+  },
+  "accident": {
+    "title": "En cas d'accident",
+    "sections": [
+      {
+        "heading": "Urgences",
+        "items": [
+          "SAMU : 15",
+          "Pompiers : 18",
+          "Numéro d'urgence européen : 112"
+        ]
+      },
+      {
+        "heading": "Sur place",
+        "items": [
+          "Protéger la victime et sécuriser la zone",
+          "Alerter le chef de randonnée immédiatement",
+          "Ne pas déplacer un blessé grave sauf danger imminent",
+          "Signaler la position GPS si possible"
+        ]
+      },
+      {
+        "heading": "Assurance",
+        "items": [
+          "Votre adhésion inclut une assurance responsabilité civile",
+          "Contact trésorerie : tresorier@randoslorraine.org"
+        ]
+      }
+    ]
+  },
+  "lien-internet": {
+    "title": "Lien internet",
+    "sections": [
+      {
+        "heading": "Site officiel",
+        "links": [
+          {
+            "label": "Rando's Lorraine",
+            "url": "https://randoslorraine.org"
+          }
+        ]
+      },
+      {
+        "heading": "Contact",
+        "links": [
+          {
+            "label": "Envoyer un e-mail au trésorier",
+            "url": "mailto:tresorier@randoslorraine.org"
+          }
+        ]
+      }
+    ]
+  }
+}

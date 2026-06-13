@@ -1,13 +1,13 @@
 {
-  "name": "Randos Lorraine",
-  "short_name": "Randos",
-  "description": "Randonnées à pied en Lorraine",
+  "name": "Rando's Lorraine",
+  "short_name": "Rando's",
+  "description": "Application des adhérents Rando's Lorraine",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#f4f7f4",
-  "theme_color": "#2d6a4f",
+  "background_color": "#eef8ea",
+  "theme_color": "#63B632",
   "lang": "fr",
   "icons": [
     {

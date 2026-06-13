@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#2d6a4f">
-  <meta name="description" content="Randonnées à pied en Lorraine — parcours, distances et infos pratiques.">
+  <meta name="theme-color" content="#63B632">
+  <meta name="description" content="Application des adhérents Rando's Lorraine">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="Randos Lorraine">
-  <title>Randos Lorraine</title>
+  <meta name="apple-mobile-web-app-title" content="Rando's">
+  <title>Rando's Lorraine</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="icons/icon.svg">
@@ -16,67 +16,29 @@
 </head>
 <body>
   <div id="app">
-    <header class="header">
-      <div class="header__brand">
-        <img src="icons/icon.svg" alt="" class="header__logo" width="36" height="36">
-        <div>
-          <h1 class="header__title">Randos Lorraine</h1>
-          <p class="header__subtitle">Randonnées à pied</p>
-        </div>
+    <div id="view-splash" class="splash">
+      <div>
+        <img src="icons/icon.svg" alt="" class="splash__logo" width="80" height="80">
+        <h1 class="splash__title">Rando's Lorraine</h1>
+        <div class="spinner" aria-label="Chargement"></div>
       </div>
-      <button type="button" id="btn-locate" class="btn btn--icon" aria-label="Me localiser" title="Me localiser">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 8a4 4 0 1 1 0 8 4 4 0 0 1 0-8zm8.94 3A8.994 8.994 0 0 0 13 3.06V1h-2v2.06A8.994 8.994 0 0 0 3.06 11H1v2h2.06A8.994 8.994 0 0 0 11 20.94V23h2v-2.06A8.994 8.994 0 0 0 20.94 13H23v-2h-2.06zM12 19a7 7 0 1 1 0-14 7 7 0 0 1 0 14z"/></svg>
-      </button>
-    </header>
+    </div>
 
-    <section class="search-bar">
-      <input type="search" id="search" class="search-bar__input" placeholder="Rechercher une randonnée…" autocomplete="off">
-      <select id="filter-difficulty" class="search-bar__select" aria-label="Filtrer par difficulté">
-        <option value="">Toutes difficultés</option>
-        <option value="facile">Facile</option>
-        <option value="modere">Modéré</option>
-        <option value="difficile">Difficile</option>
-      </select>
-    </section>
-
-    <p id="location-status" class="location-status" hidden></p>
-
-    <main id="main">
-      <ul id="rando-list" class="rando-list" aria-live="polite"></ul>
-      <p id="empty-state" class="empty-state" hidden>Aucune randonnée ne correspond à votre recherche.</p>
-    </main>
-
-    <article id="detail" class="detail" hidden>
-      <button type="button" id="btn-back" class="detail__back">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
-        Retour
-      </button>
-      <div id="detail-content"></div>
-    </article>
-
-    <nav class="bottom-nav" aria-label="Navigation principale">
-      <button type="button" class="bottom-nav__item bottom-nav__item--active" data-view="list">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zM3 9h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/></svg>
-        Parcours
-      </button>
-      <button type="button" class="bottom-nav__item" data-view="about">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
-        À propos
-      </button>
-    </nav>
-
-    <section id="about" class="about" hidden>
-      <h2>À propos</h2>
-      <p>Randos Lorraine est une application web installable (PWA) pour découvrir des randonnées en Lorraine.</p>
-      <h3>Installer sur votre téléphone</h3>
-      <ul>
-        <li><strong>iPhone :</strong> Safari → partager → « Sur l’écran d’accueil »</li>
-        <li><strong>Android :</strong> Chrome → menu ⋮ → « Installer l’application » ou « Ajouter à l’écran d’accueil »</li>
-      </ul>
-      <p class="about__note">Fonctionne hors ligne après la première visite.</p>
-    </section>
+    <div id="view-main" class="hidden">
+      <header class="app-bar">
+        <button type="button" id="btn-back" class="app-bar__back hidden" aria-label="Retour">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+        </button>
+        <h1 id="app-bar-title" class="app-bar__title">Rando's Lorraine</h1>
+        <span id="app-bar-icon" class="app-bar__icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M13.5 5.5c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zM9.8 8.9L7 23h2.1l1.8-8 2.1 2v6h2v-7.5l-2.1-2 .6-3C14.8 12 16.8 13 19 13v-2c-1.9 0-3.5-1-4.3-2.4l-1-1.6c-.4-.6-1-1-1.7-1-.3 0-.5.1-.8.1L6 8.3V13h2V9.6l1.8-.7"/></svg>
+        </span>
+      </header>
+      <div id="screen-root"></div>
+    </div>
   </div>
 
+  <script src="js/qrcode.min.js"></script>
   <script src="js/app.js" type="module"></script>
 </body>
 </html>
