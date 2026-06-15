@@ -47,6 +47,7 @@
           "Alerte Secours"
         ]
       },
+      {
         "heading": "Informer :",
         "items": [
           "Localisation précise (point GPS, chemin, repère)",
@@ -55,6 +56,7 @@
           "Nature de l'accident (chute, malaise, entorse, etc.)"
         ]
       },
+      {
         "heading": "Conduite à tenir :",
         "items": [
           "Rester avec la victime",
