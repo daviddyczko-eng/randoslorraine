@@ -213,15 +213,15 @@ function renderAccueil(prenom, nom) {
         </button>
         <button type="button" class="home-card" data-go="avant-depart">
           <span class="home-card__title">Avant le départ</span>
-          <span class="home-card__preview">Check-list</span>
+          <span class="home-card__preview"></span>
         </button>
         <button type="button" class="home-card" data-go="accident">
           <span class="home-card__title">En cas d'accident</span>
-          <span class="home-card__preview">Urgences</span>
+          <span class="home-card__preview"></span>
         </button>
         <button type="button" class="home-card" data-go="lien-internet">
           <span class="home-card__title">Lien internet</span>
-          <span class="home-card__preview">Site & contact</span>
+          <span class="home-card__preview"></span>
         </button>
       </div>
     </div>
@@ -450,7 +450,7 @@ async function checkUserAndStart() {
       prenom: user.prenom,
       nom: user.nom,
       dateInscription: user.dateInscription,
-      title: "Vérification cotisation",
+      title: "Vérification de votre cotisation",
     });
     return;
   }
