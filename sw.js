@@ -10,7 +10,7 @@ const ASSETS = [
   "./data/rando-prochaine.json",
   "./data/info.json",
   "./manifest.webmanifest",
-  "./icons/icon.svg",
+  "./icons/RL-chaussure.svg",
 ];
 
 self.addEventListener("install", (event) => {

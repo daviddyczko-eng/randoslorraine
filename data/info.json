@@ -3,28 +3,24 @@
     "title": "Avant le départ",
     "sections": [
       {
-        "heading": "Équipement",
+        "heading": "Nous invitons la, le ou les pilotes à se renseigner sur l'état de son groupe en posant les questions suivantes.",
         "items": [
-          "Chaussures de randonnée adaptées",
-          "Vêtements en fonction de la météo",
-          "Eau (1,5 L minimum) et encas",
-          "Sac à dos, couverture de survie, sifflet"
+          "Êtes-vous bien équipés ?",
+          "Vos chaussures sont-elles adaptées ?",
+          "Avez-vous suffisamment d’eau ?",
+          "Avez-vous assez à manger ?",
+          "Avez-vous bien évalué votre condition physique ?",
+          "Avez-vous des problèmes de santé notoires à signaler ?"
         ]
       },
       {
-        "heading": "Documents",
+        "heading": "Protégeons la nature",
         "items": [
-          "Carte d'adhérent Rando's Lorraine (QR code)",
-          "Pièce d'identité",
-          "Certificat médical si demandé"
-        ]
-      },
-      {
-        "heading": "Rappels",
-        "items": [
-          "Arriver 15 minutes avant l'heure d'accueil",
-          "Prévenir l'organisateur en cas d'absence",
-          "Respecter les consignes du chef de randonnée"
+          "Si vous trouvez des déchets sauvages, nous vous invitons à les ramasser si possible. Pour les volontaires, des sacs poubelles sont disponibles.",
+          "Applications pour signaler les décharges sauvages :",
+          "Trash Spotter",
+          "Clean 4 Green",
+          "Merci à vous !"
         ]
       }
     ]
@@ -33,27 +29,45 @@
     "title": "En cas d'accident",
     "sections": [
       {
-        "heading": "Urgences",
+        "heading": "Premiers gestes :",
         "items": [
-          "SAMU : 15",
-          "Pompiers : 18",
-          "Numéro d'urgence européen : 112"
+          "Sécuriser la zone (éviter un sur-accident)",
+          "Évaluer l'état de la personne",
+          "Ne pas déplacer la victime sauf danger immédiat",
+          "Rassurer et couvrir la personne"
         ]
       },
       {
-        "heading": "Sur place",
+        "heading": "Prévenir les urgences :",
         "items": [
-          "Protéger la victime et sécuriser la zone",
-          "Alerter le chef de randonnée immédiatement",
-          "Ne pas déplacer un blessé grave sauf danger imminent",
-          "Signaler la position GPS si possible"
+          "Numéro européen : 112",
+          "SAMU : 15",
+          "Sapeurs-pompiers : 18",
+          "Alerte par SMS : 114",
+          "Alerte Secours"
+        ]
+      },
+        "heading": "Informer :",
+        "items": [
+          "Localisation précise (point GPS, chemin, repère)",
+          "Nombre de blessé.e.s",
+          "État de la victime (consciente, respiration, saignement)",
+          "Nature de l'accident (chute, malaise, entorse, etc.)"
+        ]
+      },
+        "heading": "Conduite à tenir :",
+        "items": [
+          "Rester avec la victime",
+          "Envoyer quelqu’un à un point de rencontre si nécessaire",
+          "Garder le téléphone chargé autant que possible"
         ]
       },
       {
         "heading": "Assurance",
         "items": [
-          "Votre adhésion inclut une assurance responsabilité civile",
-          "Contact trésorerie : tresorier@randoslorraine.org"
+          "0 800 875 875 en France",
+          "+33 5 49 77 47 78 depuis l’étranger",
+          "sociétaire MAIF 3163163A"
         ]
       }
     ]
