@@ -428,6 +428,9 @@ function renderInfoPage(key) {
         )
         .join("");
     }
+    if (section.footer) {
+    html += `<p class="info-footer">${escapeHtml(section.footer)}</p>`;
+  }
     html += `</section>`;
   }
 
