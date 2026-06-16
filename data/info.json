@@ -20,8 +20,7 @@
           "Applications pour signaler les décharges sauvages :",
           "Trash Spotter",
           "Clean 4 Green",
-          "Merci à vous !"
-        ]
+        ],
           "footer": const Text(
     "Merci à vous !",
     style: TextStyle(
