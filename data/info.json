@@ -25,7 +25,6 @@
       }
     ]
   },
-
   "accident": {
     "title": "En cas d'accident",
     "sections": [
@@ -75,7 +74,6 @@
       }
     ]
   },
-
   "tarifs": {
     "title": "Explication des tarifs",
     "sections": [
@@ -113,7 +111,6 @@
       }
     ]
   },
-
   "lien-internet": {
     "title": "Lien internet",
     "sections": [
