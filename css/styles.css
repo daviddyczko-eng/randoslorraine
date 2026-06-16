@@ -358,6 +358,13 @@ svg path {
   font-weight: 600;
 }
 
+.info-footer {
+  margin-top: 12px;
+  font-weight: bold;
+  font-size: 1.1rem;
+  color: #3d7820;
+}
+
 .modal-overlay {
   position: fixed;
   inset: 0;
