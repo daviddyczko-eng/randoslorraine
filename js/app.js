@@ -357,7 +357,7 @@ function renderCorrection(prenom, nom) {
 
 function renderRandoDetails() {
   screenRoot.innerHTML = `
-    <div class="screen">
+    <div class="screen screen--center">
       <p class="loading-text">Chargement des informations…</p>
     </div>
   `;
