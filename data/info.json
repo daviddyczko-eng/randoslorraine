@@ -17,10 +17,10 @@
         "heading": "Protégeons la nature",
         "items": [
           "Si vous trouvez des déchets sauvages, nous vous invitons à les ramasser si possible. Pour les volontaires, des sacs poubelles sont disponibles.",
-          "Applications pour signaler les décharges sauvages :",
-          "Trash Spotter",
-          "Clean 4 Green"
+          "Applications pour signaler les décharges sauvages :"
         ],
+        "footer": "Trash Spotter",
+        "footer": "Clean 4 Grren",
         "footer": "Merci à vous !"
       }
     ]
