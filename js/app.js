@@ -445,13 +445,24 @@ function renderInfoPage(key) {
       html += `<ul>${section.items.map((i) => `<li>${escapeHtml(i)}</li>`).join("")}</ul>`;
     }
 
-    if (section.text) {
-      if (Array.isArray(section.text)) {
-        html += section.text
-          .map((t) => {
-            if (typeof t === "string") {
-              return `<p class="info-text">${escapeHtml(t)}</p>`;
-            } else {
-              return `
-                <p class="info-text">
-                  <a href="#" class="open-app"
+if (section.text) {
+  if (Array.isArray(section.text)) {
+    html += section.text
+      .map((t) => {
+        if (typeof t === "string") {
+          return `<p class="info-text">${escapeHtml(t)}</p>`;
+        } else {
+          return `
+            <p class="info-text">
+              <a href="#" class="open-app"
+                 data-scheme="${t.scheme ?? ""}"
+                 data-android="${t.store_android ?? ""}"
+                 data-ios="${t.store_ios ?? ""}">
+                ${escapeHtml(t.label)}
+              </a>
+            </p>`;
+        }
+      })
+      .join("");
+  }
+}
