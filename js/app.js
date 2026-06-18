@@ -466,3 +466,90 @@ if (section.text) {
       .join("");
   }
 }
+    if (section.links) {
+      html += section.links
+        .map(
+          (l) =>
+            `<p><a href="${escapeHtml(l.url)}" target="_blank" rel="noopener">${escapeHtml(l.label)}</a></p>`
+        )
+        .join("");
+    }
+
+    if (section.footer) {
+      html += `<p class="info-footer">${escapeHtml(section.footer)}</p>`;
+    }
+
+    html += `</section>`;
+  }
+
+  html += `</div>`;
+  screenRoot.innerHTML = html;
+
+  // Activation des liens vers apps
+  screenRoot.querySelectorAll(".open-app").forEach(link => {
+    link.addEventListener("click", (e) => {
+      e.preventDefault();
+      openAppOrStore(
+        link.dataset.scheme,
+        link.dataset.android,
+        link.dataset.ios
+      );
+    });
+  });
+}
+
+/* -------------------------------------------------------
+   🔥 Démarrage de l'application
+------------------------------------------------------- */
+async function checkUserAndStart() {
+  const [infoRes] = await Promise.all([
+    fetch("./data/info.json").then((r) => r.json()),
+    new Promise((r) => setTimeout(r, 600)),
+  ]);
+  infoContent = infoRes;
+
+  const user = getUser();
+
+  if (!user?.prenom || !user?.nom || !user?.dateInscription) {
+    navigate("inscription", { title: "Inscription" });
+    return;
+  }
+
+  if (needsCotisation(user.dateInscription)) {
+    navigate("cotisation", {
+      prenom: user.prenom,
+      nom: user.nom,
+      dateInscription: user.dateInscription,
+      title: "Vérification de votre cotisation",
+    });
+    return;
+  }
+
+  try {
+    prochaineRando = await fetchRandoDetails();
+  } catch {
+    prochaineRando = null;
+  }
+
+  navigate("accueil", {
+    prenom: user.prenom,
+    nom: user.nom,
+    title: "Rando's Lorraine",
+  });
+}
+
+async function init() {
+  if ("serviceWorker" in navigator) {
+    try {
+      await navigator.serviceWorker.register("./sw.js");
+    } catch {
+      /* optional */
+    }
+  }
+
+  appBarBack.addEventListener("click", () => backHandler?.());
+
+  await checkUserAndStart();
+}
+
+init();
