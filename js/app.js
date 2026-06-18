@@ -49,7 +49,6 @@ function renderQr(container, text, size = 100) {
   const box = document.createElement("div");
   box.className = size > 120 ? "qr-box qr-box--lg" : "qr-box";
   container.appendChild(box);
-  /* global QRCode */
   new QRCode(box, {
     text,
     width: size,
@@ -62,12 +61,6 @@ function renderQr(container, text, size = 100) {
 
 async function fetchRandoDetails() {
   await new Promise((r) => setTimeout(r, 400));
-
-  // Décommenter quand l'API sera disponible :
-  // const response = await fetch("https://randoslorraine.org/api/rando");
-  // if (response.ok) return response.json();
-  // throw new Error("Échec de la récupération des données");
-
   const response = await fetch("./data/rando-prochaine.json");
   if (!response.ok) throw new Error("Données indisponibles");
   return response.json();
@@ -122,8 +115,6 @@ function navigate(screen, options = {}) {
       break;
     case "info":
       renderInfoPage(options.infoKey);
-      break;
-    default:
       break;
   }
 }
@@ -406,6 +397,38 @@ function renderRandoDetails() {
   }
 }
 
+/* -------------------------------------------------------
+   🔥 Fonction : ouvrir l’app si installée, sinon store
+------------------------------------------------------- */
+function openAppOrStore(scheme, storeAndroid, storeIOS) {
+  const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+
+  // Si aucun scheme → on va directement au store
+  if (!scheme) {
+    window.location.href = isIOS ? storeIOS : storeAndroid;
+    return;
+  }
+
+  const now = Date.now();
+  const iframe = document.createElement("iframe");
+  iframe.style.display = "none";
+  iframe.src = scheme;
+  document.body.appendChild(iframe);
+
+  setTimeout(() => {
+    const elapsed = Date.now() - now;
+
+    if (elapsed < 1500) {
+      window.location.href = isIOS ? storeIOS : storeAndroid;
+    }
+
+    iframe.remove();
+  }, 1200);
+}
+
+/* -------------------------------------------------------
+   🔥 Page d'information
+------------------------------------------------------- */
 function renderInfoPage(key) {
   const page = infoContent?.[key];
   if (!page) {
@@ -417,131 +440,18 @@ function renderInfoPage(key) {
 
   for (const section of page.sections) {
     html += `<section class="info-section"><h3>${escapeHtml(section.heading)}</h3>`;
+
     if (section.items) {
       html += `<ul>${section.items.map((i) => `<li>${escapeHtml(i)}</li>`).join("")}</ul>`;
     }
+
     if (section.text) {
       if (Array.isArray(section.text)) {
         html += section.text
-          .map(t => {
+          .map((t) => {
             if (typeof t === "string") {
               return `<p class="info-text">${escapeHtml(t)}</p>`;
             } else {
               return `
                 <p class="info-text">
                   <a href="#" class="open-app"
-                     data-scheme="${escapeHtml(t.scheme)}"
-                     data-android="${escapeHtml(t.store_android)}"
-                     data-ios="${escapeHtml(t.store_ios)}">
-                    ${escapeHtml(t.label)}
-                  </a>
-                </p>`;
-            }
-          })
-          .join("");
-      }
-    }
-    if (section.links) {
-      html += section.links
-        .map(
-          (l) =>
-            `<p><a href="${escapeHtml(l.url)}" target="_blank" rel="noopener">${escapeHtml(l.label)}</a></p>`
-        )
-        .join("");
-    }
-    if (section.footer) {
-    html += `<p class="info-footer">${escapeHtml(section.footer)}</p>`;
-  }
-    html += `</section>`;
-  }
-
-  html += `</div>`;
-  screenRoot.innerHTML = html;
-  screenRoot.querySelectorAll(".open-app").forEach(link => {
-  link.addEventListener("click", (e) => {
-    e.preventDefault();
-    openAppOrStore(
-      link.dataset.scheme,
-      link.dataset.android,
-      link.dataset.ios
-    );
-  });
-});
-}
-
-function openAppOrStore(scheme, storeAndroid, storeIOS) {
-  const now = Date.now();
-  const iframe = document.createElement("iframe");
-  iframe.style.display = "none";
-  iframe.src = scheme;
-  document.body.appendChild(iframe);
-if (!scheme) {
-  const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
-  window.location.href = isIOS ? storeIOS : storeAndroid;
-  return;
-}
-  setTimeout(() => {
-    const elapsed = Date.now() - now;
-
-    // Si l'app ne s'est pas ouverte (pas de switch d'onglet)
-    if (elapsed < 1500) {
-      const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
-      window.location.href = isIOS ? storeIOS : storeAndroid;
-    }
-
-    iframe.remove();
-  }, 1200);
-}
-
-async function checkUserAndStart() {
-  const [infoRes] = await Promise.all([
-    fetch("./data/info.json").then((r) => r.json()),
-    new Promise((r) => setTimeout(r, 600)),
-  ]);
-  infoContent = infoRes;
-
-  const user = getUser();
-
-  if (!user?.prenom || !user?.nom || !user?.dateInscription) {
-    navigate("inscription", { title: "Inscription" });
-    return;
-  }
-
-  if (needsCotisation(user.dateInscription)) {
-    navigate("cotisation", {
-      prenom: user.prenom,
-      nom: user.nom,
-      dateInscription: user.dateInscription,
-      title: "Vérification de votre cotisation",
-    });
-    return;
-  }
-
-  try {
-    prochaineRando = await fetchRandoDetails();
-  } catch {
-    prochaineRando = null;
-  }
-
-  navigate("accueil", {
-    prenom: user.prenom,
-    nom: user.nom,
-    title: "Rando's Lorraine",
-  });
-}
-
-async function init() {
-  if ("serviceWorker" in navigator) {
-    try {
-      await navigator.serviceWorker.register("./sw.js");
-    } catch {
-      /* optional */
-    }
-  }
-
-  appBarBack.addEventListener("click", () => backHandler?.());
-
-  await checkUserAndStart();
-}
-
-init();
