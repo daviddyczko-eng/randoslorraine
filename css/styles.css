@@ -358,6 +358,10 @@ svg path {
   font-weight: 600;
 }
 
+.info-text {
+  text-align: center;
+}
+
 .info-footer {
   margin-top: 12px;
   font-weight: bold;
