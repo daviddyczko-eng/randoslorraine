@@ -20,9 +20,15 @@
           "Applications pour signaler les décharges sauvages :"
         ],
         "text": [
-          "Trash Spotter",
-          "Clean 4 Green"
-        ],
+          {
+            "label": "Trash Spotter",
+            "url": "trashspotter://"
+          },
+          {
+            "label": "Clean 4 Green",
+            "url": "clean4green://"
+          }
+        ]
         "footer": "Merci à vous !"
       }
     ]
