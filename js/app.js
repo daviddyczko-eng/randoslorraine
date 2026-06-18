@@ -426,13 +426,19 @@ function renderInfoPage(key) {
           .map(t => {
             if (typeof t === "string") {
               return `<p class="info-text">${escapeHtml(t)}</p>`;
-            } else if (t.url) {
-              return `<p class="info-text"><a href="${escapeHtml(t.url)}">${escapeHtml(t.label)}</a></p>`;
+            } else {
+              return `
+                <p class="info-text">
+                  <a href="#" class="open-app"
+                     data-scheme="${escapeHtml(t.scheme)}"
+                     data-android="${escapeHtml(t.store_android)}"
+                     data-ios="${escapeHtml(t.store_ios)}">
+                    ${escapeHtml(t.label)}
+                  </a>
+                </p>`;
             }
           })
           .join("");
-      } else {
-        html += `<p class="info-text">${escapeHtml(section.text)}</p>`;
       }
     }
     if (section.links) {
@@ -451,6 +457,40 @@ function renderInfoPage(key) {
 
   html += `</div>`;
   screenRoot.innerHTML = html;
+  screenRoot.querySelectorAll(".open-app").forEach(link => {
+  link.addEventListener("click", (e) => {
+    e.preventDefault();
+    openAppOrStore(
+      link.dataset.scheme,
+      link.dataset.android,
+      link.dataset.ios
+    );
+  });
+});
+}
+
+function openAppOrStore(scheme, storeAndroid, storeIOS) {
+  const now = Date.now();
+  const iframe = document.createElement("iframe");
+  iframe.style.display = "none";
+  iframe.src = scheme;
+  document.body.appendChild(iframe);
+if (!scheme) {
+  const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+  window.location.href = isIOS ? storeIOS : storeAndroid;
+  return;
+}
+  setTimeout(() => {
+    const elapsed = Date.now() - now;
+
+    // Si l'app ne s'est pas ouverte (pas de switch d'onglet)
+    if (elapsed < 1500) {
+      const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+      window.location.href = isIOS ? storeIOS : storeAndroid;
+    }
+
+    iframe.remove();
+  }, 1200);
 }
 
 async function checkUserAndStart() {
