@@ -23,14 +23,14 @@
           {
             "label": "Trash Spotter",
             "scheme": null,
-            "store_android": "https://play.google.com/store/apps/details?id=com.trashspotter.app",
-            "store_ios": "https://apps.apple.com/fr/app/trash-spotter/id6475927694"
+            "store_android": "https://play.google.com/store/apps/details?id=green.trashspotter.app",
+            "store_ios": "https://apps.apple.com/fr/app/trash-spotter/id1500440613"
           },
           {
             "label": "Clean 4 Green",
             "scheme": null,
-            "store_android": "https://play.google.com/store/apps/details?id=com.clean4green.app",
-            "store_ios": "https://apps.apple.com/fr/app/clean4green/id6476092321"
+            "store_android": "https://play.google.com/store/apps/details?id=org.Clean4green",
+            "store_ios": "https://apps.apple.com/fr/app/clean4green/id1668074172"
           }
         ],
         "footer": "Merci à vous !"
