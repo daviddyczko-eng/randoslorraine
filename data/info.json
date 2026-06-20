@@ -59,8 +59,7 @@
         ]
         "text": [
           {
-            "label": "Numéro européen : 112",
-            (tel:112),
+            [Numéro européen : 112"](tel:112),
           },
           {
             "label": "Alerte Secours",
