@@ -54,7 +54,7 @@
         "heading": "Prévenir les urgences :",
         "items": [
           "Numéro européen : <a href=\"tel:112\">112</a>",
-          "SAMU : <a href=\"tel:15\">15</a>",
+          "SAMU-SAS : <a href=\"tel:15\">15</a>",
           "Sapeurs-pompiers : <a href=\"tel:18\">18</a>",
           "Alerte par SMS : <a href=\"sms:114\">114</a>"
         ],
