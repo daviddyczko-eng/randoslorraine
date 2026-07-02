@@ -28,14 +28,14 @@ exports.handler = async (event, context) => {
 
     const data = {
       url: randoUrl,
-      date: extract(/field-name-field-rando-date[\s\S]*?<div class="field-item">(.*?)<\/div>/),
+      date: extract(/field-name-field-rando-date[\s\S]*?<div class="field-item">([\s\S]*?)<\/div>/),
       lieu: extract(/field-name-field-rando-rv-info[\s\S]*?<div class="field-item">(.*?)<\/div>/),
       heureAccueil: extract(/field-name-field-rando-info-accueil[\s\S]*?<div class="field-item">(.*?)<\/div>/),
       heureDepart: extract(/field-name-field-rando-heure[\s\S]*?<div class="field-item">(.*?)<\/div>/),
       distance: extract(/field-name-field-rando-distance[\s\S]*?<div class="field-item">(.*?)<\/div>/),
       denivele: extract(/field-name-field-rando-denivele[\s\S]*?<div class="field-item">(.*?)<\/div>/),
       gps: extract(/Coordonnées GPS\s*:\s*([0-9\.,\s]+)/),
-      contact: extract(/field-name-field-rando-telephone">(\d+)/)
+      contact: extract(/field-name-field-rando-telephone[\s\S]*?<div class="field-item">([\s\S]*?)<\/div>/)
     };
 
     return {
