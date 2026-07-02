@@ -386,12 +386,8 @@ function renderRandoDetails() {
         <div class="btn-row">
           <a class="btn btn--primary" href="${mapsUrl}" target="_blank" rel="noopener">M'y rendre</a>
           <a class="btn btn--secondary" href="tel:${r.contact.replace(/\s/g, "")}">Appeler</a>
-        </div>
-        <button type="button" class="btn btn--ghost btn--block" id="btn-email" style="margin-top:12px">Envoyer un e-mail</button>
       </div>
     `;
-
-    $("#btn-email").addEventListener("click", sendEmail);
   };
 
   if (prochaineRando) {
