@@ -28,7 +28,7 @@ exports.handler = async (event, context) => {
 
     const data = {
       url: randoUrl,
-      date: extract(/field-name-field-rando-date[\s\S]*?<div class="field-item">([\s\S]*?)<\/div>/),
+      date: extract(/<span class="date-display[^"]*">(.*?)<\/span>/),
       lieu: extract(/field-name-field-rando-rv-info[\s\S]*?<div class="field-item">(.*?)<\/div>/),
       heureAccueil: extract(/field-name-field-rando-info-accueil[\s\S]*?<div class="field-item">(.*?)<\/div>/),
       heureDepart: extract(/field-name-field-rando-heure[\s\S]*?<div class="field-item">(.*?)<\/div>/),
