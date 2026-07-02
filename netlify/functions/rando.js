@@ -5,7 +5,7 @@ exports.handler = async (event, context) => {
     const home = await homeResponse.text();
 
     // 2) Trouver l'URL de la prochaine rando
-    const matchUrl = home.match(/href="(\/\d{4}-\d{2}-\d{2}[^"]+)"/);
+    const matchUrl = home.match(/href="(\/\d{4}-\d{2}-\d{2}-rando[^"]+)"/);
 
     if (!matchUrl) {
       return {
