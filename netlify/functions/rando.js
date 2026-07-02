@@ -1,8 +1,10 @@
-const fetch = require("node-fetch");
-
 exports.handler = async (event, context) => {
   try {
-    const home = await fetch("https://www.randoslorraine.org/").then(r => r.text());
+    // 1) Télécharger la page d'accueil
+    const homeResponse = await fetch("https://www.randoslorraine.org/");
+    const home = await homeResponse.text();
+
+    // 2) Trouver l'URL de la prochaine rando
     const matchUrl = home.match(/href="(\/\d{4}-\d{2}-\d{2}[^"]+)"/);
 
     if (!matchUrl) {
@@ -13,8 +15,12 @@ exports.handler = async (event, context) => {
     }
 
     const randoUrl = "https://www.randoslorraine.org" + matchUrl[1];
-    const html = await fetch(randoUrl).then(r => r.text());
 
+    // 3) Télécharger la fiche détaillée
+    const randoResponse = await fetch(randoUrl);
+    const html = await randoResponse.text();
+
+    // Fonction utilitaire
     function extract(regex) {
       const m = html.match(regex);
       return m ? m[1].trim() : null;
