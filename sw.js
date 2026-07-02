@@ -7,10 +7,9 @@ const ASSETS = [
   "./js/app.js",
   "./js/storage.js",
   "./js/qrcode.min.js",
-  "./data/rando-prochaine.json",
   "./data/info.json",
   "./manifest.webmanifest",
-  "./icons/RL-chaussure.svg",
+  "./icons/RL-symb.png",
 ];
 
 self.addEventListener("install", (event) => {
