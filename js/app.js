@@ -14,7 +14,7 @@ let backHandler = null;
 let prochaineRando = null;
 let infoContent = null;
 
-const PARTICLES = ["de", "la", "du", "le", "les", "des"];
+const PARTICLES = ["de", "la", "du", "le", "les", "des", "d'", "l'", "von"];
 
 function formatName(name) {
   return name
