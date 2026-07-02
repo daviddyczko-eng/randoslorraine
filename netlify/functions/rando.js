@@ -1,13 +1,6 @@
-export async function handler(event, context) {
-  return {
-    statusCode: 200,
-    body: JSON.stringify({ ok: true })
-  };
-}
+const fetch = require("node-fetch");
 
-import fetch from "node-fetch";
-
-export async function handler(event, context) {
+exports.handler = async (event, context) => {
   try {
     // 1) Télécharger la page d'accueil
     const home = await fetch("https://www.randoslorraine.org/").then(r => r.text());
@@ -66,4 +59,4 @@ export async function handler(event, context) {
       body: JSON.stringify({ error: err.message })
     };
   }
-}
+};
