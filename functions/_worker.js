@@ -4,23 +4,25 @@ export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
 
-    // 1) API pour la prochaine rando
-    if (url.pathname.startsWith("/api/rando")) {
+    // --- API Cloudflare : /api/rando ---
+    if (url.pathname === "/api/rando") {
       const target = "https://randoslorraine.org/randonnees-a-venir";
 
       const response = await fetch(target, {
-        headers: {
-          "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
-        }
+        headers: { "User-Agent": "Mozilla/5.0" }
       });
 
       const html = await response.text();
-      return new Response(html, {
-        headers: { "Content-Type": "text/html; charset=utf-8" }
+
+      // TODO : parser le HTML ici
+      const data = { html };
+
+      return new Response(JSON.stringify(data), {
+        headers: { "Content-Type": "application/json" }
       });
     }
 
-    // 2) Fichiers statiques (HTML, JS, CSS, images…)
+    // --- Fichiers statiques ---
     try {
       return await getAssetFromKV(
         { request, waitUntil: ctx.waitUntil.bind(ctx) },
@@ -30,7 +32,7 @@ export default {
         }
       );
     } catch (e) {
-      // 3) SPA fallback → index.html
+      // --- SPA fallback ---
       const indexRequest = new Request(`${url.origin}/index.html`);
       return await getAssetFromKV(
         { request: indexRequest, waitUntil: ctx.waitUntil.bind(ctx) },
