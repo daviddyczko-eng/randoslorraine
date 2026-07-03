@@ -62,7 +62,7 @@ function renderQr(container, text, size = 100) {
 async function fetchRandoDetails() {
   try {
     // Appel à ton API Cloudflare
-    const res = await fetch("/api/rando", { cache: "no-store" });
+    const res = await fetch("https://randoslorraine-worker.ddyczko.workers.dev/api/rando", { cache: "no-store" });
     if (!res.ok) throw new Error("API indisponible");
 
     const data = await res.json();
