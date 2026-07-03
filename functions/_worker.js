@@ -4,7 +4,7 @@ export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
 
-    // 1) Si la route commence par /api/rando → on fait le fetch externe
+    // 1) API pour la prochaine rando
     if (url.pathname.startsWith("/api/rando")) {
       const target = "https://randoslorraine.org/randonnees-a-venir";
 
@@ -20,7 +20,7 @@ export default {
       });
     }
 
-    // 2) Sinon → on sert ton application (HTML, JS, CSS, images…)
+    // 2) Fichiers statiques (HTML, JS, CSS, images…)
     try {
       return await getAssetFromKV(
         { request, waitUntil: ctx.waitUntil.bind(ctx) },
@@ -30,7 +30,7 @@ export default {
         }
       );
     } catch (e) {
-      // 3) Fallback SPA → renvoyer index.html pour toutes les routes
+      // 3) SPA fallback → index.html
       const indexRequest = new Request(`${url.origin}/index.html`);
       return await getAssetFromKV(
         { request: indexRequest, waitUntil: ctx.waitUntil.bind(ctx) },
