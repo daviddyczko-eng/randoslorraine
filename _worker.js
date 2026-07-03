@@ -1,4 +1,4 @@
-import { getAssetFromKV } from '@cloudflare/kv-asset-handler';
+import { serveStatic } from "cloudflare:workers";
 
 /* -------------------------------------------------------
    1) Trouver automatiquement l’URL de la prochaine rando
@@ -76,28 +76,11 @@ export default {
 
     /* -------------------------------------------------------
        Service des fichiers statiques (HTML, JS, CSS…)
+       Nouvelle API Cloudflare Workers
     ------------------------------------------------------- */
-    try {
-      return await getAssetFromKV(
-        { request, waitUntil: ctx.waitUntil.bind(ctx) },
-        {
-          ASSET_NAMESPACE: env.__STATIC_CONTENT,
-          ASSET_MANIFEST: JSON.parse(env.__STATIC_CONTENT_MANIFEST),
-        }
-      );
-    } catch (e) {
-
-      /* -------------------------------------------------------
-         Fallback SPA : renvoyer index.html pour toutes les routes
-      ------------------------------------------------------- */
-      const indexRequest = new Request(`${url.origin}/index.html`);
-      return await getAssetFromKV(
-        { request: indexRequest, waitUntil: ctx.waitUntil.bind(ctx) },
-        {
-          ASSET_NAMESPACE: env.__STATIC_CONTENT,
-          ASSET_MANIFEST: JSON.parse(env.__STATIC_CONTENT_MANIFEST),
-        }
-      );
-    }
+    return serveStatic(request, {
+      root: "",
+      tryFiles: ["index.html"]
+    });
   }
 };
