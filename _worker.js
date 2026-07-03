@@ -1,4 +1,4 @@
-import { serveStatic } from "cloudflare:workers";
+import { getAssetFromKV } from '@cloudflare/kv-asset-handler';
 
 /* -------------------------------------------------------
    1) Trouver automatiquement l’URL de la prochaine rando
@@ -44,12 +44,10 @@ export default {
     ------------------------------------------------------- */
     if (url.pathname === "/api/rando") {
 
-      // 1) Télécharger la page d’accueil
       const homeHtml = await fetch("https://www.randoslorraine.org", {
         headers: { "User-Agent": "Mozilla/5.0" }
       }).then(r => r.text());
 
-      // 2) Extraire automatiquement l’URL de la prochaine rando
       const nextUrl = extractNextRandoUrl(homeHtml);
 
       if (!nextUrl) {
@@ -60,15 +58,12 @@ export default {
         });
       }
 
-      // 3) Télécharger la page de la rando
       const randoHtml = await fetch(nextUrl, {
         headers: { "User-Agent": "Mozilla/5.0" }
       }).then(r => r.text());
 
-      // 4) Parser les données
       const data = parseRandoHtml(randoHtml);
 
-      // 5) Retourner le JSON attendu par app.js
       return new Response(JSON.stringify(data), {
         headers: { "Content-Type": "application/json" }
       });
@@ -76,11 +71,24 @@ export default {
 
     /* -------------------------------------------------------
        Service des fichiers statiques (HTML, JS, CSS…)
-       Nouvelle API Cloudflare Workers
     ------------------------------------------------------- */
-    return serveStatic(request, {
-      root: "",
-      tryFiles: ["index.html"]
-    });
+    try {
+      return await getAssetFromKV(
+        { request, waitUntil: ctx.waitUntil.bind(ctx) },
+        {
+          ASSET_NAMESPACE: env.__STATIC_CONTENT,
+          ASSET_MANIFEST: JSON.parse(env.__STATIC_CONTENT_MANIFEST),
+        }
+      );
+    } catch (e) {
+      const indexRequest = new Request(`${url.origin}/index.html`);
+      return await getAssetFromKV(
+        { request: indexRequest, waitUntil: ctx.waitUntil.bind(ctx) },
+        {
+          ASSET_NAMESPACE: env.__STATIC_CONTENT,
+          ASSET_MANIFEST: JSON.parse(env.__STATIC_CONTENT_MANIFEST),
+        }
+      );
+    }
   }
 };
