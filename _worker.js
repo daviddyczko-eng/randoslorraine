@@ -1,59 +1,20 @@
-import { getAssetFromKV } from '@cloudflare/kv-asset-handler';
-
-/* -------------------------------------------------------
-   1) Trouver automatiquement l’URL de la prochaine rando
-------------------------------------------------------- */
-function extractNextRandoUrl(html) {
-  const match = html.match(/href="(\/\d{4}-\d{2}-\d{2}-[^"]+)"/);
-  return match ? `https://www.randoslorraine.org${match[1]}` : null;
-}
-
-/* -------------------------------------------------------
-   2) Parser la page de la randonnée
-------------------------------------------------------- */
-function parseRandoHtml(html) {
-  const clean = html.replace(/\s+/g, " ");
-
-  const extract = (label) => {
-    const regex = new RegExp(`${label}\\s*:?\\s*([^<]+)`, "i");
-    const match = clean.match(regex);
-    return match ? match[1].trim() : "";
-  };
-
-  return {
-    date: extract("Date"),
-    lieu: extract("Lieu"),
-    heureAccueil: extract("Heure d'accueil"),
-    heureDepart: extract("Heure de départ"),
-    distance: extract("Distance"),
-    denivele: extract("Dénivelé"),
-    contact: extract("Contact"),
-    gps: extract("GPS")
-  };
-}
-
-/* -------------------------------------------------------
-   3) Worker principal
-------------------------------------------------------- */
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
 
-    /* -------------------------------------------------------
-       API Cloudflare : /api/rando
-    ------------------------------------------------------- */
+    // -------------------------------------------------------
+    // 1) API /api/rando
+    // -------------------------------------------------------
     if (url.pathname === "/api/rando") {
-
       const homeHtml = await fetch("https://www.randoslorraine.org", {
         headers: { "User-Agent": "Mozilla/5.0" }
       }).then(r => r.text());
 
-      const nextUrl = extractNextRandoUrl(homeHtml);
+      const match = homeHtml.match(/href="(\/\d{4}-\d{2}-\d{2}-[^"]+)"/);
+      const nextUrl = match ? `https://www.randoslorraine.org${match[1]}` : null;
 
       if (!nextUrl) {
-        return new Response(JSON.stringify({
-          error: "Aucune randonnée trouvée"
-        }), {
+        return new Response(JSON.stringify({ error: "Aucune randonnée trouvée" }), {
           headers: { "Content-Type": "application/json" }
         });
       }
@@ -62,33 +23,66 @@ export default {
         headers: { "User-Agent": "Mozilla/5.0" }
       }).then(r => r.text());
 
-      const data = parseRandoHtml(randoHtml);
+      const clean = randoHtml.replace(/\s+/g, " ");
+      const extract = (label) => {
+        const regex = new RegExp(`${label}\\s*:?\\s*([^<]+)`, "i");
+        const m = clean.match(regex);
+        return m ? m[1].trim() : "";
+      };
+
+      const data = {
+        date: extract("Date"),
+        lieu: extract("Lieu"),
+        heureAccueil: extract("Heure d'accueil"),
+        heureDepart: extract("Heure de départ"),
+        distance: extract("Distance"),
+        denivele: extract("Dénivelé"),
+        contact: extract("Contact"),
+        gps: extract("GPS")
+      };
 
       return new Response(JSON.stringify(data), {
         headers: { "Content-Type": "application/json" }
       });
     }
 
-    /* -------------------------------------------------------
-       Service des fichiers statiques (HTML, JS, CSS…)
-    ------------------------------------------------------- */
+    // -------------------------------------------------------
+    // 2) Service des fichiers statiques SANS kv-asset-handler
+    // -------------------------------------------------------
     try {
-      return await getAssetFromKV(
-        { request, waitUntil: ctx.waitUntil.bind(ctx) },
-        {
-          ASSET_NAMESPACE: env.__STATIC_CONTENT,
-          ASSET_MANIFEST: JSON.parse(env.__STATIC_CONTENT_MANIFEST),
-        }
-      );
-    } catch (e) {
-      const indexRequest = new Request(`${url.origin}/index.html`);
-      return await getAssetFromKV(
-        { request: indexRequest, waitUntil: ctx.waitUntil.bind(ctx) },
-        {
-          ASSET_NAMESPACE: env.__STATIC_CONTENT,
-          ASSET_MANIFEST: JSON.parse(env.__STATIC_CONTENT_MANIFEST),
-        }
-      );
+      const path = url.pathname === "/" ? "/index.html" : url.pathname;
+
+      const file = await env.__STATIC_CONTENT.get(path.slice(1));
+
+      if (file) {
+        return new Response(file, {
+          headers: { "Content-Type": getContentType(path) }
+        });
+      }
+
+      // Fallback SPA → index.html
+      const indexFile = await env.__STATIC_CONTENT.get("index.html");
+      return new Response(indexFile, {
+        headers: { "Content-Type": "text/html" }
+      });
+
+    } catch (err) {
+      return new Response("Erreur interne", { status: 500 });
     }
   }
 };
+
+// -------------------------------------------------------
+// 3) Détection du type MIME
+// -------------------------------------------------------
+function getContentType(path) {
+  if (path.endsWith(".html")) return "text/html";
+  if (path.endsWith(".css")) return "text/css";
+  if (path.endsWith(".js")) return "application/javascript";
+  if (path.endsWith(".json")) return "application/json";
+  if (path.endsWith(".png")) return "image/png";
+  if (path.endsWith(".svg")) return "image/svg+xml";
+  if (path.endsWith(".jpg") || path.endsWith(".jpeg")) return "image/jpeg";
+  if (path.endsWith(".webmanifest")) return "application/manifest+json";
+  return "application/octet-stream";
+}
