@@ -4,17 +4,14 @@
   "main": "_worker.js",
   "compatibility_date": "2026-07-03",
 
-  // 👇 Correction critique : alias pour kv-asset-handler
   "alias": {
     "@cloudflare/kv-asset-handler": "node_modules/@cloudflare/kv-asset-handler/dist/index.js"
   },
 
-  "observability": {
-    "enabled": true
-  },
   "assets": {
     "directory": "."
   },
+
   "compatibility_flags": [
     "nodejs_compat"
   ]
