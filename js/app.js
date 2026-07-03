@@ -61,8 +61,8 @@ function renderQr(container, text, size = 100) {
 
 async function fetchRandoDetails() {
   try {
-    // Appel à ton API Netlify
-    const res = await fetch("/.netlify/functions/rando", { cache: "no-store" });
+    // Appel à ton API Cloudflare
+    const res = await fetch("/api/rando", { cache: "no-store" });
     if (!res.ok) throw new Error("API indisponible");
 
     const data = await res.json();
