@@ -70,7 +70,7 @@ async function fetchHtml(url) {
 // ------------------------------
 
 function extractNextRandoUrl(html) {
-  // On cherche le premier lien dans la colonne du milieu
+  // On cherche le premier lien de type /YYYY-MM-DD-quelque-chose
   const match = html.match(/href="(\/\d{4}-\d{2}-\d{2}[^"]+)"/);
   if (!match) return null;
   return "https://www.randoslorraine.org" + match[1];
@@ -81,16 +81,14 @@ function extractNextRandoUrl(html) {
 // ------------------------------
 
 function parseRandoHtml(html, url) {
-  const title = extract(html, /<h1[^>]*>(.*?)<\/h1>/);
-  const date = extract(html, /(\d{2}\/\d{2}\/\d{4})/);
-  const gps = extract(html, /GPS[^<]*<[^>]*>(.*?)</);
-  const description = extract(html, /<p>(.*?)<\/p>/);
+  const title = extract(html, /<h2[^>]*class="node-title"[^>]*>\s*<a[^>]*>(.*?)<\/a>/);
+  const date = extract(html, /<span class="date-display-single">(.*?)<\/span>/);
+  const description = extract(html, /<div class="field-name-body[^>]*>([\s\S]*?)<\/div>/);
 
   return {
     url,
     title,
     date,
-    gps,
     description,
   };
 }
