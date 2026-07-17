@@ -6,53 +6,100 @@ export default {
     if (request.method === "OPTIONS") {
       return new Response(null, {
         status: 204,
-        headers: {
-          "Access-Control-Allow-Origin": "*",
-          "Access-Control-Allow-Methods": "GET, OPTIONS",
-          "Access-Control-Allow-Headers": "Content-Type",
-        },
+        headers: cors(),
       });
     }
 
-    // Route API
+    // API : prochaine rando
     if (url.pathname === "/api/rando") {
       try {
-        const data = await getRandoData(); // ta fonction interne
+        const homeHtml = await fetchHtml("https://www.randoslorraine.org/");
+        const nextUrl = extractNextRandoUrl(homeHtml);
 
-        return new Response(JSON.stringify(data), {
-          status: 200,
-          headers: {
-            "Content-Type": "application/json",
-            "Access-Control-Allow-Origin": "*",
-            "Access-Control-Allow-Methods": "GET, OPTIONS",
-          },
-        });
+        if (!nextUrl) {
+          return json({ error: "Impossible de trouver la prochaine rando." }, 500);
+        }
+
+        const randoHtml = await fetchHtml(nextUrl);
+        const data = parseRandoHtml(randoHtml, nextUrl);
+
+        return json(data);
       } catch (err) {
-        return new Response(JSON.stringify({ error: "Erreur interne Worker" }), {
-          status: 500,
-          headers: {
-            "Content-Type": "application/json",
-            "Access-Control-Allow-Origin": "*",
-          },
-        });
+        return json({ error: "Erreur interne Worker", details: err.toString() }, 500);
       }
     }
 
-    // Fallback : fichiers statiques
+    // Fallback
     return new Response("Not found", {
       status: 404,
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-      },
+      headers: cors(),
     });
   },
 };
 
-// Exemple de fonction interne
-async function getRandoData() {
+// ------------------------------
+// Utilitaires
+// ------------------------------
+
+function cors() {
   return {
-    date: "2024-07-20",
-    lieu: "Lorraine",
-    gps: "48.6921, 6.1844",
+    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Methods": "GET, OPTIONS",
+    "Access-Control-Allow-Headers": "Content-Type",
   };
+}
+
+function json(obj, status = 200) {
+  return new Response(JSON.stringify(obj), {
+    status,
+    headers: {
+      "Content-Type": "application/json",
+      ...cors(),
+    },
+  });
+}
+
+async function fetchHtml(url) {
+  const res = await fetch(url);
+  if (!res.ok) throw new Error("Fetch failed: " + url);
+  return await res.text();
+}
+
+// ------------------------------
+// Extraction du lien de la prochaine rando
+// ------------------------------
+
+function extractNextRandoUrl(html) {
+  // On cherche le premier lien dans la colonne du milieu
+  const match = html.match(/href="(\/\d{4}-\d{2}-\d{2}[^"]+)"/);
+  if (!match) return null;
+  return "https://www.randoslorraine.org" + match[1];
+}
+
+// ------------------------------
+// Parsing de la page de rando
+// ------------------------------
+
+function parseRandoHtml(html, url) {
+  const title = extract(html, /<h1[^>]*>(.*?)<\/h1>/);
+  const date = extract(html, /(\d{2}\/\d{2}\/\d{4})/);
+  const gps = extract(html, /GPS[^<]*<[^>]*>(.*?)</);
+  const description = extract(html, /<p>(.*?)<\/p>/);
+
+  return {
+    url,
+    title,
+    date,
+    gps,
+    description,
+  };
+}
+
+function extract(html, regex) {
+  const m = html.match(regex);
+  return m ? clean(m[1]) : null;
+}
+
+function clean(str) {
+  return str.replace(/<[^>]+>/g, "").trim();
 }
