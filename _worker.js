@@ -10,7 +10,9 @@ export default {
       });
     }
 
+    // ------------------------------
     // API : prochaine rando
+    // ------------------------------
     if (url.pathname === "/api/rando") {
       try {
         const homeHtml = await fetchHtml("https://www.randoslorraine.org/");
@@ -29,7 +31,9 @@ export default {
       }
     }
 
+    // ------------------------------
     // Fallback
+    // ------------------------------
     return new Response("Not found", {
       status: 404,
       headers: cors(),
@@ -83,7 +87,9 @@ function extractNextRandoUrl(html) {
 function parseRandoHtml(html, url) {
   const title = extract(html, /<h2[^>]*class="node-title"[^>]*>\s*<a[^>]*>(.*?)<\/a>/);
   const date = extract(html, /<span class="date-display-single">(.*?)<\/span>/);
-  const description = extract(html, /<div class="field-name-body[^>]*>([\s\S]*?)<\/div>/);
+
+  // Description : on prend le premier bloc de texte riche
+  const description = extract(html, /<div class="field[^>]*field-name-body[^>]*>([\s\S]*?)<\/div>/);
 
   return {
     url,
