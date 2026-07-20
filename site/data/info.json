@@ -1,0 +1,150 @@
+{
+  "avant-depart": {
+    "title": "Avant le départ",
+    "sections": [
+      {
+        "heading": "Nous invitons la, le ou les pilotes à se renseigner sur l'état de son groupe en posant les questions suivantes.",
+        "items": [
+          "Êtes-vous bien équipés ?",
+          "Vos chaussures sont-elles adaptées ?",
+          "Avez-vous suffisamment d’eau ?",
+          "Avez-vous assez à manger ?",
+          "Avez-vous bien évalué votre condition physique ?",
+          "Avez-vous des problèmes de santé notoires à signaler ?"
+        ]
+      },
+      {
+        "heading": "Protégeons la nature",
+        "items": [
+          "Si vous trouvez des déchets sauvages, nous vous invitons à les ramasser si possible. Pour les volontaires, des sacs poubelles sont disponibles.",
+          "Applications pour signaler les décharges sauvages :"
+        ],
+        "text": [
+          {
+            "label": "Trash Spotter",
+            "scheme": null,
+            "store_android": "https://play.google.com/store/apps/details?id=green.trashspotter.app",
+            "store_ios": "https://apps.apple.com/fr/app/trash-spotter/id1500440613"
+          },
+          {
+            "label": "Clean 4 Green",
+            "scheme": null,
+            "store_android": "https://play.google.com/store/apps/details?id=org.Clean4green",
+            "store_ios": "https://apps.apple.com/fr/app/clean4green/id1668074172"
+          }
+        ],
+        "footer": "Merci à vous !"
+      }
+    ]
+  },
+
+  "accident": {
+    "title": "En cas d'accident",
+    "sections": [
+      {
+        "heading": "Premiers gestes :",
+        "items": [
+          "Sécuriser la zone (éviter un sur-accident)",
+          "Évaluer l'état de la personne",
+          "Ne pas déplacer la victime sauf danger immédiat",
+          "Rassurer et couvrir la personne"
+        ]
+      },
+      {
+        "heading": "Prévenir les urgences :",
+        "items": [
+          "Numéro européen : <a href=\"tel:112\">112</a>",
+          "SAMU-SAS : <a href=\"tel:15\">15</a>",
+          "Sapeurs-pompiers : <a href=\"tel:18\">18</a>",
+          "Alerte par SMS : <a href=\"sms:114\">114</a>"
+        ],
+        "text": [
+          {
+            "label": "Alerte Secours",
+            "scheme": null,
+            "store_android": "https://play.google.com/store/apps/details?id=com.alertesecours",
+            "store_ios": "https://apps.apple.com/fr/app/alerte-secours/id6708225143"
+          }
+        ]
+      },
+      {
+        "heading": "Informer :",
+        "items": [
+          "Localisation précise (point GPS, chemin, repère)",
+          "Nombre de blessé.e.s",
+          "État de la victime (consciente, respiration, saignement)",
+          "Nature de l'accident (chute, malaise, entorse, etc.)"
+        ]
+      },
+      {
+        "heading": "Conduite à tenir :",
+        "items": [
+          "Rester avec la victime",
+          "Envoyer quelqu’un à un point de rencontre si nécessaire",
+          "Garder le téléphone chargé autant que possible"
+        ]
+      },
+      {
+        "heading": "Assurance",
+        "items": [
+          "<a href=\"tel:0800875875\">0 800 875 875</a> en France",
+          "<a href=\"tel:+33549774778\">+33 5 49 77 47 78</a> depuis l’étranger",
+          "sociétaire MAIF 3163163A"
+        ]
+      }
+    ]
+  },
+
+  "tarifs": {
+    "title": "Explication des tarifs",
+    "sections": [
+      {
+        "heading": "0 €",
+        "items": [
+          "Uniquement si votre cotisation annuelle est à jour",
+          "La cotisation est valable pour l'année civile (du 1er janvier au 31 décembre). Elle ne démarre pas au jour du paiement de la cotisation.",
+          "Attention ! Si vous n'avez pas renouvelé votre adhésion, il faudra payer 6 euros à chaque participation. Les sommes versées ne se déduisent pas du montant total de la cotisation."
+        ]
+      },
+      {
+        "heading": "2 €",
+        "items": [
+          "Pour votre toute première randonnée avec Rando's Lorraine ou si vous êtes adhérent.e chez Alsarando"
+        ]
+      },
+      {
+        "heading": "6 €",
+        "items": [
+          "Vous ne souhaitez pas être adhérent.e mais vous voulez participer occasionnellement."
+        ]
+      },
+      {
+        "heading": "12 € (demi-tarif)",
+        "items": [
+          "Sur justificatif à produire à la trésorerie ou à la présidence (avis de non imposition sur le revenu)"
+        ]
+      },
+      {
+        "heading": "24 €",
+        "items": [
+          "Vous souhaitez ré-adhérer directement."
+        ]
+      }
+    ]
+  },
+
+  "lien-internet": {
+    "title": "Lien internet",
+    "sections": [
+      {
+        "heading": "Site officiel",
+        "links": [
+          {
+            "label": "Rando's Lorraine",
+            "url": "https://randoslorraine.org"
+          }
+        ]
+      }
+    ]
+  }
+}
