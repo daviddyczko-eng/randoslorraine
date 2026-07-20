@@ -1,7 +1,7 @@
-name = "randoslorraine-worker"
+name = "randoslorraine"
 main = "_worker.js"
 compatibility_date = "2024-01-01"
 
 routes = [
-  { pattern = "randoslorraine-worker.ddyczko.workers.dev/api/*", script = "randoslorraine-worker" }
+  { pattern = "randoslorraine.ddyczko.workers.dev/api/*", script = "randoslorraine" }
 ]
