@@ -19,16 +19,32 @@ location.reload();
 ## Structure
 
 ```
+css
+
+    styles.css
+
+data
+
+    info.json
+
+icons
+
+    RL-logo.svg
+    RL-symb.png
+
+js
+
+    app.js
+    qrcode.min.js
+    storage.js
+
+.assetsignore
+README.md
+_worker.js
 index.html
 manifest.webmanifest
 sw.js
-css/styles.css
-js/app.js
-js/storage.js
-js/qrcode.min.js
-data/rando-prochaine.json
-data/info.json
-icons/icon.svg
+wrangler.toml
 ```
 
 ## Installer sur l'écran d'accueil
