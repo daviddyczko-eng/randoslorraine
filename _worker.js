@@ -2,108 +2,132 @@ export default {
   async fetch(request) {
     const url = new URL(request.url);
 
-    // CORS preflight
-    if (request.method === "OPTIONS") {
-      return new Response(null, {
-        status: 204,
-        headers: cors(),
-      });
+    // Debug HTML Cloudflare
+    if (url.pathname === "/api/debug") {
+      const resp = await fetch("https://www.randoslorraine.org/randonnees-a-venir");
+      const html = await resp.text();
+      return new Response(html, { headers: { "content-type": "text/plain; charset=utf-8" } });
     }
 
-    // ------------------------------
-    // API : prochaine rando
-    // ------------------------------
+    // API principale
     if (url.pathname === "/api/rando") {
-      try {
-        const homeHtml = await fetchHtml("https://www.randoslorraine.org/");
-        const nextUrl = extractNextRandoUrl(homeHtml);
-
-        if (!nextUrl) {
-          return json({ error: "Impossible de trouver la prochaine rando." }, 500);
-        }
-
-        const randoHtml = await fetchHtml(nextUrl);
-        const data = parseRandoHtml(randoHtml, nextUrl);
-
-        return json(data);
-      } catch (err) {
-        return json({ error: "Erreur interne Worker", details: err.toString() }, 500);
-      }
+      return await getFullRando();
     }
 
-    // ------------------------------
-    // Fallback
-    // ------------------------------
-    return new Response("Not found", {
-      status: 404,
-      headers: cors(),
-    });
-  },
+    return new Response("Worker randoslorraine actif");
+  }
 };
 
-// ------------------------------
-// Utilitaires
-// ------------------------------
-
-function cors() {
-  return {
-    "Access-Control-Allow-Origin": "*",
-    "Access-Control-Allow-Methods": "GET, OPTIONS",
-    "Access-Control-Allow-Headers": "Content-Type",
-  };
-}
-
 function json(obj, status = 200) {
-  return new Response(JSON.stringify(obj), {
+  return new Response(JSON.stringify(obj, null, 2), {
     status,
-    headers: {
-      "Content-Type": "application/json",
-      ...cors(),
-    },
+    headers: { "content-type": "application/json; charset=utf-8" }
   });
-}
-
-async function fetchHtml(url) {
-  const res = await fetch(url);
-  if (!res.ok) throw new Error("Fetch failed: " + url);
-  return await res.text();
-}
-
-// ------------------------------
-// Extraction du lien de la prochaine rando
-// ------------------------------
-
-function extractNextRandoUrl(html) {
-  // On cherche le premier lien de type /YYYY-MM-DD-quelque-chose
-  const match = html.match(/href="(\/\d{4}-\d{2}-\d{2}[^"]+)"/);
-  if (!match) return null;
-  return "https://www.randoslorraine.org" + match[1];
-}
-
-// ------------------------------
-// Parsing de la page de rando
-// ------------------------------
-
-function parseRandoHtml(html, url) {
-  const title = extract(html, /<h2[^>]*class="node-title"[^>]*>\s*<a[^>]*>(.*?)<\/a>/);
-  const date = extract(html, /<span class="date-display-single">(.*?)<\/span>/);
-
-  // Description : on prend le premier bloc de texte riche
-  const description = extract(html, /<div class="field[^>]*field-name-body[^>]*>([\s\S]*?)<\/div>/);
-
-  return {
-    url,
-    title,
-    date,
-    description,
-  };
 }
 
 function extract(html, regex) {
   const m = html.match(regex);
-  return m ? clean(m[1]) : null;
+  return m ? m[1].trim() : null;
 }
 
-function clean(str) {
-  return str.replace(/<[^>]+>/g, "").trim();
+async function getFullRando() {
+  const base = "https://www.randoslorraine.org";
+  const listUrl = `${base}/randonnees-a-venir`;
+
+  // 1️⃣ Charger la liste des randos
+  const resp = await fetch(listUrl, {
+    headers: { "User-Agent": "Mozilla/5.0 (RandosLorraineWorker)" }
+  });
+
+  if (!resp.ok) {
+    return json({ error: "Erreur lors de la récupération de la liste." }, resp.status);
+  }
+
+  const html = await resp.text();
+
+  // 2️⃣ Capturer le premier bloc views-row ENTIER
+  const rows = [...html.matchAll(/<div class="views-row[\s\S]*?(?=<div class="views-row|\Z)/g)];
+
+  if (rows.length === 0) {
+    return json({ error: "Aucune randonnée trouvée." }, 404);
+  }
+
+  const firstBlock = rows[0][0];
+
+  // 3️⃣ Trouver le premier lien de la rando
+  const hrefMatch = firstBlock.match(/href="([^"]+)"/);
+
+  if (!hrefMatch) {
+    return json({ error: "Aucun lien de randonnée trouvé." }, 404);
+  }
+
+  const randoUrl = base + hrefMatch[1];
+
+  // 4️⃣ Charger la fiche individuelle
+  const page = await fetch(randoUrl, {
+    headers: { "User-Agent": "Mozilla/5.0 (RandosLorraineWorker)" }
+  });
+
+  if (!page.ok) {
+    return json({ error: "Erreur lors de la récupération de la fiche." }, page.status);
+  }
+
+  const fiche = await page.text();
+
+  // 5️⃣ Extraire les champs
+
+  const title = extract(fiche, /<h1[^>]*>([^<]+)<\/h1>/);
+
+  const date = extract(fiche, /field-name-field-rando-date[^>]*>[\s\S]*?<span[^>]*>([^<]+)<\/span>/);
+
+  const commune = extract(fiche, /field-name-field-rando-lieu-commune[^>]*>\s*([^<]+)</);
+  const pays = extract(fiche, /field-name-field-rando-lieu-pays[^>]*>\s*([^<]+)</);
+  const departement = extract(fiche, /field-name-field-rando-lieu-departement[^>]*>\s*([^<]+)</);
+
+  const rdv = extract(
+    fiche,
+    /field-name-field-rando-rv-info[\s\S]*?<div class="field-item">([\s\S]*?)<\/div>/
+  );
+
+  const heureAccueil = extract(
+    fiche,
+    /field-name-field-rando-info-accueil[\s\S]*?<div class="field-item">([\s\S]*?)<\/div>/
+  );
+
+  const heureDepart = extract(
+    fiche,
+    /field-name-field-rando-heure[\s\S]*?<div class="field-item">([\s\S]*?)<\/div>/
+  );
+
+  const pilotes = extract(
+    fiche,
+    /field-name-field-rando-pilotes[^>]*>([\s\S]*?)<\/div>/
+  );
+
+  const telephones = [...fiche.matchAll(
+    /field-name-field-rando-telephone[^>]*>\s*([^<]+)</g
+  )].map(m => m[1].trim());
+
+  const gps = extract(
+    fiche,
+    /Coordonnées GPS\s*:\s*([^<]+)/
+  );
+
+  // 6️⃣ Retourner le JSON complet
+  return json({
+    url: randoUrl,
+    titre: title,
+    date,
+    lieu: {
+      commune,
+      pays,
+      departement
+    },
+    rendezVous: rdv,
+    heureAccueil,
+    heureDepart,
+    pilotes,
+    telephones,
+    gps
+  });
 }
