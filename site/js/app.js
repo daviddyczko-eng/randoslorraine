@@ -369,7 +369,7 @@ function renderRandoDetails(r) {
       <div class="screen">
         <div class="detail-list">
           <div class="detail-row"><span>Date</span><span>${escapeHtml(rando.date)}</span></div>
-          <div class="detail-row"><span>Lieu</span><span>${escapeHtml(rando.lieu.commune)}</span></div>
+          <div class="detail-row"><span>Lieu</span><span>${escapeHtml(commune)}</span></div>
           <div class="detail-row"><span>Heure d'accueil</span><span>${escapeHtml(accueil)}</span></div>
           <div class="detail-row"><span>Heure de départ</span><span>${escapeHtml(depart)}</span></div>
           <div class="detail-row"><span>Contact(s)</span><span>${escapeHtml(tel0)}</span></div>
