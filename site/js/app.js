@@ -216,75 +216,44 @@ function renderAccueil(prenom, nom) {
   const qrPreview = document.createElement("div");
   renderQr(qrPreview, qrData(prenom, nom), 80);
 
-  // Construction du HTML
-  let html = `
-    <div class="accueil">
-      <h1>Bonjour ${escapeHtml(prenom)}</h1>
-  `;
-
-  // Affichage de la prochaine rando
-  if (prochaineRando) {
-    html += `
-      <section class="rando-card" onclick="navigate('rando', { rando: prochaineRando })">
-        <h2>Prochaine randonnée</h2>
-        <span>
-          ${escapeHtml(prochaineRando.lieu.commune)}<br>
-          ${escapeHtml(prochaineRando.date)}
-        </span>
-      </section>
-    `;
-  } else {
-    html += `
-      <section class="rando-card">
-        <span class="loading-text">Chargement…</span>
-      </section>
-    `;
-  }
-
-  // Section Lien internet
-  const lienInternet = data["lien-internet"];
-  if (lienInternet && lienInternet.links && lienInternet.links.length > 0) {
-    const url = lienInternet.links[0].url;
-
-    html += `
-      <div class="section clickable-section" onclick="window.open('${url}', '_blank')">
-        <h3>${escapeHtml(lienInternet.title)}</h3>
-      </div>
-    `;
-  }
-
-  html += `</div>`; // fermeture .accueil
-
-  screenRoot.innerHTML = html;
-}
+  const randoPreview = prochaineRando
+    ? `<span>${escapeHtml(prochaineRando.lieu.commune)}<br>${escapeHtml(prochaineRando.date)}</span>`
+    : `<span class="loading-text">Chargement…</span>`;
 
   screenRoot.innerHTML = `
     <div class="screen">
       <div class="card-list">
+
         <button type="button" class="home-card" data-go="carte">
           <span class="home-card__title">Bonjour ${escapeHtml(prenom)}</span>
           <span class="home-card__preview" id="qr-preview"></span>
         </button>
+
         <button type="button" class="home-card" data-go="rando">
           <span class="home-card__title">Prochaine rando</span>
           <span class="home-card__preview">${randoPreview}</span>
         </button>
+
         <button type="button" class="home-card" data-go="avant-depart">
           <span class="home-card__title">Avant le départ</span>
           <span class="home-card__preview"></span>
         </button>
+
         <button type="button" class="home-card" data-go="accident">
           <span class="home-card__title">En cas d'accident</span>
           <span class="home-card__preview"></span>
         </button>
+
         <button type="button" class="home-card" data-go="tarifs">
           <span class="home-card__title">Tout sur les tarifs</span>
           <span class="home-card__preview"></span>
         </button>
+
         <button type="button" class="home-card" data-go="lien-internet">
           <span class="home-card__title">Lien internet</span>
           <span class="home-card__preview"></span>
         </button>
+
       </div>
     </div>
   `;
@@ -294,6 +263,7 @@ function renderAccueil(prenom, nom) {
   screenRoot.querySelectorAll(".home-card").forEach((btn) => {
     btn.addEventListener("click", () => {
       const go = btn.dataset.go;
+
       if (go === "carte") {
         navigate("carte", {
           prenom,
@@ -302,12 +272,15 @@ function renderAccueil(prenom, nom) {
           showBack: true,
           onBack: () => navigate("accueil", { prenom, nom, title: "Rando's Lorraine" }),
         });
+
       } else if (go === "rando") {
         navigate("rando", {
+          rando: prochaineRando,   // ⭐ CORRECTION CRITIQUE
           title: "Prochaine rando",
           showBack: true,
           onBack: () => navigate("accueil", { prenom, nom, title: "Rando's Lorraine" }),
         });
+
       } else {
         navigate("info", {
           infoKey: go,
@@ -326,10 +299,8 @@ function renderAccueil(prenom, nom) {
         if (currentScreen === "accueil") renderAccueil(prenom, nom);
       })
       .catch(() => {
-        if (currentScreen === "accueil") {
-          const card = screenRoot.querySelector('[data-go="rando"] .home-card__preview');
-          if (card) card.innerHTML = `<span class="loading-text">Indisponible</span>`;
-        }
+        const card = screenRoot.querySelector('[data-go="rando"] .home-card__preview');
+        if (card) card.innerHTML = `<span class="loading-text">Indisponible</span>`;
       });
   }
 }
