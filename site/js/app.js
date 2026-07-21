@@ -275,7 +275,7 @@ function renderAccueil(prenom, nom) {
 
       } else if (go === "rando") {
         navigate("rando", {
-          rando: prochaineRando,   // ⭐ CORRECTION CRITIQUE
+          rando: prochaineRando,
           title: "Prochaine rando",
           showBack: true,
           onBack: () => navigate("accueil", { prenom, nom, title: "Rando's Lorraine" }),
