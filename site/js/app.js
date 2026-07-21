@@ -402,16 +402,14 @@ function renderRandoDetails() {
       <div class="screen">
         <div class="detail-list">
           <div class="detail-row"><span class="detail-row__label">Date</span><span class="detail-row__value">${escapeHtml(r.date)}</span></div>
-          <div class="detail-row"><span class="detail-row__label">Lieu</span><span class="detail-row__value">${escapeHtml(r.lieu)}</span></div>
+          <div class="detail-row"><span class="detail-row__label">Lieu</span><span class="detail-row__value">${escapeHtml(r.commune)}</span></div>
           <div class="detail-row"><span class="detail-row__label">Heure d'accueil</span><span class="detail-row__value">${escapeHtml(r.heureAccueil)}</span></div>
           <div class="detail-row"><span class="detail-row__label">Heure de départ</span><span class="detail-row__value">${escapeHtml(r.heureDepart)}</span></div>
-          <div class="detail-row"><span class="detail-row__label">Distance</span><span class="detail-row__value">${escapeHtml(r.distance)} km</span></div>
-          <div class="detail-row"><span class="detail-row__label">Dénivelé</span><span class="detail-row__value">${escapeHtml(r.denivele)} m</span></div>
-          <div class="detail-row"><span class="detail-row__label">Contact</span><span class="detail-row__value">${escapeHtml(r.contact)}</span></div>
+          <div class="detail-row"><span class="detail-row__label">Contact</span><span class="detail-row__value">${escapeHtml(r.telephones)}</span></div>
         </div>
         <div class="btn-row">
           <a class="btn btn--primary" href="${mapsUrl}" target="_blank" rel="noopener">M'y rendre</a>
-          <a class="btn btn--secondary" href="tel:${r.contact.replace(/\s/g, "")}">Appeler</a>
+          <a class="btn btn--secondary" href="tel:${r.telephones.replace(/\s/g, "")}">Appeler</a>
       </div>
     `;
   };
