@@ -219,6 +219,18 @@ function renderAccueil(prenom, nom) {
   const randoPreview = prochaineRando
     ? `<span>${escapeHtml(prochaineRando.lieu)}<br>${escapeHtml(prochaineRando.date)}</span>`
     : `<span class="loading-text">Chargement…</span>`;
+  
+  const lienInternet = data["lien-internet"];
+
+if (lienInternet && lienInternet.links && lienInternet.links.length > 0) {
+  const url = lienInternet.links[0].url;
+
+  html += `
+    <div class="section clickable-section" onclick="window.open('${url}', '_blank')">
+      <h3>${lienInternet.title}</h3>
+    </div>
+  `;
+}
 
   screenRoot.innerHTML = `
     <div class="screen">
