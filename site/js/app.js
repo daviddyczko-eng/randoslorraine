@@ -1,11 +1,5 @@
 /* -------------------------------------------------------
    🚫 Désactivation complète du Service Worker
-   -------------------------------------------------------
-   Pourquoi ?
-   - Ton SW renvoie une ancienne version du JSON
-   - Les champs heureAccueil / heureDepart n’y sont pas
-   - Donc ton app affiche "Heure inconnue"
-   - Ce bloc supprime TOUT SW actif et empêche son retour
 ------------------------------------------------------- */
 
 if ("serviceWorker" in navigator) {
@@ -15,6 +9,9 @@ if ("serviceWorker" in navigator) {
     });
   });
 }
+
+// 🔥 On supprime aussi l’ancienne rando stockée
+localStorage.removeItem("prochaineRando");
 
 import { getUser, saveUser, needsCotisation, qrData } from "./storage.js";
 
@@ -87,7 +84,7 @@ function renderQr(container, text, size = 100) {
 }
 
 /* -------------------------------------------------------
-   🌐 API Rando
+   🌐 API Rando (cache contourné)
 ------------------------------------------------------- */
 async function fetchRandoDetails() {
   if (!navigator.onLine) {
@@ -96,11 +93,14 @@ async function fetchRandoDetails() {
     throw new Error("Aucune donnée disponible hors-ligne");
   }
 
-   try {
-      const res = await fetch("https://randoslorraine.pages.dev/api/rando?ts=" + Date.now(), {
+  try {
+    const res = await fetch(
+      "https://randoslorraine.pages.dev/api/rando?ts=" + Date.now(),
+      {
         cache: "reload",
         headers: { "Cache-Control": "no-cache" }
-      });
+      }
+    );
 
     if (!res.ok) throw new Error("API indisponible");
 
@@ -175,125 +175,6 @@ function renderInscription() {
     saveUser({ prenom, nom, dateInscription });
     navigate("accueil", { prenom, nom });
   });
-}
-
-/* -------------------------------------------------------
-   💳 Cotisation
-------------------------------------------------------- */
-function renderCotisation(prenom, nom, dateInscription) {
-  screenRoot.innerHTML = `
-    <div class="screen screen--center">
-      <p style="font-size:1.1rem; max-width:320px;">
-        As-tu bien pensé à renouveler ton adhésion à Rando's Lorraine ?
-      </p>
-      <div class="btn-row">
-        <button class="btn btn--ghost" id="btn-non">Non, pas encore</button>
-        <button class="btn btn--primary" id="btn-oui">Oui, c'est fait</button>
-      </div>
-    </div>
-  `;
-
-  $("#btn-non").addEventListener("click", () => showModal("À très bientôt !"));
-
-  $("#btn-oui").addEventListener("click", () => {
-    saveUser({ prenom, nom, dateInscription: new Date().toISOString() });
-    navigate("accueil", { prenom, nom });
-  });
-}
-
-/* -------------------------------------------------------
-   🏠 Accueil
-------------------------------------------------------- */
-function renderAccueil(prenom, nom) {
-  const qrPreview = document.createElement("div");
-  renderQr(qrPreview, qrData(prenom, nom), 80);
-
-  const commune = prochaineRando?.lieu?.commune ?? "Lieu inconnu";
-  const date = prochaineRando?.date ?? "Date inconnue";
-
-  const randoPreview = prochaineRando
-    ? `<span>${escapeHtml(commune)}<br>${escapeHtml(date)}</span>`
-    : `<span class="loading-text">Chargement…</span>`;
-
-  screenRoot.innerHTML = `
-    <div class="screen">
-      <div class="card-list">
-
-        <button class="home-card" data-go="carte">
-          <span class="home-card__title">Bonjour ${escapeHtml(prenom)}</span>
-          <span class="home-card__preview" id="qr-preview"></span>
-        </button>
-
-        <button class="home-card" data-go="rando">
-          <span class="home-card__title">Prochaine rando</span>
-          <span class="home-card__preview">${randoPreview}</span>
-        </button>
-
-        <button class="home-card" data-go="avant-depart">
-          <span class="home-card__title">Avant le départ</span>
-        </button>
-
-        <button class="home-card" data-go="accident">
-          <span class="home-card__title">En cas d'accident</span>
-        </button>
-
-        <button class="home-card" data-go="tarifs">
-          <span class="home-card__title">Tout sur les tarifs</span>
-        </button>
-
-        <button class="home-card" data-go="lien-internet">
-          <span class="home-card__title">Lien internet</span>
-        </button>
-
-      </div>
-    </div>
-  `;
-
-  $("#qr-preview").appendChild(qrPreview.firstChild);
-
-  screenRoot.querySelectorAll(".home-card").forEach((btn) => {
-    btn.addEventListener("click", () => {
-      const go = btn.dataset.go;
-
-      if (go === "carte") {
-        navigate("carte", {
-          prenom,
-          nom,
-          title: "Ma carte",
-          showBack: true,
-          onBack: () => navigate("accueil", { prenom, nom }),
-        });
-
-      } else if (go === "rando") {
-        navigate("rando", {
-          rando: prochaineRando,
-          title: "Prochaine rando",
-          showBack: true,
-          onBack: () => navigate("accueil", { prenom, nom }),
-        });
-
-      } else {
-        navigate("info", {
-          infoKey: go,
-          title: infoContent?.[go]?.title ?? go,
-          showBack: true,
-          onBack: () => navigate("accueil", { prenom, nom }),
-        });
-      }
-    });
-  });
-
-  if (!prochaineRando) {
-    fetchRandoDetails()
-      .then((data) => {
-        prochaineRando = data;
-        if (currentScreen === "accueil") renderAccueil(prenom, nom);
-      })
-      .catch(() => {
-        const card = screenRoot.querySelector('[data-go="rando"] .home-card__preview');
-        if (card) card.innerHTML = `<span class="loading-text">Indisponible</span>`;
-      });
-  }
 }
 
 /* -------------------------------------------------------
@@ -381,8 +262,17 @@ function renderRandoDetails(r) {
     const tel1 = rando.telephones?.[1] ?? "";
 
     const commune = rando.lieu?.commune ?? "Lieu inconnu";
-    const accueil = rando.lieu?.heureAccueil ?? "Heure inconnue";
-    const depart = rando.lieu?.heureDepart ?? "Heure inconnue";
+
+    // ⭐ Correction robuste : heures dans lieu OU à la racine
+    const accueil =
+      rando.lieu?.heureAccueil ||
+      rando.heureAccueil ||
+      "Heure inconnue";
+
+    const depart =
+      rando.lieu?.heureDepart ||
+      rando.heureDepart ||
+      "Heure inconnue";
 
     screenRoot.innerHTML = `
       <div class="screen">
@@ -420,53 +310,6 @@ function renderRandoDetails(r) {
         `;
       });
   }
-}
-
-/* -------------------------------------------------------
-   🔥 Fonction : ouvrir l’app si installée, sinon store
-------------------------------------------------------- */
-function openAppOrStore(scheme, storeAndroid, storeIOS) {
-  const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
-
-  if (!scheme) {
-    window.location.href = isIOS ? storeIOS : storeAndroid;
-    return;
-  }
-
-  const now = Date.now();
-  const iframe = document.createElement("iframe");
-  iframe.style.display = "none";
-  iframe.src = scheme;
-  document.body.appendChild(iframe);
-
-  setTimeout(() => {
-    const elapsed = Date.now() - now;
-
-    if (elapsed < 1500) {
-      window.location.href = isIOS ? storeIOS : storeAndroid;
-    }
-
-    iframe.remove();
-  }, 1200);
-}
-
-/* -------------------------------------------------------
-   🔥 Modal simple
-------------------------------------------------------- */
-function showModal(title, onClose) {
-  const overlay = document.createElement("div");
-  overlay.className = "modal-overlay";
-  overlay.innerHTML = `
-    <div class="modal" role="dialog" aria-modal="true">
-      <h2>${escapeHtml(title)}</h2>
-      <button type="button" class="btn btn--primary">OK</button>
-    </div>
-  `;
-  document.body.appendChild(overlay);
-  overlay.querySelector("button").addEventListener("click", () => {
-    overlay.remove();
-    onClose?.();
-  });
 }
 
 /* -------------------------------------------------------
@@ -592,14 +435,8 @@ async function checkUserAndStart() {
    🔧 Init
 ------------------------------------------------------- */
 async function init() {
-  if ("serviceWorker" in navigator) {
-    try {
-      await //navigator.serviceWorker.register("./sw.js");
-         }
-    } catch {
-      /* optionnel */
-    }
-  }
+  // Service worker désactivé (bloc 1)
+  // navigator.serviceWorker.register("./sw.js");
 
   appBarBack.addEventListener("click", () => backHandler?.());
 
