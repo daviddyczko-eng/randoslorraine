@@ -19,31 +19,26 @@ location.reload();
 ## Structure
 
 ```
-css
+site
 
-    styles.css
-
-data
-
-    info.json
-
-icons
-
-    RL-logo.svg
-    RL-symb.png
-
-js
-
-    app.js
-    qrcode.min.js
-    storage.js
+    css
+        styles.css
+    data
+        info.json
+    icons
+        RL-logo.png
+        RL-symb.png
+    js
+        app.js
+        qrcode.min.js
+        storage.js
+    index.html
+    manifest.webmanifest
+    sw.js
 
 .assetsignore
 README.md
 _worker.js
-index.html
-manifest.webmanifest
-sw.js
 wrangler.toml
 ```
 
