@@ -469,6 +469,25 @@ function openAppOrStore(scheme, storeAndroid, storeIOS) {
 ------------------------------------------------------- */
 function renderInfoPage(key) {
   const page = infoContent?.[key];
+
+  // ⭐ Bloc spécial pour "Lien internet"
+  if (key === "lien-internet") {
+    const lienInternet = infoContent["lien-internet"];
+
+    if (lienInternet && lienInternet.links && lienInternet.links.length > 0) {
+      const url = lienInternet.links[0].url;
+
+      screenRoot.innerHTML = `
+        <div class="screen">
+          <div class="section clickable-section" onclick="window.open('${url}', '_blank')">
+            <h3>${escapeHtml(lienInternet.title)}</h3>
+          </div>
+        </div>
+      `;
+      return; // ⭐ On arrête ici : on n'affiche pas les sections classiques
+    }
+  }
+
   if (!page) {
     screenRoot.innerHTML = `<div class="screen"><p>Contenu indisponible.</p></div>`;
     return;
