@@ -80,7 +80,7 @@ async function fetchRandoDetails() {
 
   try {
     const res = await fetch("https://randoslorraine.pages.dev/api/rando", {
-      cache: "no-store"
+      cache: "no-store",
     });
 
     if (!res.ok) throw new Error("API indisponible");
@@ -88,7 +88,6 @@ async function fetchRandoDetails() {
     const data = await res.json();
     localStorage.setItem("prochaineRando", JSON.stringify(data));
     return data;
-
   } catch {
     const saved = localStorage.getItem("prochaineRando");
     if (saved) return JSON.parse(saved);
@@ -104,13 +103,20 @@ function navigate(screen, options = {}) {
   showMain(options.showBack ?? false, options.title ?? "Rando's Lorraine", options.onBack);
 
   switch (screen) {
-    case "inscription": return renderInscription();
-    case "cotisation": return renderCotisation(options.prenom, options.nom, options.dateInscription);
-    case "accueil": return renderAccueil(options.prenom, options.nom);
-    case "carte": return renderCarte(options.prenom, options.nom);
-    case "correction": return renderCorrection(options.prenom, options.nom);
-    case "rando": return renderRandoDetails(options.rando);
-    case "info": return renderInfoPage(options.infoKey);
+    case "inscription":
+      return renderInscription();
+    case "cotisation":
+      return renderCotisation(options.prenom, options.nom, options.dateInscription);
+    case "accueil":
+      return renderAccueil(options.prenom, options.nom);
+    case "carte":
+      return renderCarte(options.prenom, options.nom);
+    case "correction":
+      return renderCorrection(options.prenom, options.nom);
+    case "rando":
+      return renderRandoDetails(options.rando);
+    case "info":
+      return renderInfoPage(options.infoKey);
   }
 }
 
@@ -148,7 +154,7 @@ function renderInscription() {
     const nom = formatName($("#nom").value);
     const dateInscription = new Date().toISOString();
     saveUser({ prenom, nom, dateInscription });
-    navigate("accueil", { prenom, nom, title: "Rando's Lorraine" });
+    navigate("accueil", { prenom, nom });
   });
 }
 
@@ -172,7 +178,7 @@ function renderCotisation(prenom, nom, dateInscription) {
 
   $("#btn-oui").addEventListener("click", () => {
     saveUser({ prenom, nom, dateInscription: new Date().toISOString() });
-    navigate("accueil", { prenom, nom, title: "Rando's Lorraine" });
+    navigate("accueil", { prenom, nom });
   });
 }
 
@@ -183,8 +189,11 @@ function renderAccueil(prenom, nom) {
   const qrPreview = document.createElement("div");
   renderQr(qrPreview, qrData(prenom, nom), 80);
 
+  const commune = prochaineRando?.lieu?.commune ?? "Lieu inconnu";
+  const date = prochaineRando?.date ?? "Date inconnue";
+
   const randoPreview = prochaineRando
-    ? `<span>${escapeHtml(prochaineRando.lieu.commune)}<br>${escapeHtml(prochaineRando.date)}</span>`
+    ? `<span>${escapeHtml(commune)}<br>${escapeHtml(date)}</span>`
     : `<span class="loading-text">Chargement…</span>`;
 
   screenRoot.innerHTML = `
@@ -233,7 +242,7 @@ function renderAccueil(prenom, nom) {
           nom,
           title: "Ma carte",
           showBack: true,
-          onBack: () => navigate("accueil", { prenom, nom, title: "Rando's Lorraine" }),
+          onBack: () => navigate("accueil", { prenom, nom }),
         });
 
       } else if (go === "rando") {
@@ -241,7 +250,7 @@ function renderAccueil(prenom, nom) {
           rando: prochaineRando,
           title: "Prochaine rando",
           showBack: true,
-          onBack: () => navigate("accueil", { prenom, nom, title: "Rando's Lorraine" }),
+          onBack: () => navigate("accueil", { prenom, nom }),
         });
 
       } else {
@@ -249,7 +258,7 @@ function renderAccueil(prenom, nom) {
           infoKey: go,
           title: infoContent?.[go]?.title ?? go,
           showBack: true,
-          onBack: () => navigate("accueil", { prenom, nom, title: "Rando's Lorraine" }),
+          onBack: () => navigate("accueil", { prenom, nom }),
         });
       }
     });
@@ -288,7 +297,7 @@ function renderCarte(prenom, nom) {
       nom,
       title: "Corriger",
       showBack: true,
-      onBack: () => navigate("carte", { prenom, nom, title: "Ma carte", showBack: true }),
+      onBack: () => navigate("carte", { prenom, nom }),
     });
   });
 }
@@ -330,7 +339,7 @@ function renderCorrection(prenom, nom) {
       nom: newNom,
       title: "Ma carte",
       showBack: true,
-      onBack: () => navigate("accueil", { prenom: newPrenom, nom: newNom, title: "Rando's Lorraine" }),
+      onBack: () => navigate("accueil", { prenom: newPrenom, nom: newNom }),
     });
   });
 }
@@ -352,13 +361,17 @@ function renderRandoDetails(r) {
     const tel0 = rando.telephones?.[0] ?? "";
     const tel1 = rando.telephones?.[1] ?? "";
 
+    const commune = rando.lieu?.commune ?? "Lieu inconnu";
+    const accueil = rando.lieu?.heureAccueil ?? "Heure inconnue";
+    const depart = rando.lieu?.heureDepart ?? "Heure inconnue";
+
     screenRoot.innerHTML = `
       <div class="screen">
         <div class="detail-list">
           <div class="detail-row"><span>Date</span><span>${escapeHtml(rando.date)}</span></div>
-          <div class="detail-row"><span>Lieu</span><span>${escapeHtml(rando.lieu.commune)}</span></div>
-          <div class="detail-row"><span>Heure d'accueil</span><span>${escapeHtml(rando.heureAccueil)}</span></div>
-          <div class="detail-row"><span>Heure de départ</span><span>${escapeHtml(rando.heureDepart)}</span></div>
+          <div class="detail-row"><span>Lieu</span><span>${escapeHtml(commune)}</span></div>
+          <div class="detail-row"><span>Heure d'accueil</span><span>${escapeHtml(accueil)}</span></div>
+          <div class="detail-row"><span>Heure de départ</span><span>${escapeHtml(depart)}</span></div>
           <div class="detail-row"><span>Contact(s)</span><span>${escapeHtml(tel0)}</span></div>
           ${tel1 ? `<div class="detail-row"><span></span><span>${escapeHtml(tel1)}</span></div>` : ""}
         </div>
@@ -441,10 +454,9 @@ function showModal(title, onClose) {
    🌐 Page d'information
 ------------------------------------------------------- */
 function renderInfoPage(key) {
-  // bloc spécial "Lien internet"
   if (key === "lien-internet") {
     const lienInternet = infoContent["lien-internet"];
-    if (lienInternet && lienInternet.links && lienInternet.links.length > 0) {
+    if (lienInternet?.links?.length > 0) {
       const url = lienInternet.links[0].url;
       screenRoot.innerHTML = `
         <div class="screen">
