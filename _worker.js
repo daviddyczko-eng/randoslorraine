@@ -1,20 +1,23 @@
 export default {
-  async fetch(request) {
+  async fetch(request, env, ctx) {
     const url = new URL(request.url);
 
-    // Debug HTML Cloudflare
+    // 1️⃣ Route de debug HTML
     if (url.pathname === "/api/debug") {
       const resp = await fetch("https://www.randoslorraine.org/randonnees-a-venir");
       const html = await resp.text();
-      return new Response(html, { headers: { "content-type": "text/plain; charset=utf-8" } });
+      return new Response(html, {
+        headers: { "content-type": "text/plain; charset=utf-8" }
+      });
     }
 
-    // API principale
+    // 2️⃣ Route API principale
     if (url.pathname === "/api/rando") {
       return await getFullRando();
     }
 
-    return new Response("Worker randoslorraine actif");
+    // 3️⃣ Sinon → servir le site statique Cloudflare Pages
+    return env.ASSETS.fetch(request);
   }
 };
 
@@ -75,9 +78,7 @@ async function getFullRando() {
   const fiche = await page.text();
 
   // 5️⃣ Extraire les champs
-
   const title = extract(fiche, /<h1[^>]*>([^<]+)<\/h1>/);
-
   const date = extract(fiche, /field-name-field-rando-date[^>]*>[\s\S]*?<span[^>]*>([^<]+)<\/span>/);
 
   const commune = extract(fiche, /field-name-field-rando-lieu-commune[^>]*>\s*([^<]+)</);
