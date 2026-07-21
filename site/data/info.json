@@ -135,16 +135,11 @@
 
   "lien-internet": {
     "title": "Lien internet",
-    "sections": [
-      {
-        "heading": "Site officiel",
         "links": [
           {
-            "label": "Rando's Lorraine",
             "url": "https://randoslorraine.org"
           }
         ]
       }
-    ]
   }
 }
