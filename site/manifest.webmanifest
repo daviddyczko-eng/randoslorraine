@@ -13,13 +13,13 @@
     {
       "src": "icons/RL-logo.png",
       "sizes": "any",
-      "type": "image/svg+xml",
+      "type": "image/png+xml",
       "purpose": "any"
     },
     {
       "src": "icons/RL-logo.png",
       "sizes": "any",
-      "type": "image/svg+xml",
+      "type": "image/png+xml",
       "purpose": "maskable"
     }
   ]
