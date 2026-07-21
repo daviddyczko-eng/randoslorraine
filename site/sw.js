@@ -1,4 +1,4 @@
-const CACHE_NAME = "randos-lorraine-v2";
+const CACHE_NAME = "randos-lorraine";
 
 const ASSETS = [
   "./",
