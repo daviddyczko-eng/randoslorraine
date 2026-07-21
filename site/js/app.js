@@ -395,6 +395,9 @@ function renderRandoDetails() {
     const [lat, lng] = r.gps.split(",").map((v) => v.trim());
     const mapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`;
 
+    const tel0 = r.telephones?.[0] ?? "";
+    const tel1 = r.telephones?.[1] ?? "";
+
     screenRoot.innerHTML = `
       <div class="screen">
         <div class="detail-list">
@@ -402,13 +405,14 @@ function renderRandoDetails() {
           <div class="detail-row"><span class="detail-row__label">Lieu</span><span class="detail-row__value">${escapeHtml(r.lieu.commune)}</span></div>
           <div class="detail-row"><span class="detail-row__label">Heure d'accueil</span><span class="detail-row__value">${escapeHtml(r.heureAccueil)}</span></div>
           <div class="detail-row"><span class="detail-row__label">Heure de départ</span><span class="detail-row__value">${escapeHtml(r.heureDepart)}</span></div>
-          <div class="detail-row"><span class="detail-row__label">Contact(s)</span><span class="detail-row__value">${escapeHtml(r.telephones.0)}</span></div>
-          <div class="detail-row"><span class="detail-row__label"></span><span class="detail-row__value">${escapeHtml(r.telephones.1)}</span></div>
+          <div class="detail-row"><span class="detail-row__label">Contact(s)</span><span class="detail-row__value">${escapeHtml(tel0)}</span></div>
+          ${tel1 ? `<div class="detail-row"><span class="detail-row__label"></span><span class="detail-row__value">${escapeHtml(tel1)}</span></div>` : ""}
         </div>
         <div class="btn-row">
           <a class="btn btn--primary" href="${mapsUrl}" target="_blank" rel="noopener">M'y rendre</a>
-          <a class="btn btn--secondary" href="tel:${r.telephones.0.replace(/\s/g, "")}">Appeler</a>
-          <a class="btn btn--secondary" href="tel:${r.telephones.1.replace(/\s/g, "")}">Appeler</a>
+          ${tel0 ? `<a class="btn btn--secondary" href="tel:${tel0.replace(/\s/g, "")}">Appeler</a>` : ""}
+          ${tel1 ? `<a class="btn btn--secondary" href="tel:${tel1.replace(/\s/g, "")}">Appeler</a>` : ""}
+        </div>
       </div>
     `;
   };
@@ -430,6 +434,7 @@ function renderRandoDetails() {
       });
   }
 }
+
 /* -------------------------------------------------------
    🔥 Fonction : ouvrir l’app si installée, sinon store
 ------------------------------------------------------- */
