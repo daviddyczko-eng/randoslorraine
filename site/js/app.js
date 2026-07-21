@@ -217,7 +217,7 @@ function renderAccueil(prenom, nom) {
   renderQr(qrPreview, qrData(prenom, nom), 80);
 
   const randoPreview = prochaineRando
-    ? `<span>${escapeHtml(prochaineRando.lieu.commune)}<br>${escapeHtml(prochaineRando.date)}</span>`
+    ? `<span>${escapeHtml(prochaineRando.commune)}<br>${escapeHtml(prochaineRando.date)}</span>`
     : `<span class="loading-text">Chargement…</span>`;
 
   screenRoot.innerHTML = `
@@ -402,7 +402,7 @@ function renderRandoDetails() {
       <div class="screen">
         <div class="detail-list">
           <div class="detail-row"><span class="detail-row__label">Date</span><span class="detail-row__value">${escapeHtml(r.date)}</span></div>
-          <div class="detail-row"><span class="detail-row__label">Lieu</span><span class="detail-row__value">${escapeHtml(r.lieu.commune)}</span></div>
+          <div class="detail-row"><span class="detail-row__label">Lieu</span><span class="detail-row__value">${escapeHtml(r.commune)}</span></div>
           <div class="detail-row"><span class="detail-row__label">Heure d'accueil</span><span class="detail-row__value">${escapeHtml(r.heureAccueil)}</span></div>
           <div class="detail-row"><span class="detail-row__label">Heure de départ</span><span class="detail-row__value">${escapeHtml(r.heureDepart)}</span></div>
           <div class="detail-row"><span class="detail-row__label">Contact(s)</span><span class="detail-row__value">${escapeHtml(tel0)}</span></div>
