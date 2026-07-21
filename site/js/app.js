@@ -60,7 +60,16 @@ function renderQr(container, text, size = 100) {
 }
 
 async function fetchRandoDetails() {
-  // 1. Essayer de charger depuis Internet
+  // 1. Si le navigateur est hors-ligne → ne pas faire de fetch
+  if (!navigator.onLine) {
+    const saved = localStorage.getItem("prochaineRando");
+    if (saved) {
+      return JSON.parse(saved);
+    }
+    throw new Error("Aucune donnée disponible hors-ligne");
+  }
+
+  // 2. Si le réseau est disponible → fetch API
   try {
     const res = await fetch("https://randoslorraine.pages.dev/api/rando", {
       cache: "no-store"
@@ -70,24 +79,21 @@ async function fetchRandoDetails() {
 
     const data = await res.json();
 
-    // 2. Sauvegarder dans la mémoire du téléphone
+    // 3. Mise à jour locale
     localStorage.setItem("prochaineRando", JSON.stringify(data));
 
     return data;
 
   } catch (err) {
-    // 3. Mode hors-ligne : charger les données sauvegardées
+    // 4. Si fetch échoue malgré le réseau → fallback local
     const saved = localStorage.getItem("prochaineRando");
-
     if (saved) {
       return JSON.parse(saved);
     }
 
-    // 4. Aucun réseau + aucune donnée locale
-    throw new Error("Aucune donnée disponible hors-ligne");
+    throw new Error("Aucune donnée disponible");
   }
 }
-
 
 async function sendEmail() {
   const email = "tresorier@randoslorraine.org";
