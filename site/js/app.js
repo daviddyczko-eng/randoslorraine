@@ -14,6 +14,9 @@ let backHandler = null;
 let prochaineRando = null;
 let infoContent = null;
 
+/* -------------------------------------------------------
+   🔤 Formatage du nom
+------------------------------------------------------- */
 const PARTICLES = ["de", "la", "du", "le", "les", "des", "d'", "l'", "von"];
 
 function formatName(name) {
@@ -35,6 +38,9 @@ function escapeHtml(str) {
     .replace(/"/g, "&quot;");
 }
 
+/* -------------------------------------------------------
+   🖥️ Gestion des écrans
+------------------------------------------------------- */
 function showMain(showBack, title, onBack) {
   splashEl.classList.add("hidden");
   mainEl.classList.remove("hidden");
@@ -44,6 +50,9 @@ function showMain(showBack, title, onBack) {
   backHandler = onBack || null;
 }
 
+/* -------------------------------------------------------
+   🔳 QR Code
+------------------------------------------------------- */
 function renderQr(container, text, size = 100) {
   container.innerHTML = "";
   const box = document.createElement("div");
@@ -59,17 +68,16 @@ function renderQr(container, text, size = 100) {
   });
 }
 
+/* -------------------------------------------------------
+   🌐 API Rando
+------------------------------------------------------- */
 async function fetchRandoDetails() {
-  // 1. Si le navigateur est hors-ligne → ne pas faire de fetch
   if (!navigator.onLine) {
     const saved = localStorage.getItem("prochaineRando");
-    if (saved) {
-      return JSON.parse(saved);
-    }
+    if (saved) return JSON.parse(saved);
     throw new Error("Aucune donnée disponible hors-ligne");
   }
 
-  // 2. Si le réseau est disponible → fetch API
   try {
     const res = await fetch("https://randoslorraine.pages.dev/api/rando", {
       cache: "no-store"
@@ -78,76 +86,37 @@ async function fetchRandoDetails() {
     if (!res.ok) throw new Error("API indisponible");
 
     const data = await res.json();
-
-    // 3. Mise à jour locale
     localStorage.setItem("prochaineRando", JSON.stringify(data));
-
     return data;
 
-  } catch (err) {
-    // 4. Si fetch échoue malgré le réseau → fallback local
+  } catch {
     const saved = localStorage.getItem("prochaineRando");
-    if (saved) {
-      return JSON.parse(saved);
-    }
-
+    if (saved) return JSON.parse(saved);
     throw new Error("Aucune donnée disponible");
   }
 }
 
-async function sendEmail() {
-  const email = "tresorier@randoslorraine.org";
-  const subject = "Liste des participant.e.s";
-  const body = "Voici la liste des participant.e.s : ";
-  const url = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-  window.location.href = url;
-}
-
-function showModal(title, onClose) {
-  const overlay = document.createElement("div");
-  overlay.className = "modal-overlay";
-  overlay.innerHTML = `
-    <div class="modal" role="dialog" aria-modal="true">
-      <h2>${escapeHtml(title)}</h2>
-      <button type="button" class="btn btn--primary">OK</button>
-    </div>
-  `;
-  document.body.appendChild(overlay);
-  overlay.querySelector("button").addEventListener("click", () => {
-    overlay.remove();
-    onClose?.();
-  });
-}
-
+/* -------------------------------------------------------
+   📄 Navigation
+------------------------------------------------------- */
 function navigate(screen, options = {}) {
   currentScreen = screen;
   showMain(options.showBack ?? false, options.title ?? "Rando's Lorraine", options.onBack);
 
   switch (screen) {
-    case "inscription":
-      renderInscription();
-      break;
-    case "cotisation":
-      renderCotisation(options.prenom, options.nom, options.dateInscription);
-      break;
-    case "accueil":
-      renderAccueil(options.prenom, options.nom);
-      break;
-    case "carte":
-      renderCarte(options.prenom, options.nom);
-      break;
-    case "correction":
-      renderCorrection(options.prenom, options.nom);
-      break;
-    case "rando":
-      renderRandoDetails();
-      break;
-    case "info":
-      renderInfoPage(options.infoKey);
-      break;
+    case "inscription": return renderInscription();
+    case "cotisation": return renderCotisation(options.prenom, options.nom, options.dateInscription);
+    case "accueil": return renderAccueil(options.prenom, options.nom);
+    case "carte": return renderCarte(options.prenom, options.nom);
+    case "correction": return renderCorrection(options.prenom, options.nom);
+    case "rando": return renderRandoDetails(options.rando);
+    case "info": return renderInfoPage(options.infoKey);
   }
 }
 
+/* -------------------------------------------------------
+   📝 Inscription
+------------------------------------------------------- */
 function renderInscription() {
   screenRoot.innerHTML = `
     <div class="screen">
@@ -157,11 +126,11 @@ function renderInscription() {
       <form id="form-inscription" class="form">
         <div class="field">
           <label for="prenom">Prénom</label>
-          <input id="prenom" name="prenom" required autocomplete="given-name">
+          <input id="prenom" required autocomplete="given-name">
         </div>
         <div class="field">
           <label for="nom">Nom</label>
-          <input id="nom" name="nom" required autocomplete="family-name">
+          <input id="nom" required autocomplete="family-name">
         </div>
         <div class="btn-row">
           <button type="button" class="btn btn--ghost" id="btn-quit">Quitter l'application</button>
@@ -171,9 +140,7 @@ function renderInscription() {
     </div>
   `;
 
-  $("#btn-quit").addEventListener("click", () => {
-    alert("Fermez l'onglet ou l'application pour quitter.");
-  });
+  $("#btn-quit").addEventListener("click", () => alert("Fermez l'onglet pour quitter."));
 
   $("#form-inscription").addEventListener("submit", (e) => {
     e.preventDefault();
@@ -181,10 +148,13 @@ function renderInscription() {
     const nom = formatName($("#nom").value);
     const dateInscription = new Date().toISOString();
     saveUser({ prenom, nom, dateInscription });
-    navigate("accueil", { prenom, nom, title: "Rando's Lorraine" });
+    navigate("accueil", { prenom, nom });
   });
 }
 
+/* -------------------------------------------------------
+   💳 Cotisation
+------------------------------------------------------- */
 function renderCotisation(prenom, nom, dateInscription) {
   screenRoot.innerHTML = `
     <div class="screen screen--center">
@@ -192,26 +162,23 @@ function renderCotisation(prenom, nom, dateInscription) {
         As-tu bien pensé à renouveler ton adhésion à Rando's Lorraine ?
       </p>
       <div class="btn-row">
-        <button type="button" class="btn btn--ghost" id="btn-non">Non, pas encore</button>
-        <button type="button" class="btn btn--primary" id="btn-oui">Oui, c'est fait</button>
+        <button class="btn btn--ghost" id="btn-non">Non, pas encore</button>
+        <button class="btn btn--primary" id="btn-oui">Oui, c'est fait</button>
       </div>
     </div>
   `;
 
-  $("#btn-non").addEventListener("click", () => {
-    showModal("À très bientôt !");
-  });
+  $("#btn-non").addEventListener("click", () => showModal("À très bientôt !"));
 
   $("#btn-oui").addEventListener("click", () => {
-    saveUser({
-      prenom,
-      nom,
-      dateInscription: new Date().toISOString(),
-    });
-    navigate("accueil", { prenom, nom, title: "Rando's Lorraine" });
+    saveUser({ prenom, nom, dateInscription: new Date().toISOString() });
+    navigate("accueil", { prenom, nom });
   });
 }
 
+/* -------------------------------------------------------
+   🏠 Accueil
+------------------------------------------------------- */
 function renderAccueil(prenom, nom) {
   const qrPreview = document.createElement("div");
   renderQr(qrPreview, qrData(prenom, nom), 80);
@@ -224,34 +191,30 @@ function renderAccueil(prenom, nom) {
     <div class="screen">
       <div class="card-list">
 
-        <button type="button" class="home-card" data-go="carte">
+        <button class="home-card" data-go="carte">
           <span class="home-card__title">Bonjour ${escapeHtml(prenom)}</span>
           <span class="home-card__preview" id="qr-preview"></span>
         </button>
 
-        <button type="button" class="home-card" data-go="rando">
+        <button class="home-card" data-go="rando">
           <span class="home-card__title">Prochaine rando</span>
           <span class="home-card__preview">${randoPreview}</span>
         </button>
 
-        <button type="button" class="home-card" data-go="avant-depart">
+        <button class="home-card" data-go="avant-depart">
           <span class="home-card__title">Avant le départ</span>
-          <span class="home-card__preview"></span>
         </button>
 
-        <button type="button" class="home-card" data-go="accident">
+        <button class="home-card" data-go="accident">
           <span class="home-card__title">En cas d'accident</span>
-          <span class="home-card__preview"></span>
         </button>
 
-        <button type="button" class="home-card" data-go="tarifs">
+        <button class="home-card" data-go="tarifs">
           <span class="home-card__title">Tout sur les tarifs</span>
-          <span class="home-card__preview"></span>
         </button>
 
-        <button type="button" class="home-card" data-go="lien-internet">
+        <button class="home-card" data-go="lien-internet">
           <span class="home-card__title">Lien internet</span>
-          <span class="home-card__preview"></span>
         </button>
 
       </div>
@@ -270,7 +233,7 @@ function renderAccueil(prenom, nom) {
           nom,
           title: "Ma carte",
           showBack: true,
-          onBack: () => navigate("accueil", { prenom, nom, title: "Rando's Lorraine" }),
+          onBack: () => navigate("accueil", { prenom, nom })
         });
 
       } else if (go === "rando") {
@@ -278,7 +241,7 @@ function renderAccueil(prenom, nom) {
           rando: prochaineRando,
           title: "Prochaine rando",
           showBack: true,
-          onBack: () => navigate("accueil", { prenom, nom, title: "Rando's Lorraine" }),
+          onBack: () => navigate("accueil", { prenom, nom })
         });
 
       } else {
@@ -286,7 +249,7 @@ function renderAccueil(prenom, nom) {
           infoKey: go,
           title: infoContent?.[go]?.title ?? go,
           showBack: true,
-          onBack: () => navigate("accueil", { prenom, nom, title: "Rando's Lorraine" }),
+          onBack: () => navigate("accueil", { prenom, nom })
         });
       }
     });
@@ -305,12 +268,15 @@ function renderAccueil(prenom, nom) {
   }
 }
 
+/* -------------------------------------------------------
+   🗺️ Carte
+------------------------------------------------------- */
 function renderCarte(prenom, nom) {
   screenRoot.innerHTML = `
     <div class="screen screen--center">
       <div id="qr-large"></div>
       <p class="carte-name">${escapeHtml(prenom)} ${escapeHtml(nom)}</p>
-      <button type="button" class="btn btn--secondary" id="btn-corriger">Corriger</button>
+      <button class="btn btn--secondary" id="btn-corriger">Corriger</button>
     </div>
   `;
 
@@ -322,25 +288,14 @@ function renderCarte(prenom, nom) {
       nom,
       title: "Corriger",
       showBack: true,
-      onBack: () =>
-        navigate("carte", {
-          prenom,
-          nom,
-          title: "Ma carte",
-          showBack: true,
-          onBack: () => {
-            const user = getUser();
-            navigate("accueil", {
-              prenom: user.prenom,
-              nom: user.nom,
-              title: "Rando's Lorraine",
-            });
-          },
-        }),
+      onBack: () => navigate("carte", { prenom, nom })
     });
   });
 }
 
+/* -------------------------------------------------------
+   ✏️ Correction
+------------------------------------------------------- */
 function renderCorrection(prenom, nom) {
   screenRoot.innerHTML = `
     <div class="screen">
@@ -353,7 +308,7 @@ function renderCorrection(prenom, nom) {
           <label for="nom">Nom</label>
           <input id="nom" value="${escapeHtml(nom)}" required>
         </div>
-        <button type="submit" class="btn btn--primary btn--block">Valider</button>
+        <button class="btn btn--primary btn--block">Valider</button>
       </form>
     </div>
   `;
@@ -363,27 +318,26 @@ function renderCorrection(prenom, nom) {
     const newPrenom = formatName($("#prenom").value);
     const newNom = formatName($("#nom").value);
     const user = getUser();
+
     saveUser({
       prenom: newPrenom,
       nom: newNom,
       dateInscription: user?.dateInscription ?? new Date().toISOString(),
     });
+
     navigate("carte", {
       prenom: newPrenom,
       nom: newNom,
       title: "Ma carte",
       showBack: true,
-      onBack: () => {
-        navigate("accueil", {
-          prenom: newPrenom,
-          nom: newNom,
-          title: "Rando's Lorraine",
-        });
-      },
+      onBack: () => navigate("accueil", { prenom: newPrenom, nom: newNom })
     });
   });
 }
 
+/* -------------------------------------------------------
+   🥾 Détails de la rando
+------------------------------------------------------- */
 function renderRandoDetails(r) {
   screenRoot.innerHTML = `
     <div class="screen screen--center">
@@ -401,15 +355,16 @@ function renderRandoDetails(r) {
     screenRoot.innerHTML = `
       <div class="screen">
         <div class="detail-list">
-          <div class="detail-row"><span class="detail-row__label">Date</span><span class="detail-row__value">${escapeHtml(rando.date)}</span></div>
-          <div class="detail-row"><span class="detail-row__label">Lieu</span><span class="detail-row__value">${escapeHtml(rando.commune)}</span></div>
-          <div class="detail-row"><span class="detail-row__label">Heure d'accueil</span><span class="detail-row__value">${escapeHtml(rando.heureAccueil)}</span></div>
-          <div class="detail-row"><span class="detail-row__label">Heure de départ</span><span class="detail-row__value">${escapeHtml(rando.heureDepart)}</span></div>
-          <div class="detail-row"><span class="detail-row__label">Contact(s)</span><span class="detail-row__value">${escapeHtml(tel0)}</span></div>
-          ${tel1 ? `<div class="detail-row"><span class="detail-row__label"></span><span class="detail-row__value">${escapeHtml(tel1)}</span></div>` : ""}
+          <div class="detail-row"><span>Date</span><span>${escapeHtml(rando.date)}</span></div>
+          <div class="detail-row"><span>Lieu</span><span>${escapeHtml(rando.lieu.commune)}</span></div>
+          <div class="detail-row"><span>Heure d'accueil</span><span>${escapeHtml(rando.heureAccueil)}</span></div>
+          <div class="detail-row"><span>Heure de départ</span><span>${escapeHtml(rando.heureDepart)}</span></div>
+          <div class="detail-row"><span>Contact(s)</span><span>${escapeHtml(tel0)}</span></div>
+          ${tel1 ? `<div class="detail-row"><span></span><span>${escapeHtml(tel1)}</span></div>` : ""}
         </div>
+
         <div class="btn-row">
-          <a class="btn btn--primary" href="${mapsUrl}" target="_blank" rel="noopener">M'y rendre</a>
+          <a class="btn btn--primary" href="${mapsUrl}" target="_blank">M'y rendre</a>
           ${tel0 ? `<a class="btn btn--secondary" href="tel:${tel0.replace(/\s/g, "")}">Appeler</a>` : ""}
           ${tel1 ? `<a class="btn btn--secondary" href="tel:${tel1.replace(/\s/g, "")}">Appeler</a>` : ""}
         </div>
@@ -436,47 +391,13 @@ function renderRandoDetails(r) {
 }
 
 /* -------------------------------------------------------
-   🔥 Fonction : ouvrir l’app si installée, sinon store
-------------------------------------------------------- */
-function openAppOrStore(scheme, storeAndroid, storeIOS) {
-  const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
-
-  // Si aucun scheme → on va directement au store
-  if (!scheme) {
-    window.location.href = isIOS ? storeIOS : storeAndroid;
-    return;
-  }
-
-  const now = Date.now();
-  const iframe = document.createElement("iframe");
-  iframe.style.display = "none";
-  iframe.src = scheme;
-  document.body.appendChild(iframe);
-
-  setTimeout(() => {
-    const elapsed = Date.now() - now;
-
-    if (elapsed < 1500) {
-      window.location.href = isIOS ? storeIOS : storeAndroid;
-    }
-
-    iframe.remove();
-  }, 1200);
-}
-
-/* -------------------------------------------------------
-   🔥 Page d'information
+   🌐 Page d'information
 ------------------------------------------------------- */
 function renderInfoPage(key) {
-  const page = infoContent?.[key];
-
-  // ⭐ Bloc spécial pour "Lien internet"
   if (key === "lien-internet") {
     const lienInternet = infoContent["lien-internet"];
-
-    if (lienInternet && lienInternet.links && lienInternet.links.length > 0) {
+    if (lienInternet?.links?.length > 0) {
       const url = lienInternet.links[0].url;
-
       screenRoot.innerHTML = `
         <div class="screen">
           <div class="section clickable-section" onclick="window.open('${url}', '_blank')">
@@ -484,10 +405,11 @@ function renderInfoPage(key) {
           </div>
         </div>
       `;
-      return; // ⭐ On arrête ici : on n'affiche pas les sections classiques
+      return;
     }
   }
 
+  const page = infoContent?.[key];
   if (!page) {
     screenRoot.innerHTML = `<div class="screen"><p>Contenu indisponible.</p></div>`;
     return;
@@ -499,36 +421,27 @@ function renderInfoPage(key) {
     html += `<section class="info-section"><h3>${escapeHtml(section.heading)}</h3>`;
 
     if (section.items) {
-      html += `<ul>${section.items.map((i) => `<li>${i}</li>`).join("")}</ul>`;
+      html += `<ul>${section.items.map((i) => `<li>${escapeHtml(i)}</li>`).join("")}</ul>`;
     }
 
     if (section.text) {
-      if (Array.isArray(section.text)) {
-        html += section.text
-          .map((t) => {
-            if (typeof t === "string") {
-              return `<p class="info-text">${escapeHtml(t)}</p>`;
-            } else {
-              return `
-                <p class="info-text">
-                  <a href="#" class="open-app"
-                     data-scheme="${t.scheme ?? ""}"
-                     data-android="${t.store_android ?? ""}"
-                     data-ios="${t.store_ios ?? ""}">
-                    ${escapeHtml(t.label)}
-                  </a>
-                </p>`;
-            }
-          })
-          .join("");
-      }
+      html += section.text
+        .map((t) =>
+          typeof t === "string"
+            ? `<p class="info-text">${escapeHtml(t)}</p>`
+            : `<p class="info-text"><a href="#" class="open-app"
+                 data-scheme="${t.scheme ?? ""}"
+                 data-android="${t.store_android ?? ""}"
+                 data-ios="${t.store_ios ?? ""}">
+                 ${escapeHtml(t.label)}
+               </a></p>`
+        )
+        .join("");
     }
+
     if (section.links) {
       html += section.links
-        .map(
-          (l) =>
-            `<p><a href="${escapeHtml(l.url)}" target="_blank" rel="noopener">${escapeHtml(l.label)}</a></p>`
-        )
+        .map((l) => `<p><a href="${escapeHtml(l.url)}" target="_blank">${escapeHtml(l.label)}</a></p>`)
         .join("");
     }
 
@@ -542,71 +455,26 @@ function renderInfoPage(key) {
   html += `</div>`;
   screenRoot.innerHTML = html;
 
-  // Activation des liens vers apps
-  screenRoot.querySelectorAll(".open-app").forEach(link => {
+  screenRoot.querySelectorAll(".open-app").forEach((link) => {
     link.addEventListener("click", (e) => {
       e.preventDefault();
-      openAppOrStore(
-        link.dataset.scheme,
-        link.dataset.android,
-        link.dataset.ios
-      );
+      openAppOrStore(link.dataset.scheme, link.dataset.android, link.dataset.ios);
     });
   });
 }
 
 /* -------------------------------------------------------
-   🔥 Démarrage de l'application
+   🚀 Démarrage
 ------------------------------------------------------- */
 async function checkUserAndStart() {
   const [infoRes] = await Promise.all([
     fetch("./data/info.json").then((r) => r.json()),
     new Promise((r) => setTimeout(r, 600)),
   ]);
+
   infoContent = infoRes;
 
   const user = getUser();
 
   if (!user?.prenom || !user?.nom || !user?.dateInscription) {
-    navigate("inscription", { title: "Inscription" });
-    return;
-  }
-
-  if (needsCotisation(user.dateInscription)) {
-    navigate("cotisation", {
-      prenom: user.prenom,
-      nom: user.nom,
-      dateInscription: user.dateInscription,
-      title: "Vérification de votre cotisation",
-    });
-    return;
-  }
-
-  try {
-    prochaineRando = await fetchRandoDetails();
-  } catch {
-    prochaineRando = null;
-  }
-
-  navigate("accueil", {
-    prenom: user.prenom,
-    nom: user.nom,
-    title: "Rando's Lorraine",
-  });
-}
-
-async function init() {
-  if ("serviceWorker" in navigator) {
-    try {
-      await navigator.serviceWorker.register("./sw.js");
-    } catch {
-      /* optional */
-    }
-  }
-
-  appBarBack.addEventListener("click", () => backHandler?.());
-
-  await checkUserAndStart();
-}
-
-init();
+    return
