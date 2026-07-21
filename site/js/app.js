@@ -1,3 +1,21 @@
+/* -------------------------------------------------------
+   🚫 Désactivation complète du Service Worker
+   -------------------------------------------------------
+   Pourquoi ?
+   - Ton SW renvoie une ancienne version du JSON
+   - Les champs heureAccueil / heureDepart n’y sont pas
+   - Donc ton app affiche "Heure inconnue"
+   - Ce bloc supprime TOUT SW actif et empêche son retour
+------------------------------------------------------- */
+
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.getRegistrations().then((registrations) => {
+    registrations.forEach((reg) => {
+      reg.unregister();
+    });
+  });
+}
+
 import { getUser, saveUser, needsCotisation, qrData } from "./storage.js";
 
 const $ = (sel) => document.querySelector(sel);
@@ -577,10 +595,6 @@ async function init() {
   if ("serviceWorker" in navigator) {
     try {
       await //navigator.serviceWorker.register("./sw.js");
-          if ("serviceWorker" in navigator) {
-           navigator.serviceWorker.getRegistrations().then((regs) => {
-             regs.forEach((reg) => reg.unregister());
-           });
          }
     } catch {
       /* optionnel */
