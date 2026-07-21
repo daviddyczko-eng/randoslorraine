@@ -216,20 +216,46 @@ function renderAccueil(prenom, nom) {
   const qrPreview = document.createElement("div");
   renderQr(qrPreview, qrData(prenom, nom), 80);
 
-  const randoPreview = prochaineRando
-    ? `<span>${escapeHtml(prochaineRando.commune)}<br>${escapeHtml(prochaineRando.date)}</span>`
-    : `<span class="loading-text">Chargement…</span>`;
-  
-  const lienInternet = data["lien-internet"];
-
-if (lienInternet && lienInternet.links && lienInternet.links.length > 0) {
-  const url = lienInternet.links[0].url;
-
-  html += `
-    <div class="section clickable-section" onclick="window.open('${url}', '_blank')">
-      <h3>${lienInternet.title}</h3>
-    </div>
+  // Construction du HTML
+  let html = `
+    <div class="accueil">
+      <h1>Bonjour ${escapeHtml(prenom)}</h1>
   `;
+
+  // Affichage de la prochaine rando
+  if (prochaineRando) {
+    html += `
+      <section class="rando-card" onclick="navigate('rando', { rando: prochaineRando })">
+        <h2>Prochaine randonnée</h2>
+        <span>
+          ${escapeHtml(prochaineRando.lieu.commune)}<br>
+          ${escapeHtml(prochaineRando.date)}
+        </span>
+      </section>
+    `;
+  } else {
+    html += `
+      <section class="rando-card">
+        <span class="loading-text">Chargement…</span>
+      </section>
+    `;
+  }
+
+  // Section Lien internet (option 3)
+  const lienInternet = data["lien-internet"];
+  if (lienInternet && lienInternet.links && lienInternet.links.length > 0) {
+    const url = lienInternet.links[0].url;
+
+    html += `
+      <div class="section clickable-section" onclick="window.open('${url}', '_blank')">
+        <h3>${escapeHtml(lienInternet.title)}</h3>
+      </div>
+    `;
+  }
+
+  html += `</div>`; // fermeture .accueil
+
+  screenRoot.innerHTML = html;
 }
 
   screenRoot.innerHTML = `
