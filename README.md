@@ -32,13 +32,13 @@ site
         app.js
         qrcode.min.js
         storage.js
+    _worker.js
     index.html
     manifest.webmanifest
     sw.js
 
 .assetsignore
 README.md
-_worker.js
 wrangler.toml
 ```
 
