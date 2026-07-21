@@ -60,26 +60,34 @@ function renderQr(container, text, size = 100) {
 }
 
 async function fetchRandoDetails() {
+  // 1. Essayer de charger depuis Internet
   try {
-    // Appel à ton API Cloudflare
-    const res = await fetch("https://randoslorraine-worker.ddyczko.workers.dev/api/rando", { cache: "no-store" });
+    const res = await fetch("https://randoslorraine.pages.dev/api/rando", {
+      cache: "no-store"
+    });
+
     if (!res.ok) throw new Error("API indisponible");
 
     const data = await res.json();
 
-    // Sauvegarde dans la mémoire du téléphone
+    // 2. Sauvegarder dans la mémoire du téléphone
     localStorage.setItem("prochaineRando", JSON.stringify(data));
 
     return data;
 
-  } catch (e) {
-    // Mode hors-ligne
+  } catch (err) {
+    // 3. Mode hors-ligne : charger les données sauvegardées
     const saved = localStorage.getItem("prochaineRando");
-    if (saved) return JSON.parse(saved);
 
-    throw new Error("Aucune donnée disponible");
+    if (saved) {
+      return JSON.parse(saved);
+    }
+
+    // 4. Aucun réseau + aucune donnée locale
+    throw new Error("Aucune donnée disponible hors-ligne");
   }
 }
+
 
 async function sendEmail() {
   const email = "tresorier@randoslorraine.org";
