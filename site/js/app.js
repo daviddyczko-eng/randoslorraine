@@ -148,7 +148,7 @@ function renderInscription() {
     const nom = formatName($("#nom").value);
     const dateInscription = new Date().toISOString();
     saveUser({ prenom, nom, dateInscription });
-    navigate("accueil", { prenom, nom });
+    navigate("accueil", { prenom, nom, title: "Rando's Lorraine" });
   });
 }
 
@@ -172,7 +172,7 @@ function renderCotisation(prenom, nom, dateInscription) {
 
   $("#btn-oui").addEventListener("click", () => {
     saveUser({ prenom, nom, dateInscription: new Date().toISOString() });
-    navigate("accueil", { prenom, nom });
+    navigate("accueil", { prenom, nom, title: "Rando's Lorraine" });
   });
 }
 
@@ -233,7 +233,7 @@ function renderAccueil(prenom, nom) {
           nom,
           title: "Ma carte",
           showBack: true,
-          onBack: () => navigate("accueil", { prenom, nom }),
+          onBack: () => navigate("accueil", { prenom, nom, title: "Rando's Lorraine" }),
         });
 
       } else if (go === "rando") {
@@ -241,7 +241,7 @@ function renderAccueil(prenom, nom) {
           rando: prochaineRando,
           title: "Prochaine rando",
           showBack: true,
-          onBack: () => navigate("accueil", { prenom, nom }),
+          onBack: () => navigate("accueil", { prenom, nom, title: "Rando's Lorraine" }),
         });
 
       } else {
@@ -249,7 +249,7 @@ function renderAccueil(prenom, nom) {
           infoKey: go,
           title: infoContent?.[go]?.title ?? go,
           showBack: true,
-          onBack: () => navigate("accueil", { prenom, nom }),
+          onBack: () => navigate("accueil", { prenom, nom, title: "Rando's Lorraine" }),
         });
       }
     });
@@ -288,21 +288,7 @@ function renderCarte(prenom, nom) {
       nom,
       title: "Corriger",
       showBack: true,
-      onBack: () =>
-        navigate("carte", {
-          prenom,
-          nom,
-          title: "Ma carte",
-          showBack: true,
-          onBack: () => {
-            const user = getUser();
-            navigate("accueil", {
-              prenom: user.prenom,
-              nom: user.nom,
-              title: "Rando's Lorraine",
-            });
-          },
-        }),
+      onBack: () => navigate("carte", { prenom, nom, title: "Ma carte", showBack: true }),
     });
   });
 }
@@ -344,7 +330,7 @@ function renderCorrection(prenom, nom) {
       nom: newNom,
       title: "Ma carte",
       showBack: true,
-      onBack: () => navigate("accueil", { prenom: newPrenom, nom: newNom }),
+      onBack: () => navigate("accueil", { prenom: newPrenom, nom: newNom, title: "Rando's Lorraine" }),
     });
   });
 }
@@ -455,12 +441,11 @@ function showModal(title, onClose) {
    🌐 Page d'information
 ------------------------------------------------------- */
 function renderInfoPage(key) {
+  // bloc spécial "Lien internet"
   if (key === "lien-internet") {
     const lienInternet = infoContent["lien-internet"];
-
     if (lienInternet && lienInternet.links && lienInternet.links.length > 0) {
       const url = lienInternet.links[0].url;
-
       screenRoot.innerHTML = `
         <div class="screen">
           <div class="section clickable-section" onclick="window.open('${url}', '_blank')">
@@ -473,7 +458,6 @@ function renderInfoPage(key) {
   }
 
   const page = infoContent?.[key];
-
   if (!page) {
     screenRoot.innerHTML = `<div class="screen"><p>Contenu indisponible.</p></div>`;
     return;
@@ -489,6 +473,105 @@ function renderInfoPage(key) {
     }
 
     if (section.text) {
-      if (Array.isArray(section.text)) {
-        html += section.text
-          .map((t
+      html += section.text
+        .map((t) =>
+          typeof t === "string"
+            ? `<p class="info-text">${escapeHtml(t)}</p>`
+            : `<p class="info-text">
+                 <a href="#" class="open-app"
+                    data-scheme="${t.scheme ?? ""}"
+                    data-android="${t.store_android ?? ""}"
+                    data-ios="${t.store_ios ?? ""}">
+                    ${escapeHtml(t.label)}
+                 </a>
+               </p>`
+        )
+        .join("");
+    }
+
+    if (section.links) {
+      html += section.links
+        .map(
+          (l) =>
+            `<p><a href="${escapeHtml(l.url)}" target="_blank" rel="noopener">${escapeHtml(l.label)}</a></p>`
+        )
+        .join("");
+    }
+
+    if (section.footer) {
+      html += `<p class="info-footer">${escapeHtml(section.footer)}</p>`;
+    }
+
+    html += `</section>`;
+  }
+
+  html += `</div>`;
+  screenRoot.innerHTML = html;
+
+  screenRoot.querySelectorAll(".open-app").forEach((link) => {
+    link.addEventListener("click", (e) => {
+      e.preventDefault();
+      openAppOrStore(link.dataset.scheme, link.dataset.android, link.dataset.ios);
+    });
+  });
+}
+
+/* -------------------------------------------------------
+   🚀 Démarrage
+------------------------------------------------------- */
+async function checkUserAndStart() {
+  const [infoRes] = await Promise.all([
+    fetch("./data/info.json").then((r) => r.json()),
+    new Promise((r) => setTimeout(r, 600)),
+  ]);
+
+  infoContent = infoRes;
+
+  const user = getUser();
+
+  if (!user?.prenom || !user?.nom || !user?.dateInscription) {
+    navigate("inscription", { title: "Inscription" });
+    return;
+  }
+
+  if (needsCotisation(user.dateInscription)) {
+    navigate("cotisation", {
+      prenom: user.prenom,
+      nom: user.nom,
+      dateInscription: user.dateInscription,
+      title: "Vérification de votre cotisation",
+    });
+    return;
+  }
+
+  try {
+    prochaineRando = await fetchRandoDetails();
+  } catch {
+    prochaineRando = null;
+  }
+
+  navigate("accueil", {
+    prenom: user.prenom,
+    nom: user.nom,
+    title: "Rando's Lorraine",
+  });
+}
+
+/* -------------------------------------------------------
+   🔧 Init
+------------------------------------------------------- */
+async function init() {
+  if ("serviceWorker" in navigator) {
+    try {
+      await navigator.serviceWorker.register("./sw.js");
+    } catch {
+      /* optionnel */
+    }
+  }
+
+  appBarBack.addEventListener("click", () => backHandler?.());
+
+  await checkUserAndStart();
+}
+
+init();
