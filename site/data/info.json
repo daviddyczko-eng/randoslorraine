@@ -132,13 +132,14 @@
       }
     ]
   },
-
-  "lien-internet": {
-    "title": "Lien internet",
-        "links": [
-          {
-            "url": "https://randoslorraine.org"
-          }
-        ]
-      }
+    
+    "lien-internet": {
+      "title": "Lien internet",
+      "links": [
+        {
+          "name": "Site officiel",
+          "url": "https://randoslorraine.org"
+        }
+      ]
+    }
 }
