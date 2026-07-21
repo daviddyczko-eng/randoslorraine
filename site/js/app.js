@@ -78,10 +78,11 @@ async function fetchRandoDetails() {
     throw new Error("Aucune donnée disponible hors-ligne");
   }
 
-  try {
-    const res = await fetch("https://randoslorraine.pages.dev/api/rando", {
-      cache: "no-store",
-    });
+   try {
+      const res = await fetch("https://randoslorraine.pages.dev/api/rando?ts=" + Date.now(), {
+        cache: "reload",
+        headers: { "Cache-Control": "no-cache" }
+      });
 
     if (!res.ok) throw new Error("API indisponible");
 
