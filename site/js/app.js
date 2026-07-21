@@ -217,7 +217,7 @@ function renderAccueil(prenom, nom) {
   renderQr(qrPreview, qrData(prenom, nom), 80);
 
   const randoPreview = prochaineRando
-    ? `<span>${escapeHtml(prochaineRando.commune)}<br>${escapeHtml(prochaineRando.date)}</span>`
+    ? `<span>${escapeHtml(prochaineRando.lieu.commune)}<br>${escapeHtml(prochaineRando.date)}</span>`
     : `<span class="loading-text">Chargement…</span>`;
 
   screenRoot.innerHTML = `
