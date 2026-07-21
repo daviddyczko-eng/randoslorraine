@@ -241,7 +241,7 @@ function renderAccueil(prenom, nom) {
     `;
   }
 
-  // Section Lien internet (option 3)
+  // Section Lien internet
   const lienInternet = data["lien-internet"];
   if (lienInternet && lienInternet.links && lienInternet.links.length > 0) {
     const url = lienInternet.links[0].url;
