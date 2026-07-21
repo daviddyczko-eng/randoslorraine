@@ -384,27 +384,27 @@ function renderCorrection(prenom, nom) {
   });
 }
 
-function renderRandoDetails() {
+function renderRandoDetails(r) {
   screenRoot.innerHTML = `
     <div class="screen screen--center">
       <p class="loading-text">Chargement des informations…</p>
     </div>
   `;
 
-  const show = (r) => {
-    const [lat, lng] = r.gps.split(",").map((v) => v.trim());
+  const show = (rando) => {
+    const [lat, lng] = rando.gps.split(",").map((v) => v.trim());
     const mapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`;
 
-    const tel0 = r.telephones?.[0] ?? "";
-    const tel1 = r.telephones?.[1] ?? "";
+    const tel0 = rando.telephones?.[0] ?? "";
+    const tel1 = rando.telephones?.[1] ?? "";
 
     screenRoot.innerHTML = `
       <div class="screen">
         <div class="detail-list">
-          <div class="detail-row"><span class="detail-row__label">Date</span><span class="detail-row__value">${escapeHtml(r.date)}</span></div>
-          <div class="detail-row"><span class="detail-row__label">Lieu</span><span class="detail-row__value">${escapeHtml(r.commune)}</span></div>
-          <div class="detail-row"><span class="detail-row__label">Heure d'accueil</span><span class="detail-row__value">${escapeHtml(r.heureAccueil)}</span></div>
-          <div class="detail-row"><span class="detail-row__label">Heure de départ</span><span class="detail-row__value">${escapeHtml(r.heureDepart)}</span></div>
+          <div class="detail-row"><span class="detail-row__label">Date</span><span class="detail-row__value">${escapeHtml(rando.date)}</span></div>
+          <div class="detail-row"><span class="detail-row__label">Lieu</span><span class="detail-row__value">${escapeHtml(rando.commune)}</span></div>
+          <div class="detail-row"><span class="detail-row__label">Heure d'accueil</span><span class="detail-row__value">${escapeHtml(rando.heureAccueil)}</span></div>
+          <div class="detail-row"><span class="detail-row__label">Heure de départ</span><span class="detail-row__value">${escapeHtml(rando.heureDepart)}</span></div>
           <div class="detail-row"><span class="detail-row__label">Contact(s)</span><span class="detail-row__value">${escapeHtml(tel0)}</span></div>
           ${tel1 ? `<div class="detail-row"><span class="detail-row__label"></span><span class="detail-row__value">${escapeHtml(tel1)}</span></div>` : ""}
         </div>
@@ -417,13 +417,13 @@ function renderRandoDetails() {
     `;
   };
 
-  if (prochaineRando) {
-    show(prochaineRando);
+  if (r) {
+    show(r);
   } else {
     fetchRandoDetails()
       .then((data) => {
         prochaineRando = data;
-        if (currentScreen === "rando") show(data);
+        show(data);
       })
       .catch(() => {
         screenRoot.innerHTML = `
