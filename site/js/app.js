@@ -477,4 +477,11 @@ async function checkUserAndStart() {
   const user = getUser();
 
   if (!user?.prenom || !user?.nom || !user?.dateInscription) {
-    return
+    return navigate("inscription", { title: "Inscription" });
+  }
+
+  if (needsCotisation(user.dateInscription)) {
+    return navigate("cotisation", {
+      prenom: user.prenom,
+      nom: user.nom,
+      dateInscription: user.dateInscription
