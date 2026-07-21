@@ -80,7 +80,7 @@ async function fetchRandoDetails() {
 
   try {
     const res = await fetch("https://randoslorraine.pages.dev/api/rando", {
-      cache: "no-store",
+      cache: "no-store"
     });
 
     if (!res.ok) throw new Error("API indisponible");
@@ -88,6 +88,7 @@ async function fetchRandoDetails() {
     const data = await res.json();
     localStorage.setItem("prochaineRando", JSON.stringify(data));
     return data;
+
   } catch {
     const saved = localStorage.getItem("prochaineRando");
     if (saved) return JSON.parse(saved);
@@ -103,20 +104,13 @@ function navigate(screen, options = {}) {
   showMain(options.showBack ?? false, options.title ?? "Rando's Lorraine", options.onBack);
 
   switch (screen) {
-    case "inscription":
-      return renderInscription();
-    case "cotisation":
-      return renderCotisation(options.prenom, options.nom, options.dateInscription);
-    case "accueil":
-      return renderAccueil(options.prenom, options.nom);
-    case "carte":
-      return renderCarte(options.prenom, options.nom);
-    case "correction":
-      return renderCorrection(options.prenom, options.nom);
-    case "rando":
-      return renderRandoDetails(options.rando);
-    case "info":
-      return renderInfoPage(options.infoKey);
+    case "inscription": return renderInscription();
+    case "cotisation": return renderCotisation(options.prenom, options.nom, options.dateInscription);
+    case "accueil": return renderAccueil(options.prenom, options.nom);
+    case "carte": return renderCarte(options.prenom, options.nom);
+    case "correction": return renderCorrection(options.prenom, options.nom);
+    case "rando": return renderRandoDetails(options.rando);
+    case "info": return renderInfoPage(options.infoKey);
   }
 }
 
@@ -146,9 +140,7 @@ function renderInscription() {
     </div>
   `;
 
-  $("#btn-quit").addEventListener("click", () => {
-    alert("Fermez l'onglet pour quitter.");
-  });
+  $("#btn-quit").addEventListener("click", () => alert("Fermez l'onglet pour quitter."));
 
   $("#form-inscription").addEventListener("submit", (e) => {
     e.preventDefault();
@@ -156,7 +148,7 @@ function renderInscription() {
     const nom = formatName($("#nom").value);
     const dateInscription = new Date().toISOString();
     saveUser({ prenom, nom, dateInscription });
-    navigate("accueil", { prenom, nom, title: "Rando's Lorraine" });
+    navigate("accueil", { prenom, nom });
   });
 }
 
@@ -176,17 +168,11 @@ function renderCotisation(prenom, nom, dateInscription) {
     </div>
   `;
 
-  $("#btn-non").addEventListener("click", () => {
-    showModal("À très bientôt !");
-  });
+  $("#btn-non").addEventListener("click", () => showModal("À très bientôt !"));
 
   $("#btn-oui").addEventListener("click", () => {
-    saveUser({
-      prenom,
-      nom,
-      dateInscription: new Date().toISOString(),
-    });
-    navigate("accueil", { prenom, nom, title: "Rando's Lorraine" });
+    saveUser({ prenom, nom, dateInscription: new Date().toISOString() });
+    navigate("accueil", { prenom, nom });
   });
 }
 
@@ -247,36 +233,23 @@ function renderAccueil(prenom, nom) {
           nom,
           title: "Ma carte",
           showBack: true,
-          onBack: () =>
-            navigate("accueil", {
-              prenom,
-              nom,
-              title: "Rando's Lorraine",
-            }),
+          onBack: () => navigate("accueil", { prenom, nom }),
         });
+
       } else if (go === "rando") {
         navigate("rando", {
           rando: prochaineRando,
           title: "Prochaine rando",
           showBack: true,
-          onBack: () =>
-            navigate("accueil", {
-              prenom,
-              nom,
-              title: "Rando's Lorraine",
-            }),
+          onBack: () => navigate("accueil", { prenom, nom }),
         });
+
       } else {
         navigate("info", {
           infoKey: go,
           title: infoContent?.[go]?.title ?? go,
           showBack: true,
-          onBack: () =>
-            navigate("accueil", {
-              prenom,
-              nom,
-              title: "Rando's Lorraine",
-            }),
+          onBack: () => navigate("accueil", { prenom, nom }),
         });
       }
     });
@@ -359,23 +332,19 @@ function renderCorrection(prenom, nom) {
     const newPrenom = formatName($("#prenom").value);
     const newNom = formatName($("#nom").value);
     const user = getUser();
+
     saveUser({
       prenom: newPrenom,
       nom: newNom,
       dateInscription: user?.dateInscription ?? new Date().toISOString(),
     });
+
     navigate("carte", {
       prenom: newPrenom,
       nom: newNom,
       title: "Ma carte",
       showBack: true,
-      onBack: () => {
-        navigate("accueil", {
-          prenom: newPrenom,
-          nom: newNom,
-          title: "Rando's Lorraine",
-        });
-      },
+      onBack: () => navigate("accueil", { prenom: newPrenom, nom: newNom }),
     });
   });
 }
@@ -400,13 +369,14 @@ function renderRandoDetails(r) {
     screenRoot.innerHTML = `
       <div class="screen">
         <div class="detail-list">
-          <div class="detail-row"><span class="detail-row__label">Date</span><span class="detail-row__value">${escapeHtml(rando.date)}</span></div>
-          <div class="detail-row"><span class="detail-row__label">Lieu</span><span class="detail-row__value">${escapeHtml(rando.lieu.commune)}</span></div>
-          <div class="detail-row"><span class="detail-row__label">Heure d'accueil</span><span class="detail-row__value">${escapeHtml(rando.heureAccueil)}</span></div>
-          <div class="detail-row"><span class="detail-row__label">Heure de départ</span><span class="detail-row__value">${escapeHtml(rando.heureDepart)}</span></div>
-          <div class="detail-row"><span class="detail-row__label">Contact(s)</span><span class="detail-row__value">${escapeHtml(tel0)}</span></div>
-          ${tel1 ? `<div class="detail-row"><span class="detail-row__label"></span><span class="detail-row__value">${escapeHtml(tel1)}</span></div>` : ""}
+          <div class="detail-row"><span>Date</span><span>${escapeHtml(rando.date)}</span></div>
+          <div class="detail-row"><span>Lieu</span><span>${escapeHtml(rando.lieu.commune)}</span></div>
+          <div class="detail-row"><span>Heure d'accueil</span><span>${escapeHtml(rando.heureAccueil)}</span></div>
+          <div class="detail-row"><span>Heure de départ</span><span>${escapeHtml(rando.heureDepart)}</span></div>
+          <div class="detail-row"><span>Contact(s)</span><span>${escapeHtml(tel0)}</span></div>
+          ${tel1 ? `<div class="detail-row"><span></span><span>${escapeHtml(tel1)}</span></div>` : ""}
         </div>
+
         <div class="btn-row">
           <a class="btn btn--primary" href="${mapsUrl}" target="_blank" rel="noopener">M'y rendre</a>
           ${tel0 ? `<a class="btn btn--secondary" href="tel:${tel0.replace(/\s/g, "")}">Appeler</a>` : ""}
@@ -521,116 +491,4 @@ function renderInfoPage(key) {
     if (section.text) {
       if (Array.isArray(section.text)) {
         html += section.text
-          .map((t) => {
-            if (typeof t === "string") {
-              return `<p class="info-text">${escapeHtml(t)}</p>`;
-            } else {
-              return `
-                <p class="info-text">
-                  <a href="#" class="open-app"
-                     data-scheme="${t.scheme ?? ""}"
-                     data-android="${t.store_android ?? ""}"
-                     data-ios="${t.store_ios ?? ""}">
-                    ${escapeHtml(t.label)}
-                  </a>
-                </p>`;
-            }
-          })
-          .join("");
-      }
-    }
-
-    if (section.links) {
-      html += section.links
-        .map(
-          (l) =>
-            `<p><a href="${escapeHtml(l.url)}" target="_blank" rel="noopener">${escapeHtml(l.label)}</a></p>`
-        )
-        .join("");
-    }
-
-    if (section.footer) {
-      html += `<p class="info-footer">${escapeHtml(section.footer)}</p>`;
-    }
-
-    html += `</section>`;
-  }
-
-  html += `</div>`;
-  screenRoot.innerHTML = html;
-
-  screenRoot.querySelectorAll(".open-app").forEach((link) => {
-    link.addEventListener("click", (e) => {
-      e.preventDefault();
-      openAppOrStore(
-        link.dataset.scheme,
-        link.dataset.android,
-        link.dataset.ios
-      );
-    });
-  });
-}
-
-/* -------------------------------------------------------
-   🚀 Démarrage
-------------------------------------------------------- */
-async function checkUserAndStart() {
-  const [infoRes] = await Promise.all([
-    fetch("./data/info.json").then((r) => r.json()),
-    new Promise((r) => setTimeout(r, 600)),
-  ]);
-  infoContent = infoRes;
-
-  const user = getUser();
-
-  if (!user?.prenom || !user?.nom || !user?.dateInscription) {
-    navigate("inscription", { title: "Inscription" });
-    return;
-  }
-
-  if (needsCotisation(user.dateInscription)) {
-    navigate("cotisation", {
-      prenom: user.prenom,
-      nom: user.nom,
-      dateInscription: user.dateInscription,
-      title: "Vérification de votre cotisation",
-    });
-    return;
-  }
-
-  try {
-    prochaineRando = await fetchRandoDetails();
-  } catch {
-    prochaineRando = null;
-  }
-
-  navigate("accueil", {
-    prenom: user.prenom,
-    nom: user.nom,
-    title: "Rando's Lorraine",
-  });
-
-  // rafraîchir l’accueil une fois les données de rando chargées
-  if (prochaineRando) {
-    renderAccueil(user.prenom, user.nom);
-  }
-}
-
-/* -------------------------------------------------------
-   🔧 Init
-------------------------------------------------------- */
-async function init() {
-  if ("serviceWorker" in navigator) {
-    try {
-      await navigator.serviceWorker.register("./sw.js");
-    } catch {
-      // optionnel
-    }
-  }
-
-  appBarBack.addEventListener("click", () => backHandler?.());
-
-  await checkUserAndStart();
-}
-
-init();
+          .map((t
