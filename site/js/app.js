@@ -261,43 +261,82 @@ function renderRandoDetails(r) {
   `;
 
   const show = (rando) => {
-    const [lat, lng] = rando.gps.split(",").map((v) => v.trim());
-    const mapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`;
+    // Vérifie que rando est un objet valide
+    if (!rando || typeof rando !== 'object') {
+      screenRoot.innerHTML = `
+        <div class="screen screen--center">
+          <p class="alert alert--danger">Aucune donnée de randonnée disponible.</p>
+        </div>
+      `;
+      return;
+    }
 
-    const tel0 = rando.telephones?.[0] ?? "";
-    const tel1 = rando.telephones?.[1] ?? "";
+    // Extraire les coordonnées GPS
+    let lat, lng;
+    if (rando.gps) {
+      const coords = rando.gps.split(',').map(coord => parseFloat(coord.trim()));
+      lat = coords[0];
+      lng = coords[1];
+    }
 
-    const commune = rando.lieu?.commune ?? "Lieu inconnu";
+    const mapsUrl = lat && lng ? `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}` : null;
 
-    // ⭐ Correction robuste : heures dans lieu OU à la racine
-    const accueil =
-      rando.lieu?.heureAccueil ||
-      rando.heureAccueil ||
-      "Heure inconnue";
+    // Extraire les téléphones
+    const tel0 = (rando.telephones && rando.telephones[0]) ? rando.telephones[0] : null;
+    const tel1 = (rando.telephones && rando.telephones[1]) ? rando.telephones[1] : null;
 
-    const depart =
-      rando.lieu?.heureDepart ||
-      rando.heureDepart ||
-      "Heure inconnue";
+    // Extraire les informations de lieu
+    const commune = (rando.lieu && rando.lieu.commune) ? rando.lieu.commune : "Lieu inconnu";
+    const pays = (rando.lieu && rando.lieu.pays) ? rando.lieu.pays : null;
+    const departement = (rando.lieu && rando.lieu.departement) ? rando.lieu.departement : null;
 
-    screenRoot.innerHTML = `
+    // Extraire les heures
+    const accueil = rando.heureAccueil || rando.lieu?.heureAccueil || "Heure d'accueil non spécifiée";
+    const depart = rando.heureDepart || rando.lieu?.heureDepart || "Heure de départ non spécifiée";
+
+    // Construire le HTML
+    let html = `
       <div class="screen">
         <div class="detail-list">
-          <div class="detail-row"><span>Date</span><span>${escapeHtml(rando.date)}</span></div>
+          <div class="detail-row"><span>Date</span><span>${escapeHtml(rando.date || "Date inconnue")}</span></div>
           <div class="detail-row"><span>Lieu</span><span>${escapeHtml(commune)}</span></div>
+          ${pays ? `<div class="detail-row"><span>Pays</span><span>${escapeHtml(pays)}</span></div>` : ''}
+          ${departement ? `<div class="detail-row"><span>Département</span><span>${escapeHtml(departement)}</span></div>` : ''}
           <div class="detail-row"><span>Heure d'accueil</span><span>${escapeHtml(accueil)}</span></div>
           <div class="detail-row"><span>Heure de départ</span><span>${escapeHtml(depart)}</span></div>
-          <div class="detail-row"><span>Contact(s)</span><span>${escapeHtml(tel0)}</span></div>
-          ${tel1 ? `<div class="detail-row"><span></span><span>${escapeHtml(tel1)}</span></div>` : ""}
+          ${rando.rendezVous ? `<div class="detail-row"><span>Rendez-vous</span><span>${escapeHtml(rando.rendezVous)}</span></div>` : ''}
+          ${tel0 ? `<div class="detail-row"><span>Contact</span><span>${escapeHtml(tel0)}</span></div>` : ''}
+          ${tel1 ? `<div class="detail-row"><span></span><span>${escapeHtml(tel1)}</span></div>` : ''}
         </div>
+    `;
 
-        <div class="btn-row">
-          <a class="btn btn--primary" href="${mapsUrl}" target="_blank" rel="noopener">M'y rendre</a>
-          ${tel0 ? `<a class="btn btn--secondary" href="tel:${tel0.replace(/\s/g, "")}">Appeler</a>` : ""}
-          ${tel1 ? `<a class="btn btn--secondary" href="tel:${tel1.replace(/\s/g, "")}">Appeler</a>` : ""}
-        </div>
+    // Ajouter les boutons
+    if (mapsUrl || tel0 || tel1) {
+      html += `<div class="btn-row">`;
+      if (mapsUrl) {
+        html += `<a class="btn btn--primary" href="${mapsUrl}" target="_blank" rel="noopener">M'y rendre</a>`;
+      }
+      if (tel0) {
+        html += `<a class="btn btn--secondary" href="tel:${tel0.replace(/\s/g, "")}">Appeler</a>`;
+      }
+      if (tel1) {
+        html += `<a class="btn btn--secondary" href="tel:${tel1.replace(/\s/g, "")}">Appeler</a>`;
+      }
+      html += `</div>`;
+    }
+
+    html += `</div>`;
+    screenRoot.innerHTML = html;
+  };
+
+  const showError = (message) => {
+    screenRoot.innerHTML = `
+      <div class="screen screen--center">
+        <p class="alert alert--danger">${escapeHtml(message)}</p>
+        <button class="btn btn--primary" id="btn-retry">Réessayer</button>
       </div>
     `;
+    $("#btn-retry").addEventListener("click", () => renderRandoDetails(r));
   };
 
   if (r) {
@@ -308,12 +347,8 @@ function renderRandoDetails(r) {
         prochaineRando = data;
         show(data);
       })
-      .catch(() => {
-        screenRoot.innerHTML = `
-          <div class="screen screen--center">
-            <p>Impossible de charger les informations de la prochaine randonnée.</p>
-          </div>
-        `;
+      .catch((error) => {
+        showError("Impossible de charger les informations. " + error.message);
       });
   }
 }
