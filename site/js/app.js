@@ -455,41 +455,44 @@ function renderInfoPage(key) {
    🚀 Démarrage
 ------------------------------------------------------- */
 async function checkUserAndStart() {
-  const [infoRes] = await Promise.all([
-    fetch("./data/info.json").then((r) => r.json()),
-    new Promise((r) => setTimeout(r, 600)),
-  ]);
+  try {
+    // Charger les données de l'utilisateur et les infos en parallèle
+    const [infoRes, randoRes] = await Promise.all([
+      fetch("./data/info.json").then((r) => r.json()),
+      fetchRandoDetails().catch(() => null) // Ne pas bloquer si les données de rando échouent
+    ]);
 
-  infoContent = infoRes;
+    infoContent = infoRes;
+    prochaineRando = randoRes; // Peut être null si hors ligne et pas de cache
 
-  const user = getUser();
+    const user = getUser();
 
-  if (!user?.prenom || !user?.nom || !user?.dateInscription) {
-    navigate("inscription", { title: "Inscription" });
-    return;
-  }
+    if (!user?.prenom || !user?.nom || !user?.dateInscription) {
+      navigate("inscription", { title: "Inscription" });
+      return;
+    }
 
-  if (needsCotisation(user.dateInscription)) {
-    navigate("cotisation", {
+    if (needsCotisation(user.dateInscription)) {
+      navigate("cotisation", {
+        prenom: user.prenom,
+        nom: user.nom,
+        dateInscription: user.dateInscription,
+        title: "Vérification de votre cotisation",
+      });
+      return;
+    }
+
+    navigate("accueil", {
       prenom: user.prenom,
       nom: user.nom,
-      dateInscription: user.dateInscription,
-      title: "Vérification de votre cotisation",
+      title: "Rando's Lorraine",
     });
-    return;
-  }
 
-  try {
-    prochaineRando = await fetchRandoDetails();
-  } catch {
-    prochaineRando = null;
+  } catch (error) {
+    console.error("Erreur lors du démarrage :", error);
+    // Afficher un message d'erreur et naviguer vers l'inscription
+    navigate("inscription", { title: "Inscription" });
   }
-
-  navigate("accueil", {
-    prenom: user.prenom,
-    nom: user.nom,
-    title: "Rando's Lorraine",
-  });
 }
 
 function renderAccueil(prenom, nom) {
