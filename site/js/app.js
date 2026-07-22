@@ -87,13 +87,19 @@ function renderQr(container, text, size = 100) {
    🌐 API Rando (cache contourné)
 ------------------------------------------------------- */
 async function fetchRandoDetails() {
+  // 1️⃣ Vérifier si on est hors ligne
   if (!navigator.onLine) {
     const saved = localStorage.getItem("prochaineRando");
-    if (saved) return JSON.parse(saved);
-    throw new Error("Aucune donnée disponible hors-ligne");
+    if (saved) {
+      console.log("Hors ligne : chargement des données depuis localStorage.");
+      return JSON.parse(saved);
+    } else {
+      throw new Error("Aucune donnée disponible hors-ligne.");
+    }
   }
 
   try {
+    // 2️⃣ Essayer de charger depuis l'API Cloudflare Worker
     const res = await fetch(
       "https://randoslorraine.pages.dev/api/rando?ts=" + Date.now(),
       {
@@ -108,15 +114,29 @@ async function fetchRandoDetails() {
       }
     );
 
-    if (!res.ok) throw new Error("API indisponible");
+    if (!res.ok) {
+      throw new Error(`Erreur HTTP ${res.status}`);
+    }
 
     const data = await res.json();
+
+    // 3️⃣ Sauvegarder dans localStorage pour une utilisation hors ligne
     localStorage.setItem("prochaineRando", JSON.stringify(data));
+    console.log("Données sauvegardées dans localStorage.");
+
     return data;
-  } catch {
+
+  } catch (apiError) {
+    console.warn("L'API a échoué, tentative de chargement depuis localStorage...", apiError);
+
+    // 4️⃣ Fallback : Charger depuis localStorage
     const saved = localStorage.getItem("prochaineRando");
-    if (saved) return JSON.parse(saved);
-    throw new Error("Aucune donnée disponible");
+    if (saved) {
+      console.log("Fallback : données chargées depuis localStorage.");
+      return JSON.parse(saved);
+    } else {
+      throw new Error("Aucune donnée disponible (ni en ligne, ni hors ligne).");
+    }
   }
 }
 
