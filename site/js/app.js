@@ -301,10 +301,6 @@ function renderRandoDetails(r) {
 
     const mapsUrl = lat && lng ? `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}` : null;
 
-    // Extraire les téléphones
-    const tel0 = (rando.telephones && rando.telephones[0]) ? rando.telephones[0] : null;
-    const tel1 = (rando.telephones && rando.telephones[1]) ? rando.telephones[1] : null;
-
     // Extraire les informations de lieu
     const commune = (rando.lieu && rando.lieu.commune) ? rando.lieu.commune : "Lieu inconnu";
     const pays = (rando.lieu && rando.lieu.pays) ? rando.lieu.pays : null;
@@ -314,54 +310,92 @@ function renderRandoDetails(r) {
     const accueil = rando.heureAccueil || rando.lieu?.heureAccueil || "Heure d'accueil non spécifiée";
     const depart = rando.heureDepart || rando.lieu?.heureDepart || "Heure de départ non spécifiée";
 
-    // Construire le HTML
-    let html = `
-      <div class="screen">
-        <div class="detail-list">
-          <div class="detail-row"><span>Date</span><span>${escapeHtml(rando.date || "Date inconnue")}</span></div>
-          <div class="detail-row"><span>Lieu</span><span>${escapeHtml(commune)}</span></div>
-    `;
+// Extraire les pilotes depuis la chaîne "Proposé par Pascal & David"
+let pilotes = [];
+if (rando.pilotes) {
+  // Nettoyer la chaîne pour extraire les noms
+  const pilotesText = rando.pilotes
+    .replace(/^Proposé par\s*/i, '') // Supprime "Proposé par " au début
+    .replace(/&/g, ',') // Remplace "&" par "," pour séparer les noms
+    .split(',')
+    .map(p => p.trim())
+    .filter(p => p.length > 0);
 
-    // ✅ NOUVEAU : Afficher Pays et Département UNIQUEMENT si Pays ≠ "France"
-    if (pays && pays.toLowerCase() !== "france") {
-      html += `
-        <div class="detail-row"><span>Pays</span><span>${escapeHtml(pays)}</span></div>
-      `;
-      if (departement) {
-        html += `
-          <div class="detail-row"><span>Département</span><span>${escapeHtml(departement)}</span></div>
-        `;
-      }
-    }
+  pilotes = pilotesText;
+}
 
-    // Suite du HTML
+// Extraire les téléphones
+const tel0 = (rando.telephones && rando.telephones[0]) ? rando.telephones[0] : null;
+const tel1 = (rando.telephones && rando.telephones[1]) ? rando.telephones[1] : null;
+
+// Construire le HTML
+let html = `
+  <div class="screen">
+    <div class="detail-list">
+      <div class="detail-row"><span>Date</span><span>${escapeHtml(rando.date || "Date inconnue")}</span></div>
+      <div class="detail-row"><span>Lieu</span><span>${escapeHtml(commune)}</span></div>
+`;
+
+// ✅ Afficher Pays et Département UNIQUEMENT si Pays ≠ "France"
+if (pays && pays.toLowerCase() !== "france") {
+  html += `
+    <div class="detail-row"><span>Pays</span><span>${escapeHtml(pays)}</span></div>
+  `;
+  if (departement) {
     html += `
-          <div class="detail-row"><span>Heure d'accueil</span><span>${escapeHtml(accueil)}</span></div>
-          <div class="detail-row"><span>Heure de départ</span><span>${escapeHtml(depart)}</span></div>
-          ${rando.rendezVous ? `<div class="detail-row"><span>Rendez-vous</span><span>${escapeHtml(rando.rendezVous)}</span></div>` : ''}
-          ${tel0 ? `<div class="detail-row"><span>Contact</span><span>${escapeHtml(tel0)}</span></div>` : ''}
-          ${tel1 ? `<div class="detail-row"><span></span><span>${escapeHtml(tel1)}</span></div>` : ''}
-        </div>
+      <div class="detail-row"><span>Département</span><span>${escapeHtml(departement)}</span></div>
     `;
+  }
+}
 
-    // Ajouter les boutons
-    if (mapsUrl || tel0 || tel1) {
-      html += `<div class="btn-row">`;
-      if (mapsUrl) {
-        html += `<a class="btn btn--primary" href="${mapsUrl}" target="_blank" rel="noopener">M'y rendre</a>`;
-      }
-      if (tel0) {
-        html += `<a class="btn btn--secondary" href="tel:${tel0.replace(/\s/g, "")}">Appeler</a>`;
-      }
-      if (tel1) {
-        html += `<a class="btn btn--secondary" href="tel:${tel1.replace(/\s/g, "")}">Appeler</a>`;
-      }
-      html += `</div>`;
-    }
+html += `
+      <div class="detail-row"><span>Heure d'accueil</span><span>${escapeHtml(accueil)}</span></div>
+      <div class="detail-row"><span>Heure de départ</span><span>${escapeHtml(depart)}</span></div>
+      ${rando.rendezVous ? `<div class="detail-row"><span>Rendez-vous</span><span>${escapeHtml(rando.rendezVous)}</span></div>` : ''}
+`;
 
-    html += `</div>`;
-    screenRoot.innerHTML = html;
-  };
+// ✅ NOUVEAU : Afficher les téléphones avec les prénoms des pilotes
+if (tel0) {
+  const pilote1 = pilotes[0] ? `Proposé par ${escapeHtml(pilotes[0])}` : "Contact";
+  html += `
+    <div class="detail-row">
+      <span>${pilote1}</span>
+      <span>${escapeHtml(tel0)}</span>
+    </div>
+  `;
+}
+
+if (tel1) {
+  const pilote2 = pilotes[1] ? ` & ${escapeHtml(pilotes[1])}` : "";
+  html += `
+    <div class="detail-row">
+      <span>${pilote2}</span>
+      <span>${escapeHtml(tel1)}</span>
+    </div>
+  `;
+}
+
+html += `
+    </div>
+`;
+
+// Ajouter les boutons
+if (mapsUrl || tel0 || tel1) {
+  html += `<div class="btn-row">`;
+  if (mapsUrl) {
+    html += `<a class="btn btn--primary" href="${mapsUrl}" target="_blank" rel="noopener">M'y rendre</a>`;
+  }
+  if (tel0) {
+    html += `<a class="btn btn--secondary" href="tel:${tel0.replace(/\s/g, "")}">Appeler</a>`;
+  }
+  if (tel1) {
+    html += `<a class="btn btn--secondary" href="tel:${tel1.replace(/\s/g, "")}">Appeler</a>`;
+  }
+  html += `</div>`;
+}
+
+html += `</div>`;
+screenRoot.innerHTML = html;
 
   const showError = (message) => {
     screenRoot.innerHTML = `
