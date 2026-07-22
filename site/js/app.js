@@ -320,8 +320,22 @@ function renderRandoDetails(r) {
         <div class="detail-list">
           <div class="detail-row"><span>Date</span><span>${escapeHtml(rando.date || "Date inconnue")}</span></div>
           <div class="detail-row"><span>Lieu</span><span>${escapeHtml(commune)}</span></div>
-          ${pays ? `<div class="detail-row"><span>Pays</span><span>${escapeHtml(pays)}</span></div>` : ''}
-          ${departement ? `<div class="detail-row"><span>Département</span><span>${escapeHtml(departement)}</span></div>` : ''}
+    `;
+
+    // ✅ NOUVEAU : Afficher Pays et Département UNIQUEMENT si Pays ≠ "France"
+    if (pays && pays.toLowerCase() !== "france") {
+      html += `
+        <div class="detail-row"><span>Pays</span><span>${escapeHtml(pays)}</span></div>
+      `;
+      if (departement) {
+        html += `
+          <div class="detail-row"><span>Département</span><span>${escapeHtml(departement)}</span></div>
+        `;
+      }
+    }
+
+    // Suite du HTML
+    html += `
           <div class="detail-row"><span>Heure d'accueil</span><span>${escapeHtml(accueil)}</span></div>
           <div class="detail-row"><span>Heure de départ</span><span>${escapeHtml(depart)}</span></div>
           ${rando.rendezVous ? `<div class="detail-row"><span>Rendez-vous</span><span>${escapeHtml(rando.rendezVous)}</span></div>` : ''}
