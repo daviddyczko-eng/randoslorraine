@@ -97,8 +97,14 @@ async function fetchRandoDetails() {
     const res = await fetch(
       "https://randoslorraine.pages.dev/api/rando?ts=" + Date.now(),
       {
-        cache: "reload",
-        headers: { "Cache-Control": "no-cache" }
+        method: "GET",
+        mode: "cors",
+        cache: "no-store",
+        headers: {
+          "Cache-Control": "no-cache, no-store, must-revalidate",
+          "Pragma": "no-cache",
+          "Expires": "0"
+        }
       }
     );
 
