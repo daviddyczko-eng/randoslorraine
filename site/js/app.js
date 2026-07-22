@@ -492,6 +492,83 @@ async function checkUserAndStart() {
   });
 }
 
+function renderAccueil(prenom, nom) {
+  // Récupérer la prochaine rando depuis la variable globale
+  const rando = prochaineRando;
+
+  // Formater la date si elle existe
+  let dateText = "Aucune date disponible";
+  let lieuText = "Lieu inconnu";
+
+  if (rando && typeof rando === 'object') {
+    dateText = rando.date || "Date inconnue";
+    lieuText = (rando.lieu && rando.lieu.commune) ? rando.lieu.commune : "Lieu inconnu";
+  }
+
+  screenRoot.innerHTML = `
+    <div class="screen">
+      <div class="welcome">
+        <p>Bonjour ${escapeHtml(prenom)} ${escapeHtml(nom)} !</p>
+      </div>
+
+      <div class="menu">
+        <button class="menu-btn" id="btn-carte">
+          <span>Ma carte</span>
+        </button>
+
+        <button class="menu-btn" id="btn-rando">
+          <span>Prochaine randonnée</span>
+          <span class="rando-preview">
+            ${escapeHtml(dateText)}<br>
+            <small>${escapeHtml(lieuText)}</small>
+          </span>
+        </button>
+
+        <button class="menu-btn" id="btn-info-avant">
+          <span>Avant le départ</span>
+        </button>
+
+        <button class="menu-btn" id="btn-info-accident">
+          <span>En cas d'accident</span>
+        </button>
+
+        <button class="menu-btn" id="btn-info-tarifs">
+          <span>Tout sur les tarifs</span>
+        </button>
+
+        <button class="menu-btn" id="btn-info-lien">
+          <span>Lien internet</span>
+        </button>
+      </div>
+    </div>
+  `;
+
+  // Ajouter les écouteurs d'événements
+  $("#btn-carte").addEventListener("click", () => {
+    navigate("carte", { prenom, nom, title: "Ma carte", showBack: true });
+  });
+
+  $("#btn-rando").addEventListener("click", () => {
+    navigate("rando", { rando: prochaineRando, title: "Prochaine randonnée", showBack: true });
+  });
+
+  $("#btn-info-avant").addEventListener("click", () => {
+    navigate("info", { infoKey: "avant-depart", title: "Avant le départ", showBack: true });
+  });
+
+  $("#btn-info-accident").addEventListener("click", () => {
+    navigate("info", { infoKey: "en-cas-accident", title: "En cas d'accident", showBack: true });
+  });
+
+  $("#btn-info-tarifs").addEventListener("click", () => {
+    navigate("info", { infoKey: "tarifs", title: "Tout sur les tarifs", showBack: true });
+  });
+
+  $("#btn-info-lien").addEventListener("click", () => {
+    navigate("info", { infoKey: "lien-internet", title: "Lien internet", showBack: true });
+  });
+}
+
 /* -------------------------------------------------------
    🔧 Init
 ------------------------------------------------------- */
