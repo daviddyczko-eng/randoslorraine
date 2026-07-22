@@ -1,7 +1,6 @@
 /* -------------------------------------------------------
    🚫 Désactivation complète du Service Worker
 ------------------------------------------------------- */
-
 if ("serviceWorker" in navigator) {
   navigator.serviceWorker.getRegistrations().then((registrations) => {
     registrations.forEach((reg) => {
@@ -87,6 +86,8 @@ function renderQr(container, text, size = 100) {
    🌐 API Rando (cache contourné)
 ------------------------------------------------------- */
 async function fetchRandoDetails() {
+  console.log("fetchRandoDetails appelé");
+
   // 1️⃣ Vérifier si on est hors ligne
   if (!navigator.onLine) {
     const saved = localStorage.getItem("prochaineRando");
@@ -100,6 +101,7 @@ async function fetchRandoDetails() {
 
   try {
     // 2️⃣ Essayer de charger depuis l'API Cloudflare Worker
+    console.log("Tentative de chargement depuis l'API...");
     const res = await fetch(
       "https://randoslorraine.pages.dev/api/rando?ts=" + Date.now(),
       {
@@ -119,6 +121,7 @@ async function fetchRandoDetails() {
     }
 
     const data = await res.json();
+    console.log("Données reçues de l'API:", data);
 
     // 3️⃣ Sauvegarder dans localStorage pour une utilisation hors ligne
     localStorage.setItem("prochaineRando", JSON.stringify(data));
@@ -144,6 +147,7 @@ async function fetchRandoDetails() {
    📄 Navigation
 ------------------------------------------------------- */
 function navigate(screen, options = {}) {
+  console.log(`Navigation vers: ${screen}`);
   currentScreen = screen;
   showMain(options.showBack ?? false, options.title ?? "Rando's Lorraine", options.onBack);
 
@@ -274,6 +278,8 @@ function renderCorrection(prenom, nom) {
    🥾 Détails de la rando
 ------------------------------------------------------- */
 function renderRandoDetails(r) {
+  console.log("renderRandoDetails appelé avec:", r);
+
   screenRoot.innerHTML = `
     <div class="screen screen--center">
       <p class="loading-text">Chargement des informations…</p>
@@ -281,8 +287,11 @@ function renderRandoDetails(r) {
   `;
 
   const show = (rando) => {
+    console.log("Affichage des détails pour:", rando);
+
     // Vérifie que rando est un objet valide
     if (!rando || typeof rando !== 'object') {
+      console.error("Données de randonnée invalides:", rando);
       screenRoot.innerHTML = `
         <div class="screen screen--center">
           <p class="alert alert--danger">Aucune donnée de randonnée disponible.</p>
@@ -310,112 +319,122 @@ function renderRandoDetails(r) {
     const accueil = rando.heureAccueil || rando.lieu?.heureAccueil || "Heure d'accueil non spécifiée";
     const depart = rando.heureDepart || rando.lieu?.heureDepart || "Heure de départ non spécifiée";
 
-// Extraire les pilotes depuis la chaîne "Proposé par Pascal & David"
-let pilotes = [];
-if (rando.pilotes) {
-  // Nettoyer la chaîne pour extraire les noms
-  const pilotesText = rando.pilotes
-    .replace(/^Proposé par\s*/i, '') // Supprime "Proposé par " au début
-    .replace(/&/g, ',') // Remplace "&" par "," pour séparer les noms
-    .split(',')
-    .map(p => p.trim())
-    .filter(p => p.length > 0);
+    // Extraire les pilotes depuis la chaîne "Proposé par Pascal & David"
+    let pilotes = [];
+    if (rando.pilotes) {
+      // Nettoyer la chaîne pour extraire les noms
+      const pilotesText = rando.pilotes
+        .replace(/^Proposé par\s*/i, '') // Supprime "Proposé par " au début
+        .replace(/&/g, ',') // Remplace "&" par "," pour séparer les noms
+        .split(',')
+        .map(p => p.trim())
+        .filter(p => p.length > 0);
 
-  pilotes = pilotesText;
-}
+      pilotes = pilotesText;
+    }
 
-// Extraire les téléphones
-const tel0 = (rando.telephones && rando.telephones[0]) ? rando.telephones[0] : null;
-const tel1 = (rando.telephones && rando.telephones[1]) ? rando.telephones[1] : null;
+    // Extraire les téléphones
+    const tel0 = (rando.telephones && rando.telephones[0]) ? rando.telephones[0] : null;
+    const tel1 = (rando.telephones && rando.telephones[1]) ? rando.telephones[1] : null;
 
-// Construire le HTML
-let html = `
-  <div class="screen">
-    <div class="detail-list">
-      <div class="detail-row"><span>Date</span><span>${escapeHtml(rando.date || "Date inconnue")}</span></div>
-      <div class="detail-row"><span>Lieu</span><span>${escapeHtml(commune)}</span></div>
-`;
-
-// ✅ Afficher Pays et Département UNIQUEMENT si Pays ≠ "France"
-if (pays && pays.toLowerCase() !== "france") {
-  html += `
-    <div class="detail-row"><span>Pays</span><span>${escapeHtml(pays)}</span></div>
-  `;
-  if (departement) {
-    html += `
-      <div class="detail-row"><span>Département</span><span>${escapeHtml(departement)}</span></div>
+    // Construire le HTML
+    let html = `
+      <div class="screen">
+        <div class="detail-list">
+          <div class="detail-row"><span>Date</span><span>${escapeHtml(rando.date || "Date inconnue")}</span></div>
+          <div class="detail-row"><span>Lieu</span><span>${escapeHtml(commune)}</span></div>
     `;
-  }
-}
 
-html += `
-      <div class="detail-row"><span>Heure d'accueil</span><span>${escapeHtml(accueil)}</span></div>
-      <div class="detail-row"><span>Heure de départ</span><span>${escapeHtml(depart)}</span></div>
-      ${rando.rendezVous ? `<div class="detail-row"><span>Rendez-vous</span><span>${escapeHtml(rando.rendezVous)}</span></div>` : ''}
-`;
+    // ✅ Afficher Pays et Département UNIQUEMENT si Pays ≠ "France"
+    if (pays && pays.toLowerCase() !== "france") {
+      html += `
+        <div class="detail-row"><span>Pays</span><span>${escapeHtml(pays)}</span></div>
+      `;
+      if (departement) {
+        html += `
+          <div class="detail-row"><span>Département</span><span>${escapeHtml(departement)}</span></div>
+        `;
+      }
+    }
 
-// ✅ NOUVEAU : Afficher les téléphones avec les prénoms des pilotes
-if (tel0) {
-  const pilote1 = pilotes[0] ? `Proposé par ${escapeHtml(pilotes[0])}` : "Contact";
-  html += `
-    <div class="detail-row">
-      <span>${pilote1}</span>
-      <span>${escapeHtml(tel0)}</span>
-    </div>
-  `;
-}
+    html += `
+          <div class="detail-row"><span>Heure d'accueil</span><span>${escapeHtml(accueil)}</span></div>
+          <div class="detail-row"><span>Heure de départ</span><span>${escapeHtml(depart)}</span></div>
+          ${rando.rendezVous ? `<div class="detail-row"><span>Rendez-vous</span><span>${escapeHtml(rando.rendezVous)}</span></div>` : ''}
+    `;
 
-if (tel1) {
-  const pilote2 = pilotes[1] ? ` & ${escapeHtml(pilotes[1])}` : "";
-  html += `
-    <div class="detail-row">
-      <span>${pilote2}</span>
-      <span>${escapeHtml(tel1)}</span>
-    </div>
-  `;
-}
+    // ✅ Afficher les téléphones avec les prénoms des pilotes
+    if (tel0) {
+      const pilote1 = pilotes[0] ? `Proposé par ${escapeHtml(pilotes[0])}` : "Contact";
+      html += `
+        <div class="detail-row">
+          <span>${pilote1}</span>
+          <span>${escapeHtml(tel0)}</span>
+        </div>
+      `;
+    }
 
-html += `
-    </div>
-`;
+    if (tel1) {
+      const pilote2 = pilotes[1] ? ` & ${escapeHtml(pilotes[1])}` : "";
+      html += `
+        <div class="detail-row">
+          <span>${pilote2}</span>
+          <span>${escapeHtml(tel1)}</span>
+        </div>
+      `;
+    }
 
-// Ajouter les boutons
-if (mapsUrl || tel0 || tel1) {
-  html += `<div class="btn-row">`;
-  if (mapsUrl) {
-    html += `<a class="btn btn--primary" href="${mapsUrl}" target="_blank" rel="noopener">M'y rendre</a>`;
-  }
-  if (tel0) {
-    html += `<a class="btn btn--secondary" href="tel:${tel0.replace(/\s/g, "")}">Appeler</a>`;
-  }
-  if (tel1) {
-    html += `<a class="btn btn--secondary" href="tel:${tel1.replace(/\s/g, "")}">Appeler</a>`;
-  }
-  html += `</div>`;
-}
+    html += `
+        </div>
+    `;
 
-html += `</div>`;
-screenRoot.innerHTML = html;
+    // Ajouter les boutons
+    if (mapsUrl || tel0 || tel1) {
+      html += `<div class="btn-row">`;
+      if (mapsUrl) {
+        html += `<a class="btn btn--primary" href="${mapsUrl}" target="_blank" rel="noopener">M'y rendre</a>`;
+      }
+      if (tel0) {
+        html += `<a class="btn btn--secondary" href="tel:${tel0.replace(/\s/g, "")}">Appeler</a>`;
+      }
+      if (tel1) {
+        html += `<a class="btn btn--secondary" href="tel:${tel1.replace(/\s/g, "")}">Appeler</a>`;
+      }
+      html += `</div>`;
+    }
+
+    html += `</div>`;
+    screenRoot.innerHTML = html;
+  };
 
   const showError = (message) => {
+    console.error("Erreur dans renderRandoDetails:", message);
     screenRoot.innerHTML = `
       <div class="screen screen--center">
         <p class="alert alert--danger">${escapeHtml(message)}</p>
         <button class="btn btn--primary" id="btn-retry">Réessayer</button>
       </div>
     `;
-    $("#btn-retry").addEventListener("click", () => renderRandoDetails(r));
+    $("#btn-retry").addEventListener("click", () => {
+      console.log("Bouton Réessayer cliqué");
+      renderRandoDetails(r);
+    });
   };
 
+  // Appeler show avec r si r est déjà défini, sinon charger les données
   if (r) {
+    console.log("Données déjà disponibles, affichage direct.");
     show(r);
   } else {
+    console.log("Aucune donnée disponible, chargement depuis l'API...");
     fetchRandoDetails()
       .then((data) => {
+        console.log("Données chargées avec succès:", data);
         prochaineRando = data;
         show(data);
       })
       .catch((error) => {
+        console.error("Erreur lors du chargement des données:", error);
         showError("Impossible de charger les informations. " + error.message);
       });
   }
@@ -504,23 +523,34 @@ function renderInfoPage(key) {
 ------------------------------------------------------- */
 async function checkUserAndStart() {
   try {
+    console.log("checkUserAndStart appelé");
+
     // Charger les données de l'utilisateur et les infos en parallèle
     const [infoRes, randoRes] = await Promise.all([
-      fetch("./data/info.json").then((r) => r.json()),
-      fetchRandoDetails().catch(() => null) // Ne pas bloquer si les données de rando échouent
+      fetch("./data/info.json").then((r) => {
+        if (!r.ok) throw new Error(`Erreur HTTP ${r.status} pour info.json`);
+        return r.json();
+      }),
+      fetchRandoDetails().catch((error) => {
+        console.warn("Erreur lors du chargement des données de rando:", error);
+        return null; // Ne pas bloquer si les données de rando échouent
+      })
     ]);
 
     infoContent = infoRes;
     prochaineRando = randoRes; // Peut être null si hors ligne et pas de cache
 
     const user = getUser();
+    console.log("Utilisateur actuel:", user);
 
     if (!user?.prenom || !user?.nom || !user?.dateInscription) {
+      console.log("Aucun utilisateur trouvé, navigation vers inscription");
       navigate("inscription", { title: "Inscription" });
       return;
     }
 
     if (needsCotisation(user.dateInscription)) {
+      console.log("Cotisation nécessaire, navigation vers cotisation");
       navigate("cotisation", {
         prenom: user.prenom,
         nom: user.nom,
@@ -530,6 +560,7 @@ async function checkUserAndStart() {
       return;
     }
 
+    console.log("Navigation vers accueil avec utilisateur:", user.prenom, user.nom);
     navigate("accueil", {
       prenom: user.prenom,
       nom: user.nom,
@@ -543,89 +574,45 @@ async function checkUserAndStart() {
   }
 }
 
-function renderAccueil(prenom, nom) {
-  // Récupérer la prochaine rando depuis la variable globale
-  const rando = prochaineRando;
-
-  // Formater la date si elle existe
-  let dateText = "Aucune date disponible";
-  let lieuText = "Lieu inconnu";
-
-  if (rando && typeof rando === 'object') {
-    dateText = rando.date || "Date inconnue";
-    lieuText = (rando.lieu && rando.lieu.commune) ? rando.lieu.commune : "Lieu inconnu";
+/* -------------------------------------------------------
+   🔧 Fonction manquante : openAppOrStore
+------------------------------------------------------- */
+function openAppOrStore(scheme, androidUrl, iosUrl) {
+  if (!scheme && !androidUrl && !iosUrl) {
+    alert("L'application n'est pas encore disponible sur les stores.");
+    return;
   }
 
-  screenRoot.innerHTML = `
-    <div class="screen">
-      <div class="welcome">
-        <p>Bonjour ${escapeHtml(prenom)} ${escapeHtml(nom)} !</p>
-      </div>
-
-      <div class="menu">
-        <button class="menu-btn" id="btn-carte">
-          <span>Ma carte</span>
-        </button>
-
-        <button class="menu-btn" id="btn-rando">
-          <span>Prochaine randonnée</span>
-          <span class="rando-preview">
-            ${escapeHtml(dateText)}<br>
-            <small>${escapeHtml(lieuText)}</small>
-          </span>
-        </button>
-
-        <button class="menu-btn" id="btn-info-avant">
-          <span>Avant le départ</span>
-        </button>
-
-        <button class="menu-btn" id="btn-info-accident">
-          <span>En cas d'accident</span>
-        </button>
-
-        <button class="menu-btn" id="btn-info-tarifs">
-          <span>Tout sur les tarifs</span>
-        </button>
-
-        <button class="menu-btn" id="btn-info-lien">
-          <span>Lien internet</span>
-        </button>
-      </div>
-    </div>
-  `;
-
-  // Ajouter les écouteurs d'événements
-  $("#btn-carte").addEventListener("click", () => {
-    navigate("carte", { prenom, nom, title: "Ma carte", showBack: true });
-  });
-
-  $("#btn-rando").addEventListener("click", () => {
-    navigate("rando", { rando: prochaineRando, title: "Prochaine randonnée", showBack: true });
-  });
-
-  $("#btn-info-avant").addEventListener("click", () => {
-    navigate("info", { infoKey: "avant-depart", title: "Avant le départ", showBack: true });
-  });
-
-  $("#btn-info-accident").addEventListener("click", () => {
-    navigate("info", { infoKey: "en-cas-accident", title: "En cas d'accident", showBack: true });
-  });
-
-  $("#btn-info-tarifs").addEventListener("click", () => {
-    navigate("info", { infoKey: "tarifs", title: "Tout sur les tarifs", showBack: true });
-  });
-
-  $("#btn-info-lien").addEventListener("click", () => {
-    navigate("info", { infoKey: "lien-internet", title: "Lien internet", showBack: true });
-  });
+  // Essayer d'ouvrir l'application via un deep link
+  if (scheme) {
+    window.location.href = scheme;
+    setTimeout(() => {
+      // Si l'application ne s'ouvre pas, rediriger vers le store
+      if (androidUrl && /Android|webOS|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+        window.location.href = androidUrl;
+      } else if (iosUrl) {
+        window.location.href = iosUrl;
+      }
+    }, 500);
+  } else if (androidUrl && /Android|webOS|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+    window.location.href = androidUrl;
+  } else if (iosUrl) {
+    window.location.href = iosUrl;
+  }
 }
 
 /* -------------------------------------------------------
    🔧 Init
 ------------------------------------------------------- */
 async function init() {
-  // Service worker désactivé (bloc 1)
-  // navigator.serviceWorker.register("./sw.js");
+  console.log("Initialisation de l'application");
+
+  // Service worker désactivé
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.getRegistrations().then((registrations) => {
+      registrations.forEach((reg) => reg.unregister());
+    });
+  }
 
   appBarBack.addEventListener("click", () => backHandler?.());
 
