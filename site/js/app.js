@@ -88,7 +88,6 @@ function renderQr(container, text, size = 100) {
 async function fetchRandoDetails() {
   console.log("fetchRandoDetails appelé");
 
-  // 1️⃣ Vérifier si on est hors ligne
   if (!navigator.onLine) {
     const saved = localStorage.getItem("prochaineRando");
     if (saved) {
@@ -100,7 +99,6 @@ async function fetchRandoDetails() {
   }
 
   try {
-    // 2️⃣ Essayer de charger depuis l'API Cloudflare Worker
     console.log("Tentative de chargement depuis l'API...");
     const res = await fetch(
       "https://randoslorraine.pages.dev/api/rando?ts=" + Date.now(),
@@ -123,7 +121,6 @@ async function fetchRandoDetails() {
     const data = await res.json();
     console.log("Données reçues de l'API:", data);
 
-    // 3️⃣ Sauvegarder dans localStorage pour une utilisation hors ligne
     localStorage.setItem("prochaineRando", JSON.stringify(data));
     console.log("Données sauvegardées dans localStorage.");
 
@@ -132,7 +129,6 @@ async function fetchRandoDetails() {
   } catch (apiError) {
     console.warn("L'API a échoué, tentative de chargement depuis localStorage...", apiError);
 
-    // 4️⃣ Fallback : Charger depuis localStorage
     const saved = localStorage.getItem("prochaineRando");
     if (saved) {
       console.log("Fallback : données chargées depuis localStorage.");
@@ -144,37 +140,83 @@ async function fetchRandoDetails() {
 }
 
 /* -------------------------------------------------------
-   📄 Navigation
+   📄 Fonctions de rendu (définies AVANT navigate)
 ------------------------------------------------------- */
-function navigate(screen, options = {}) {
-  console.log(`Navigation vers: ${screen} avec options:`, options);
-  currentScreen = screen;
-  showMain(options.showBack ?? false, options.title ?? "Rando's Lorraine", options.onBack);
 
-  switch (screen) {
-    case "inscription":
-      return renderInscription();
-    case "cotisation":
-      return renderCotisation(options.prenom, options.nom, options.dateInscription);
-    case "accueil":
-      return renderAccueil(options.prenom, options.nom);
-    case "carte":
-      return renderCarte(options.prenom, options.nom);
-    case "correction":
-      return renderCorrection(options.prenom, options.nom);
-    case "rando":
-      return renderRandoDetails(options.rando);
-    case "info":
-      return renderInfoPage(options.infoKey);
-    default:
-      console.error(`Écran inconnu: ${screen}`);
-      return renderAccueil(options.prenom, options.nom); // Fallback vers l'accueil
+function renderAccueil(prenom, nom) {
+  const rando = prochaineRando;
+
+  let dateText = "Aucune date disponible";
+  let lieuText = "Lieu inconnu";
+
+  if (rando && typeof rando === 'object') {
+    dateText = rando.date || "Date inconnue";
+    lieuText = (rando.lieu && rando.lieu.commune) ? rando.lieu.commune : "Lieu inconnu";
   }
+
+  screenRoot.innerHTML = `
+    <div class="screen">
+      <div class="welcome">
+        <p>Bonjour ${escapeHtml(prenom)} ${escapeHtml(nom)} !</p>
+      </div>
+
+      <div class="menu">
+        <button class="menu-btn" id="btn-carte">
+          <span>Ma carte</span>
+        </button>
+
+        <button class="menu-btn" id="btn-rando">
+          <span>Prochaine randonnée</span>
+          <span class="rando-preview">
+            ${escapeHtml(dateText)}<br>
+            <small>${escapeHtml(lieuText)}</small>
+          </span>
+        </button>
+
+        <button class="menu-btn" id="btn-info-avant">
+          <span>Avant le départ</span>
+        </button>
+
+        <button class="menu-btn" id="btn-info-accident">
+          <span>En cas d'accident</span>
+        </button>
+
+        <button class="menu-btn" id="btn-info-tarifs">
+          <span>Tout sur les tarifs</span>
+        </button>
+
+        <button class="menu-btn" id="btn-info-lien">
+          <span>Lien internet</span>
+        </button>
+      </div>
+    </div>
+  `;
+
+  $("#btn-carte").addEventListener("click", () => {
+    navigate("carte", { prenom, nom, title: "Ma carte", showBack: true });
+  });
+
+  $("#btn-rando").addEventListener("click", () => {
+    navigate("rando", { rando: prochaineRando, title: "Prochaine randonnée", showBack: true });
+  });
+
+  $("#btn-info-avant").addEventListener("click", () => {
+    navigate("info", { infoKey: "avant-depart", title: "Avant le départ", showBack: true });
+  });
+
+  $("#btn-info-accident").addEventListener("click", () => {
+    navigate("info", { infoKey: "en-cas-accident", title: "En cas d'accident", showBack: true });
+  });
+
+  $("#btn-info-tarifs").addEventListener("click", () => {
+    navigate("info", { infoKey: "tarifs", title: "Tout sur les tarifs", showBack: true });
+  });
+
+  $("#btn-info-lien").addEventListener("click", () => {
+    navigate("info", { infoKey: "lien-internet", title: "Lien internet", showBack: true });
+  });
 }
 
-/* -------------------------------------------------------
-   📝 Inscription
-------------------------------------------------------- */
 function renderInscription() {
   screenRoot.innerHTML = `
     <div class="screen">
@@ -198,14 +240,12 @@ function renderInscription() {
     </div>
   `;
 
-  // Écouteur pour le bouton "Quitter"
   $("#btn-quit").addEventListener("click", () => {
     alert("Fermez l'onglet pour quitter.");
   });
 
-  // Écouteur pour le formulaire
   $("#form-inscription").addEventListener("submit", (e) => {
-    e.preventDefault(); // Empêche le rechargement de la page
+    e.preventDefault();
     console.log("Formulaire d'inscription soumis");
 
     const prenom = formatName($("#prenom").value);
@@ -214,7 +254,6 @@ function renderInscription() {
 
     console.log(`Prénom: ${prenom}, Nom: ${nom}, Date: ${dateInscription}`);
 
-    // Sauvegarder l'utilisateur
     const success = saveUser({ prenom, nom, dateInscription });
     if (!success) {
       console.error("Échec de la sauvegarde de l'utilisateur.");
@@ -223,14 +262,34 @@ function renderInscription() {
     }
 
     console.log("Navigation vers l'accueil...");
-    // Naviguer vers l'écran d'accueil
     navigate("accueil", { prenom, nom });
   });
 }
 
-/* -------------------------------------------------------
-   🗺️ Carte
-------------------------------------------------------- */
+function renderCotisation(prenom, nom, dateInscription) {
+  const currentYear = new Date().getFullYear();
+  screenRoot.innerHTML = `
+    <div class="screen">
+      <div class="cotisation-box">
+        <p>Je déclare sur l'honneur que ma cotisation est à jour pour l'année ${currentYear}.</p>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn--primary" id="btn-cotisation-ok">Je confirme</button>
+      </div>
+    </div>
+  `;
+
+  $("#btn-cotisation-ok").addEventListener("click", () => {
+    const user = getUser();
+    saveUser({
+      ...user,
+      cotisationAnnee: currentYear,
+      tarif: 0 // 0 = cotisation à jour
+    });
+    navigate("accueil", { prenom, nom });
+  });
+}
+
 function renderCarte(prenom, nom) {
   screenRoot.innerHTML = `
     <div class="screen screen--center">
@@ -253,9 +312,6 @@ function renderCarte(prenom, nom) {
   });
 }
 
-/* -------------------------------------------------------
-   ✏️ Correction
-------------------------------------------------------- */
 function renderCorrection(prenom, nom) {
   screenRoot.innerHTML = `
     <div class="screen">
@@ -295,9 +351,6 @@ function renderCorrection(prenom, nom) {
   });
 }
 
-/* -------------------------------------------------------
-   🥾 Détails de la rando
-------------------------------------------------------- */
 function renderRandoDetails(r) {
   console.log("renderRandoDetails appelé avec:", r);
 
@@ -310,7 +363,6 @@ function renderRandoDetails(r) {
   const show = (rando) => {
     console.log("Affichage des détails pour:", rando);
 
-    // Vérifie que rando est un objet valide
     if (!rando || typeof rando !== 'object') {
       console.error("Données de randonnée invalides:", rando);
       screenRoot.innerHTML = `
@@ -321,7 +373,6 @@ function renderRandoDetails(r) {
       return;
     }
 
-    // Extraire les coordonnées GPS
     let lat, lng;
     if (rando.gps) {
       const coords = rando.gps.split(',').map(coord => parseFloat(coord.trim()));
@@ -331,22 +382,18 @@ function renderRandoDetails(r) {
 
     const mapsUrl = lat && lng ? `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}` : null;
 
-    // Extraire les informations de lieu
     const commune = (rando.lieu && rando.lieu.commune) ? rando.lieu.commune : "Lieu inconnu";
     const pays = (rando.lieu && rando.lieu.pays) ? rando.lieu.pays : null;
     const departement = (rando.lieu && rando.lieu.departement) ? rando.lieu.departement : null;
 
-    // Extraire les heures
     const accueil = rando.heureAccueil || rando.lieu?.heureAccueil || "Heure d'accueil non spécifiée";
     const depart = rando.heureDepart || rando.lieu?.heureDepart || "Heure de départ non spécifiée";
 
-    // Extraire les pilotes depuis la chaîne "Proposé par Pascal & David"
     let pilotes = [];
     if (rando.pilotes) {
-      // Nettoyer la chaîne pour extraire les noms
       const pilotesText = rando.pilotes
-        .replace(/^Proposé par\s*/i, '') // Supprime "Proposé par " au début
-        .replace(/&/g, ',') // Remplace "&" par "," pour séparer les noms
+        .replace(/^Proposé par\s*/i, '')
+        .replace(/&/g, ',')
         .split(',')
         .map(p => p.trim())
         .filter(p => p.length > 0);
@@ -354,11 +401,9 @@ function renderRandoDetails(r) {
       pilotes = pilotesText;
     }
 
-    // Extraire les téléphones
     const tel0 = (rando.telephones && rando.telephones[0]) ? rando.telephones[0] : null;
     const tel1 = (rando.telephones && rando.telephones[1]) ? rando.telephones[1] : null;
 
-    // Construire le HTML
     let html = `
       <div class="screen">
         <div class="detail-list">
@@ -366,7 +411,6 @@ function renderRandoDetails(r) {
           <div class="detail-row"><span>Lieu</span><span>${escapeHtml(commune)}</span></div>
     `;
 
-    // ✅ Afficher Pays et Département UNIQUEMENT si Pays ≠ "France"
     if (pays && pays.toLowerCase() !== "france") {
       html += `
         <div class="detail-row"><span>Pays</span><span>${escapeHtml(pays)}</span></div>
@@ -384,7 +428,6 @@ function renderRandoDetails(r) {
           ${rando.rendezVous ? `<div class="detail-row"><span>Rendez-vous</span><span>${escapeHtml(rando.rendezVous)}</span></div>` : ''}
     `;
 
-    // ✅ Afficher les téléphones avec les prénoms des pilotes
     if (tel0) {
       const pilote1 = pilotes[0] ? `Proposé par ${escapeHtml(pilotes[0])}` : "Contact";
       html += `
@@ -409,7 +452,6 @@ function renderRandoDetails(r) {
         </div>
     `;
 
-    // Ajouter les boutons
     if (mapsUrl || tel0 || tel1) {
       html += `<div class="btn-row">`;
       if (mapsUrl) {
@@ -442,7 +484,6 @@ function renderRandoDetails(r) {
     });
   };
 
-  // Appeler show avec r si r est déjà défini, sinon charger les données
   if (r) {
     console.log("Données déjà disponibles, affichage direct.");
     show(r);
@@ -461,9 +502,6 @@ function renderRandoDetails(r) {
   }
 }
 
-/* -------------------------------------------------------
-   🌐 Page d'information
-------------------------------------------------------- */
 function renderInfoPage(key) {
   if (key === "lien-internet") {
     const lienInternet = infoContent["lien-internet"];
@@ -540,13 +578,41 @@ function renderInfoPage(key) {
 }
 
 /* -------------------------------------------------------
+   📄 Navigation
+------------------------------------------------------- */
+function navigate(screen, options = {}) {
+  console.log(`Navigation vers: ${screen} avec options:`, options);
+  currentScreen = screen;
+  showMain(options.showBack ?? false, options.title ?? "Rando's Lorraine", options.onBack);
+
+  switch (screen) {
+    case "inscription":
+      return renderInscription();
+    case "cotisation":
+      return renderCotisation(options.prenom, options.nom, options.dateInscription);
+    case "accueil":
+      return renderAccueil(options.prenom, options.nom);
+    case "carte":
+      return renderCarte(options.prenom, options.nom);
+    case "correction":
+      return renderCorrection(options.prenom, options.nom);
+    case "rando":
+      return renderRandoDetails(options.rando);
+    case "info":
+      return renderInfoPage(options.infoKey);
+    default:
+      console.error(`Écran inconnu: ${screen}`);
+      return renderAccueil(options.prenom, options.nom);
+  }
+}
+
+/* -------------------------------------------------------
    🚀 Démarrage
 ------------------------------------------------------- */
 async function checkUserAndStart() {
   try {
     console.log("checkUserAndStart appelé");
 
-    // Charger les données de l'utilisateur et les infos en parallèle
     const [infoRes, randoRes] = await Promise.all([
       fetch("./data/info.json")
         .then((r) => {
@@ -555,16 +621,16 @@ async function checkUserAndStart() {
         })
         .catch((error) => {
           console.error("Erreur lors du chargement de info.json:", error);
-          return {}; // Retourne un objet vide si info.json échoue
+          return {};
         }),
       fetchRandoDetails().catch((error) => {
         console.warn("Erreur lors du chargement des données de rando:", error);
-        return null; // Ne pas bloquer si les données de rando échouent
+        return null;
       })
     ]);
 
     infoContent = infoRes;
-    prochaineRando = randoRes; // Peut être null si hors ligne et pas de cache
+    prochaineRando = randoRes;
 
     const user = getUser();
     console.log("Utilisateur actuel:", user);
@@ -595,7 +661,6 @@ async function checkUserAndStart() {
 
   } catch (error) {
     console.error("Erreur lors du démarrage :", error);
-    // Afficher un message d'erreur et naviguer vers l'inscription
     navigate("inscription", { title: "Inscription" });
   }
 }
@@ -609,11 +674,9 @@ function openAppOrStore(scheme, androidUrl, iosUrl) {
     return;
   }
 
-  // Essayer d'ouvrir l'application via un deep link
   if (scheme) {
     window.location.href = scheme;
     setTimeout(() => {
-      // Si l'application ne s'ouvre pas, rediriger vers le store
       if (androidUrl && /Android|webOS|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
         window.location.href = androidUrl;
       } else if (iosUrl) {
@@ -633,7 +696,6 @@ function openAppOrStore(scheme, androidUrl, iosUrl) {
 async function init() {
   console.log("Initialisation de l'application");
 
-  // Service worker désactivé
   if ("serviceWorker" in navigator) {
     navigator.serviceWorker.getRegistrations().then((registrations) => {
       registrations.forEach((reg) => reg.unregister());
