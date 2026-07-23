@@ -130,7 +130,8 @@ function renderAccueil(prenom, nom) {
           <span class="home-card__title">Tout sur les tarifs</span>
         </div>
 
-        <div class="home-card" id="btn-info-lien">
+        <!-- ✅ Cadre "Lien internet" cliquable -->
+        <div class="home-card home-card--clickable" onclick="window.open('https://randoslorraine.org', '_blank')">
           <span class="home-card__title">Lien internet</span>
         </div>
       </div>
@@ -138,7 +139,7 @@ function renderAccueil(prenom, nom) {
   `;
 
   // ✅ Générer le QR code en petit dans le premier cadre
-  renderQr($("#qr-small"), qrData(prenom, nom), 60); // Taille réduite à 60px
+  renderQr($("#qr-small"), qrData(prenom, nom), 60);
 
   // Écouteurs d'événements
   $("#btn-carte").addEventListener("click", () => {
@@ -146,23 +147,51 @@ function renderAccueil(prenom, nom) {
   });
 
   $("#btn-rando").addEventListener("click", () => {
-    navigate("rando", { rando: prochaineRando, title: "Prochaine randonnée", showBack: true });
+    navigate("rando", {
+      rando: prochaineRando,
+      title: "Prochaine randonnée",
+      showBack: true,
+      onBack: () => {
+        const user = getUser();
+        navigate("accueil", { prenom: user.prenom, nom: user.nom });
+      }
+    });
   });
 
   $("#btn-info-avant").addEventListener("click", () => {
-    navigate("info", { infoKey: "avant-depart", title: "Avant le départ", showBack: true });
+    navigate("info", {
+      infoKey: "avant-depart",
+      title: "Avant le départ",
+      showBack: true,
+      onBack: () => {
+        const user = getUser();
+        navigate("accueil", { prenom: user.prenom, nom: user.nom });
+      }
+    });
   });
 
   $("#btn-info-accident").addEventListener("click", () => {
-    navigate("info", { infoKey: "accident", title: "En cas d'accident", showBack: true });
+    navigate("info", {
+      infoKey: "en-cas-accident",
+      title: "En cas d'accident",
+      showBack: true,
+      onBack: () => {
+        const user = getUser();
+        navigate("accueil", { prenom: user.prenom, nom: user.nom });
+      }
+    });
   });
 
   $("#btn-info-tarifs").addEventListener("click", () => {
-    navigate("info", { infoKey: "tarifs", title: "Tout sur les tarifs", showBack: true });
-  });
-
-  $("#btn-info-lien").addEventListener("click", () => {
-    navigate("info", { infoKey: "lien-internet", title: "Lien internet", showBack: true });
+    navigate("info", {
+      infoKey: "tarifs",
+      title: "Tout sur les tarifs",
+      showBack: true,
+      onBack: () => {
+        const user = getUser();
+        navigate("accueil", { prenom: user.prenom, nom: user.nom });
+      }
+    });
   });
 }
 
