@@ -599,22 +599,49 @@ function renderInfoPage(key) {
     if (section.items) {
       html += `<ul>${section.items.map((i) => `<li>${escapeHtml(i)}</li>`).join("")}</ul>`;
     }
-
-    if (section.text) {
-      html += section.text
-        .map((t) =>
-          typeof t === "string"
-            ? `<p class="info-text">${escapeHtml(t)}</p>`
-            : `
-              <p class="info-text">
-                <a href="${t.scheme || '#'}" class="info-link">
-                  ${escapeHtml(t.label)}
-                </a>
-              </p>
-            `
-        )
-        .join("");
-    }
+     
+   if (section.text) {
+     html += section.text
+       .map((t) => {
+         if (typeof t === "string") {
+           return `<p class="info-text">${escapeHtml(t)}</p>`;
+         }
+   
+         // ✅ Gérer les liens avec store_android et store_ios
+         if (t.store_android || t.store_ios) {
+           const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+           let url = "#";
+   
+           // Détecter si l'utilisateur est sur Android ou iOS
+           if (/android/i.test(userAgent)) {
+             url = t.store_android || "#";
+           } else if (/iPad|iPhone|iPod/.test(userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)) {
+             url = t.store_ios || "#";
+           } else {
+             // Par défaut, ouvrir le store Android (ou un lien générique)
+             url = t.store_android || t.store_ios || "#";
+           }
+   
+           return `
+             <p class="info-text">
+               <a href="${url}" target="_blank" rel="noopener" class="info-link">
+                 ${escapeHtml(t.label)}
+               </a>
+             </p>
+           `;
+         }
+   
+         // ✅ Gérer les liens avec scheme
+         return `
+           <p class="info-text">
+             <a href="${t.scheme || '#'}" class="info-link">
+               ${escapeHtml(t.label)}
+             </a>
+           </p>
+         `;
+       })
+       .join("");
+   }
    
    if (section.links) {
      html += section.links
