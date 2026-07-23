@@ -90,13 +90,17 @@
           "Garder le téléphone chargé autant que possible"
         ]
       },
-      {
-        "heading": "Assurance",
-        "items": [
-          "<a href=\"tel:0800875875\">0 800 875 875</a> en France",
-          "<a href=\"tel:+33549774778\">+33 5 49 77 47 78</a> depuis l’étranger",
-          "sociétaire MAIF 3163163A"
-        ]
+    {
+      "heading": "Assurance",
+      "items": [
+        "en France",
+        "depuis l’étranger",
+        "sociétaire MAIF 3163163A"
+      ],
+      "links": [
+        { "url": "tel:0800875875", "label": "0 800 875 875" },
+        { "url": "tel:+33549774778", "label": "+33 5 49 77 47 78" }
+      ]
       }
     ]
   },
