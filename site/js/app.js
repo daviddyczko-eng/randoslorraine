@@ -455,13 +455,13 @@ function renderRandoDetails(r) {
         </div>
     `;
 
-    if (mapsUrl || url) {
+    if (mapsUrl || randoUrl) {
       html += `<div class="btn-row">`;
       if (mapsUrl) {
         html += `<a class="btn btn--primary" href="${mapsUrl}" target="_blank" rel="noopener">M'y rendre</a>`;
       }
-      if (url) {
-        html += `<a class="btn btn--secondary" href="tel:${url.replace(/\s/g, "")}">En savoir plus</a>`;
+      if (randoUrl) {
+        html += `<a class="btn btn--secondary" href="tel:${randoUrl.replace(/\s/g, "")}">En savoir plus</a>`;
       }
       html += `</div>`;
     }
