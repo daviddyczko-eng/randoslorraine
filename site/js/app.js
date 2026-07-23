@@ -195,14 +195,32 @@ function renderInscription() {
     </div>
   `;
 
-  $("#btn-quit").addEventListener("click", () => alert("Fermez l'onglet pour quitter."));
+  // Écouteur pour le bouton "Quitter"
+  $("#btn-quit").addEventListener("click", () => {
+    alert("Fermez l'onglet pour quitter.");
+  });
 
+  // Écouteur pour le formulaire
   $("#form-inscription").addEventListener("submit", (e) => {
-    e.preventDefault();
+    e.preventDefault(); // Empêche le rechargement de la page
+    console.log("Formulaire d'inscription soumis");
+
     const prenom = formatName($("#prenom").value);
     const nom = formatName($("#nom").value);
     const dateInscription = new Date().toISOString();
-    saveUser({ prenom, nom, dateInscription });
+
+    console.log(`Prénom: ${prenom}, Nom: ${nom}, Date: ${dateInscription}`);
+
+    // Sauvegarder l'utilisateur
+    const success = saveUser({ prenom, nom, dateInscription });
+    if (!success) {
+      console.error("Échec de la sauvegarde de l'utilisateur.");
+      alert("Une erreur est survenue. Veuillez réessayer.");
+      return;
+    }
+
+    console.log("Navigation vers l'accueil...");
+    // Naviguer vers l'écran d'accueil
     navigate("accueil", { prenom, nom });
   });
 }
