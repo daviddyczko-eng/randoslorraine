@@ -50,15 +50,21 @@
           "Rassurer et couvrir la personne"
         ]
       },
-      {
-        "heading": "Prévenir les urgences :",
-        "items": [
-          "Numéro européen : <a href=\"tel:112\">112</a>",
-          "SAMU-SAS : <a href=\"tel:15\">15</a>",
-          "Sapeurs-pompiers : <a href=\"tel:18\">18</a>",
-          "Alerte par SMS : <a href=\"sms:114\">114</a>"
-        ],
-        "text": [
+    {
+      "heading": "Prévenir les urgences :",
+      "items": [
+        "Numéro européen",
+        "SAMU-SAS",
+        "Sapeurs-pompiers",
+        "Alerte par SMS"
+      ],
+      "links": [
+        { "url": "tel:112", "label": "112" },
+        { "url": "tel:15", "label": "15" },
+        { "url": "tel:18", "label": "18" },
+        { "url": "sms:114", "label": "114" }
+      ],
+      "text": [
           {
             "label": "Alerte Secours",
             "scheme": null,
