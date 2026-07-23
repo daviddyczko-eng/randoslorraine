@@ -381,7 +381,7 @@ function renderRandoDetails(r) {
      html += `
        <div class="detail-row detail-row--clickable" onclick="window.location.href='tel:${tel0.replace(/\s/g, "")}'">
          <span>${pilote1}</span>
-         <span>${escapeHtml(tel0)}📞</span>
+         <span>${escapeHtml(tel0)}</span>📞
        </div>
      `;
    }
@@ -391,7 +391,7 @@ function renderRandoDetails(r) {
      html += `
        <div class="detail-row detail-row--clickable" onclick="window.location.href='tel:${tel1.replace(/\s/g, "")}'">
          <span>${pilote2}</span>
-         <span>${escapeHtml(tel1)}📞</span>
+         <span>${escapeHtml(tel1)}</span>📞
        </div>
      `;
    }
