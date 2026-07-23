@@ -385,6 +385,16 @@ svg path {
   color: #3d7820;
 }
 
+.info-link {
+  color: var(--brand-dark);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.info-link:hover {
+  text-decoration: underline;
+}
+
 .modal-overlay {
   position: fixed;
   inset: 0;
