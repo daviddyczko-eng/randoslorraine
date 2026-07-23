@@ -389,17 +389,19 @@ function renderRandoDetails(r) {
     const accueil = rando.heureAccueil || rando.lieu?.heureAccueil || "Heure d'accueil non spécifiée";
     const depart = rando.heureDepart || rando.lieu?.heureDepart || "Heure de départ non spécifiée";
 
-    let pilotes = [];
-    if (rando.pilotes) {
-      const pilotesText = rando.pilotes
-        .replace(/^Proposé par\s*/i, '')
-        .replace(/&/g, ',')
-        .split(',')
-        .map(p => p.trim())
-        .filter(p => p.length > 0);
-
-      pilotes = pilotesText;
-    }
+   // Extraire les pilotes depuis la chaîne "Proposé par Pascal &amp; David"
+   let pilotes = [];
+   if (rando.pilotes) {
+     const pilotesText = rando.pilotes
+       .replace(/&amp;/g, '&')  // Remplace &amp; par &
+       .replace(/^Proposé par\s*/i, '')  // Supprime "Proposé par " au début
+       .replace(/&/g, ',')  // Remplace & par , pour séparer les noms
+       .split(',')
+       .map(p => p.trim())
+       .filter(p => p.length > 0);
+   
+     pilotes = pilotesText;
+   }
 
     const tel0 = (rando.telephones && rando.telephones[0]) ? rando.telephones[0] : null;
     const tel1 = (rando.telephones && rando.telephones[1]) ? rando.telephones[1] : null;
@@ -440,8 +442,7 @@ function renderRandoDetails(r) {
       }
       
       if (tel1) {
-        // ✅ Correction ici : Remplacer &amp; par &
-        const pilote2 = pilotes[1] ? ` & ${pilotes[1].replace(/&/g, '&amp;').replace(/&amp;/g, '&')}` : "";
+        const pilote2 = pilotes[1] ? ` & ${pilotes[1]}` : "";
         html += `
           <div class="detail-row">
             <span>${pilote2}</span>
