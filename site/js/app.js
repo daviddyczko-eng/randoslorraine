@@ -62,7 +62,12 @@ function showMain(showBack, title, onBack) {
   appBarBack.classList.toggle("hidden", !showBack);
   appBarIcon.classList.toggle("hidden", showBack);
   backHandler = onBack || (() => {
-    navigate("accueil", { title: "Rando's Lorraine" });
+    const user = getUser();
+    if (user?.prenom && user?.nom) {
+      navigate("accueil", { prenom: user.prenom, nom: user.nom });
+    } else {
+      navigate("accueil", { title: "Rando's Lorraine" });
+    }
   });
 }
 
@@ -85,6 +90,63 @@ function renderQr(container, text, size = 100) {
 }
 
 /* -------------------------------------------------------
+   🌐 API Rando (cache contourné)
+------------------------------------------------------- */
+async function fetchRandoDetails() {
+  console.log("fetchRandoDetails appelé");
+
+  if (!navigator.onLine) {
+    const saved = localStorage.getItem("prochaineRando");
+    if (saved) {
+      console.log("Hors ligne : chargement des données depuis localStorage.");
+      return JSON.parse(saved);
+    } else {
+      throw new Error("Aucune donnée disponible hors-ligne.");
+    }
+  }
+
+  try {
+    console.log("Tentative de chargement depuis l'API...");
+    const res = await fetch(
+      "https://randoslorraine.pages.dev/api/rando?ts=" + Date.now(),
+      {
+        method: "GET",
+        mode: "cors",
+        cache: "no-store",
+        headers: {
+          "Cache-Control": "no-cache, no-store, must-revalidate",
+          "Pragma": "no-cache",
+          "Expires": "0"
+        }
+      }
+    );
+
+    if (!res.ok) {
+      throw new Error(`Erreur HTTP ${res.status}`);
+    }
+
+    const data = await res.json();
+    console.log("Données reçues de l'API:", data);
+
+    localStorage.setItem("prochaineRando", JSON.stringify(data));
+    console.log("Données sauvegardées dans localStorage.");
+
+    return data;
+
+  } catch (apiError) {
+    console.warn("L'API a échoué, tentative de chargement depuis localStorage...", apiError);
+
+    const saved = localStorage.getItem("prochaineRando");
+    if (saved) {
+      console.log("Fallback : données chargées depuis localStorage.");
+      return JSON.parse(saved);
+    } else {
+      throw new Error("Aucune donnée disponible (ni en ligne, ni hors ligne).");
+    }
+  }
+}
+
+/* -------------------------------------------------------
    📄 Fonctions de rendu
 ------------------------------------------------------- */
 
@@ -102,13 +164,11 @@ function renderAccueil(prenom, nom) {
   screenRoot.innerHTML = `
     <div class="screen">
       <div class="card-list">
-        <!-- ✅ Premier cadre : Bonjour + QR code -->
         <div class="home-card" id="btn-carte">
           <span class="home-card__title">Bonjour ${escapeHtml(prenom)} !</span>
           <div id="qr-small" style="display: inline-block; margin-left: 10px;"></div>
         </div>
 
-        <!-- ✅ Deuxième cadre : Prochaine randonnée -->
         <div class="home-card" id="btn-rando">
           <span class="home-card__title">Prochaine randonnée</span>
           <span class="home-card__preview">
@@ -117,7 +177,6 @@ function renderAccueil(prenom, nom) {
           </span>
         </div>
 
-        <!-- ✅ Autres cadres -->
         <div class="home-card" id="btn-info-avant">
           <span class="home-card__title">Avant le départ</span>
         </div>
@@ -130,7 +189,6 @@ function renderAccueil(prenom, nom) {
           <span class="home-card__title">Tout sur les tarifs</span>
         </div>
 
-        <!-- ✅ Cadre "Lien internet" cliquable -->
         <div class="home-card home-card--clickable" onclick="window.open('https://randoslorraine.org', '_blank')">
           <span class="home-card__title">Lien internet</span>
         </div>
@@ -138,10 +196,8 @@ function renderAccueil(prenom, nom) {
     </div>
   `;
 
-  // ✅ Générer le QR code en petit dans le premier cadre
   renderQr($("#qr-small"), qrData(prenom, nom), 60);
 
-  // Écouteurs d'événements
   $("#btn-carte").addEventListener("click", () => {
     navigate("carte", { prenom, nom, title: "Ma carte", showBack: true });
   });
@@ -262,7 +318,7 @@ function renderCotisation(prenom, nom, dateInscription) {
     saveUser({
       ...user,
       cotisationAnnee: currentYear,
-      tarif: 0 // 0 = cotisation à jour
+      tarif: 0
     });
     navigate("accueil", { prenom, nom });
   });
@@ -351,7 +407,6 @@ function renderRandoDetails(r) {
       return;
     }
 
-    // Extraire les coordonnées GPS
     let lat, lng;
     if (rando.gps) {
       const coords = rando.gps.split(',').map(coord => parseFloat(coord.trim()));
@@ -361,16 +416,13 @@ function renderRandoDetails(r) {
 
     const mapsUrl = lat && lng ? `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}` : null;
 
-    // Extraire les informations de lieu
     const commune = (rando.lieu && rando.lieu.commune) ? rando.lieu.commune : "Lieu inconnu";
     const pays = (rando.lieu && rando.lieu.pays) ? rando.lieu.pays : null;
     const departement = (rando.lieu && rando.lieu.departement) ? rando.lieu.departement : null;
 
-    // Extraire les heures
     const accueil = rando.heureAccueil || rando.lieu?.heureAccueil || "Heure d'accueil non spécifiée";
     const depart = rando.heureDepart || rando.lieu?.heureDepart || "Heure de départ non spécifiée";
 
-    // Extraire les pilotes depuis la chaîne "Proposé par Pascal & David"
     let pilotes = [];
     if (rando.pilotes) {
       const pilotesText = rando.pilotes
@@ -384,18 +436,12 @@ function renderRandoDetails(r) {
       pilotes = pilotesText;
     }
 
-    // Extraire les téléphones
     const tel0 = (rando.telephones && rando.telephones[0]) ? rando.telephones[0] : null;
     const tel1 = (rando.telephones && rando.telephones[1]) ? rando.telephones[1] : null;
 
-    // Construire le HTML
     let html = `
       <div class="screen">
         <div class="detail-list">
-    `;
-
-    // ✅ Ajouter les informations avec texte en vert foncé et gras à gauche
-    html += `
           <div class="detail-row">
             <span class="detail-row__label">Date</span>
             <span class="detail-row__value">${escapeHtml(rando.date || "Date inconnue")}</span>
@@ -406,7 +452,6 @@ function renderRandoDetails(r) {
           </div>
     `;
 
-    // ✅ Afficher Pays et Département UNIQUEMENT si Pays ≠ "France"
     if (pays && pays.toLowerCase() !== "france") {
       html += `
           <div class="detail-row">
@@ -435,7 +480,6 @@ function renderRandoDetails(r) {
           </div>
     `;
 
-    // ✅ Cadre "Rendez-vous" avec icône 📍 et cliquable
     if (rando.rendezVous) {
       html += `
           <div class="detail-row detail-row--clickable" onclick="window.open('${mapsUrl}', '_blank')">
@@ -447,7 +491,6 @@ function renderRandoDetails(r) {
       `;
     }
 
-    // ✅ Afficher les pilotes + téléphones comme boutons cliquables
     if (tel0) {
       const pilote1 = pilotes[0] ? `Proposé par ${escapeHtml(pilotes[0])}` : "Contact";
       html += `
@@ -470,28 +513,21 @@ function renderRandoDetails(r) {
 
     html += `
         </div>
-    `;
-
-    // ✅ Remplacer "M'y rendre" par deux boutons côte-à-côte
-    html += `
         <div class="btn-row">
           <button class="btn btn--primary" id="btn-covoiturage-propose">Je propose un covoiturage.</button>
           <button class="btn btn--primary" id="btn-covoiturage-recherche">Je voudrais un covoiturage.</button>
         </div>
+      </div>
     `;
 
-    html += `</div>`;
     screenRoot.innerHTML = html;
 
-    // ✅ Écouteurs pour les boutons de covoiturage
     $("#btn-covoiturage-propose").addEventListener("click", () => {
       alert("Fonctionnalité 'Je propose un covoiturage' à implémenter.");
-      // TODO: Implémenter la logique pour proposer un covoiturage
     });
 
     $("#btn-covoiturage-recherche").addEventListener("click", () => {
       alert("Fonctionnalité 'Je voudrais un covoiturage' à implémenter.");
-      // TODO: Implémenter la logique pour rechercher un covoiturage
     });
   };
 
@@ -528,14 +564,12 @@ function renderRandoDetails(r) {
 }
 
 function renderInfoPage(key) {
-  // ✅ Vérifier que infoContent est défini
   if (!infoContent) {
     console.error("infoContent n'est pas défini !");
     screenRoot.innerHTML = `<div class="screen"><p>Contenu indisponible (données non chargées).</p></div>`;
     return;
   }
 
-  // ✅ Cas spécial pour "lien-internet"
   if (key === "lien-internet") {
     const lienInternet = infoContent["lien-internet"];
     if (lienInternet?.links?.length > 0) {
@@ -551,14 +585,12 @@ function renderInfoPage(key) {
     }
   }
 
-  // ✅ Vérifier que la page existe
   const page = infoContent?.[key];
   if (!page) {
     screenRoot.innerHTML = `<div class="screen"><p>Contenu indisponible.</p></div>`;
     return;
   }
 
-  // ✅ Construire le HTML
   let html = `<div class="screen">`;
 
   for (const section of page.sections) {
@@ -584,20 +616,16 @@ function renderInfoPage(key) {
         .join("");
     }
 
-    // ✅ Corriger les liens pour les numéros de téléphone
     if (section.links) {
       html += section.links
         .map(
           (l) => {
-            // ✅ Si le lien commence par "tel:", le formater correctement
             if (l.url.startsWith("tel:")) {
               return `<p><a href="${l.url}" class="info-link">${escapeHtml(l.label)}</a></p>`;
             }
-            // ✅ Si le lien commence par "sms:", le formater correctement
             if (l.url.startsWith("sms:")) {
               return `<p><a href="${l.url}" class="info-link">${escapeHtml(l.label)}</a></p>`;
             }
-            // ✅ Sinon, lien normal
             return `<p><a href="${l.url}" target="_blank" rel="noopener" class="info-link">${escapeHtml(l.label)}</a></p>`;
           }
         )
@@ -613,70 +641,6 @@ function renderInfoPage(key) {
 
   html += `</div>`;
   screenRoot.innerHTML = html;
-
-  screenRoot.querySelectorAll(".open-app").forEach((link) => {
-    link.addEventListener("click", (e) => {
-      e.preventDefault();
-      openAppOrStore(link.dataset.scheme, link.dataset.android, link.dataset.ios);
-    });
-  });
-}
-
-/* -------------------------------------------------------
-   🌐 API Rando (cache contourné)
-------------------------------------------------------- */
-async function fetchRandoDetails() {
-  console.log("fetchRandoDetails appelé");
-
-  if (!navigator.onLine) {
-    const saved = localStorage.getItem("prochaineRando");
-    if (saved) {
-      console.log("Hors ligne : chargement des données depuis localStorage.");
-      return JSON.parse(saved);
-    } else {
-      throw new Error("Aucune donnée disponible hors-ligne.");
-    }
-  }
-
-  try {
-    console.log("Tentative de chargement depuis l'API...");
-    const res = await fetch(
-      "https://randoslorraine.pages.dev/api/rando?ts=" + Date.now(),
-      {
-        method: "GET",
-        mode: "cors",
-        cache: "no-store",
-        headers: {
-          "Cache-Control": "no-cache, no-store, must-revalidate",
-          "Pragma": "no-cache",
-          "Expires": "0"
-        }
-      }
-    );
-
-    if (!res.ok) {
-      throw new Error(`Erreur HTTP ${res.status}`);
-    }
-
-    const data = await res.json();
-    console.log("Données reçues de l'API:", data);
-
-    localStorage.setItem("prochaineRando", JSON.stringify(data));
-    console.log("Données sauvegardées dans localStorage.");
-
-    return data;
-
-  } catch (apiError) {
-    console.warn("L'API a échoué, tentative de chargement depuis localStorage...", apiError);
-
-    const saved = localStorage.getItem("prochaineRando");
-    if (saved) {
-      console.log("Fallback : données chargées depuis localStorage.");
-      return JSON.parse(saved);
-    } else {
-      throw new Error("Aucune donnée disponible (ni en ligne, ni hors ligne).");
-    }
-  }
 }
 
 /* -------------------------------------------------------
@@ -704,7 +668,8 @@ function navigate(screen, options = {}) {
       return renderInfoPage(options.infoKey);
     default:
       console.error(`Écran inconnu: ${screen}`);
-      return renderAccueil(options.prenom, options.nom);
+      const user = getUser();
+      return renderAccueil(user?.prenom, user?.nom);
   }
 }
 
@@ -738,6 +703,8 @@ function openAppOrStore(scheme, androidUrl, iosUrl) {
 ------------------------------------------------------- */
 async function checkUserAndStart() {
   try {
+    console.log("checkUserAndStart appelé");
+
     const [infoRes, randoRes] = await Promise.all([
       fetch("./data/info.json")
         .then((r) => {
@@ -746,22 +713,13 @@ async function checkUserAndStart() {
         })
         .catch((error) => {
           console.error("Erreur lors du chargement de info.json:", error);
-          return {}; // ✅ Retourne un objet vide si info.json échoue
+          return {};
         }),
       fetchRandoDetails().catch((error) => {
         console.warn("Erreur lors du chargement des données de rando:", error);
         return null;
       })
     ]);
-
-    infoContent = infoRes; // ✅ infoContent est toujours défini (même vide)
-    prochaineRando = randoRes;
-    // ...
-  } catch (error) {
-    console.error("Erreur lors du démarrage :", error);
-    navigate("inscription", { title: "Inscription" });
-  }
-}
 
     infoContent = infoRes;
     prochaineRando = randoRes;
@@ -815,7 +773,8 @@ async function init() {
     if (typeof backHandler === "function") {
       backHandler();
     } else {
-      navigate("accueil", { title: "Rando's Lorraine" });
+      const user = getUser();
+      navigate("accueil", { prenom: user?.prenom, nom: user?.nom });
     }
   });
 
