@@ -455,16 +455,11 @@ function renderRandoDetails(r) {
         </div>
     `;
 
-    if (mapsUrl || randoUrl) {
-      html += `<div class="btn-row">`;
-      if (mapsUrl) {
-        html += `<a class="btn btn--primary" href="${mapsUrl}" target="_blank" rel="noopener">M'y rendre</a>`;
-      }
-      if (randoUrl) {
-        html += `<a class="btn btn--secondary" href="tel:${randoUrl.replace(/\s/g, "")}">En savoir plus</a>`;
-      }
-      html += `</div>`;
-    }
+   if (mapsUrl) {
+     html += `<div class="btn-row">
+       <a class="btn btn--primary" href="${mapsUrl}" target="_blank" rel="noopener">M'y rendre</a>
+     </div>`;
+   }
 
     html += `</div>`;
     screenRoot.innerHTML = html;
