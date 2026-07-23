@@ -597,21 +597,28 @@ function renderInfoPage(key) {
   for (const section of page.sections) {
     html += `<section class="info-section"><h3>${escapeHtml(section.heading)}</h3>`;
 
-    // ✅ Gérer les items et links côte-à-côte (pour les urgences et l'assurance)
-    if (section.items && section.links && section.items.length === section.links.length) {
-      html += `<ul>`;
-      for (let i = 0; i < section.items.length; i++) {
-        const item = section.items[i];
-        const link = section.links[i];
-        html += `
-          <li>
-            ${escapeHtml(item)} :
-            <a href="${link.url}" class="info-link">${escapeHtml(link.label)}</a>
-          </li>
-        `;
-      }
-      html += `</ul>`;
-    }
+   // ✅ Gérer les items et links côte-à-côte (même si les tableaux n'ont pas la même longueur)
+   if (section.items && section.links) {
+     html += `<ul>`;
+     for (let i = 0; i < section.items.length; i++) {
+       const item = section.items[i];
+       const link = section.links[i]; // ✅ link peut être undefined si i >= section.links.length
+   
+       if (link) {
+         // ✅ Si un lien existe pour cet item, l'afficher à côté
+         html += `
+           <li>
+             ${escapeHtml(item)} :
+             <a href="${link.url}" class="info-link">${escapeHtml(link.label)}</a>
+           </li>
+         `;
+       } else {
+         // ✅ Sinon, afficher l'item seul (ex: "sociétaire MAIF 3163163A")
+         html += `<li>${escapeHtml(item)}</li>`;
+       }
+     }
+     html += `</ul>`;
+   }
     // ✅ Gérer les items avec des liens HTML intégrés (ex: "<a href="tel:...">")
     else if (section.items && section.items.some(i => i.includes('<a href='))) {
       html += `<ul>`;
