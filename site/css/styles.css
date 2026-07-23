@@ -378,6 +378,10 @@ svg path {
   color: #3d7820;
 }
 
+.info-text a:hover {
+  text-decoration: underline;
+}
+
 .info-footer {
   margin-top: 12px;
   font-weight: bold;
