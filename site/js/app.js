@@ -61,7 +61,9 @@ function showMain(showBack, title, onBack) {
   appBarTitle.textContent = title;
   appBarBack.classList.toggle("hidden", !showBack);
   appBarIcon.classList.toggle("hidden", showBack);
-  backHandler = onBack || null;
+  backHandler = onBack || (() => {
+    navigate("accueil", { title: "Rando's Lorraine" });
+  });
 }
 
 /* -------------------------------------------------------
@@ -697,7 +699,13 @@ async function init() {
     });
   }
 
-  appBarBack.addEventListener("click", () => backHandler?.());
+  appBarBack.addEventListener("click", () => {
+    if (typeof backHandler === "function") {
+      backHandler();
+    } else {
+      navigate("accueil", { title: "Rando's Lorraine" });
+    }
+  });
 
   await checkUserAndStart();
 }
