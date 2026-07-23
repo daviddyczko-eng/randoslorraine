@@ -441,7 +441,7 @@ function renderRandoDetails(r) {
       
       if (tel1) {
         // ✅ Correction ici : Remplacer &amp; par &
-        const pilote2 = pilotes[1] ? ` & ${pilotes[1].replace(/&/g, '&')}` : "";
+        const pilote2 = pilotes[1] ? ` & ${pilotes[1].replace(/&/g, '&amp;').replace(/&amp;/g, '&')}` : "";
         html += `
           <div class="detail-row">
             <span>${pilote2}</span>
