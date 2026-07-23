@@ -439,7 +439,7 @@ function renderRandoDetails(r) {
     }
 
     if (tel1) {
-      const pilote2 = pilotes[1] ? ` & ${escapeHtml(pilotes[1])}` : "";
+      const pilote2 = pilotes[1] ? ` & ${escapeHtml(pilotes[1]).replace(/&amp;/g, '&')}` : "";
       html += `
         <div class="detail-row">
           <span>${pilote2}</span>
