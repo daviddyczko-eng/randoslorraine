@@ -378,7 +378,7 @@ function renderRandoDetails(r) {
      const pilote1 = pilotes[0] ? `Proposé par ${escapeHtml(pilotes[0])}` : "Contact";
      html += `
        <div class="detail-row detail-row--clickable" onclick="window.location.href='tel:${tel0.replace(/\s/g, "")}'">
-         <span>${pilote1}</span>
+         <span>📞${pilote1}</span>
          <span>${escapeHtml(tel0)}</span>
        </div>
      `;
@@ -388,7 +388,7 @@ function renderRandoDetails(r) {
      const pilote2 = pilotes[1] ? ` & ${pilotes[1]}` : "";
      html += `
        <div class="detail-row detail-row--clickable" onclick="window.location.href='tel:${tel1.replace(/\s/g, "")}'">
-         <span>${pilote2}</span>
+         <span>📞${pilote2}</span>
          <span>${escapeHtml(tel1)}</span>
        </div>
      `;
