@@ -106,11 +106,11 @@ function renderAccueil(prenom, nom) {
       </div>
 
       <div class="menu">
-        <button class="menu-btn" id="btn-carte">
+        <button class="home-card" id="btn-carte">
           <span>Ma carte</span>
         </button>
 
-        <button class="menu-btn" id="btn-rando">
+        <button class="home-card" id="btn-rando">
           <span>Prochaine randonnée</span>
           <span class="rando-preview">
             ${escapeHtml(dateText)}<br>
@@ -118,19 +118,19 @@ function renderAccueil(prenom, nom) {
           </span>
         </button>
 
-        <button class="menu-btn" id="btn-info-avant">
+        <button class="home-card" id="btn-info-avant">
           <span>Avant le départ</span>
         </button>
 
-        <button class="menu-btn" id="btn-info-accident">
+        <button class="home-card" id="btn-info-accident">
           <span>En cas d'accident</span>
         </button>
 
-        <button class="menu-btn" id="btn-info-tarifs">
+        <button class="home-card" id="btn-info-tarifs">
           <span>Tout sur les tarifs</span>
         </button>
 
-        <button class="menu-btn" id="btn-info-lien">
+        <button class="home-card" id="btn-info-lien">
           <span>Lien internet</span>
         </button>
       </div>
@@ -150,7 +150,7 @@ function renderAccueil(prenom, nom) {
   });
 
   $("#btn-info-accident").addEventListener("click", () => {
-    navigate("info", { infoKey: "en-cas-accident", title: "En cas d'accident", showBack: true });
+    navigate("info", { infoKey: "accident", title: "En cas d'accident", showBack: true });
   });
 
   $("#btn-info-tarifs").addEventListener("click", () => {
