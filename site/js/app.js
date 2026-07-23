@@ -147,7 +147,7 @@ async function fetchRandoDetails() {
    📄 Navigation
 ------------------------------------------------------- */
 function navigate(screen, options = {}) {
-  console.log(`Navigation vers: ${screen}`);
+  console.log(`Navigation vers: ${screen} avec options:`, options);
   currentScreen = screen;
   showMain(options.showBack ?? false, options.title ?? "Rando's Lorraine", options.onBack);
 
@@ -166,6 +166,9 @@ function navigate(screen, options = {}) {
       return renderRandoDetails(options.rando);
     case "info":
       return renderInfoPage(options.infoKey);
+    default:
+      console.error(`Écran inconnu: ${screen}`);
+      return renderAccueil(options.prenom, options.nom); // Fallback vers l'accueil
   }
 }
 
