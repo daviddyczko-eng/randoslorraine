@@ -528,6 +528,14 @@ function renderRandoDetails(r) {
 }
 
 function renderInfoPage(key) {
+  // ✅ Vérifier que infoContent est défini
+  if (!infoContent) {
+    console.error("infoContent n'est pas défini !");
+    screenRoot.innerHTML = `<div class="screen"><p>Contenu indisponible (données non chargées).</p></div>`;
+    return;
+  }
+
+  // ✅ Cas spécial pour "lien-internet"
   if (key === "lien-internet") {
     const lienInternet = infoContent["lien-internet"];
     if (lienInternet?.links?.length > 0) {
@@ -543,12 +551,14 @@ function renderInfoPage(key) {
     }
   }
 
+  // ✅ Vérifier que la page existe
   const page = infoContent?.[key];
   if (!page) {
     screenRoot.innerHTML = `<div class="screen"><p>Contenu indisponible.</p></div>`;
     return;
   }
 
+  // ✅ Construire le HTML
   let html = `<div class="screen">`;
 
   for (const section of page.sections) {
@@ -574,11 +584,22 @@ function renderInfoPage(key) {
         .join("");
     }
 
+    // ✅ Corriger les liens pour les numéros de téléphone
     if (section.links) {
       html += section.links
         .map(
-          (l) =>
-            `<p><a href="${l.url}" target="_blank" rel="noopener" class="info-link">${escapeHtml(l.label)}</a></p>`
+          (l) => {
+            // ✅ Si le lien commence par "tel:", le formater correctement
+            if (l.url.startsWith("tel:")) {
+              return `<p><a href="${l.url}" class="info-link">${escapeHtml(l.label)}</a></p>`;
+            }
+            // ✅ Si le lien commence par "sms:", le formater correctement
+            if (l.url.startsWith("sms:")) {
+              return `<p><a href="${l.url}" class="info-link">${escapeHtml(l.label)}</a></p>`;
+            }
+            // ✅ Sinon, lien normal
+            return `<p><a href="${l.url}" target="_blank" rel="noopener" class="info-link">${escapeHtml(l.label)}</a></p>`;
+          }
         )
         .join("");
     }
@@ -592,7 +613,6 @@ function renderInfoPage(key) {
 
   html += `</div>`;
   screenRoot.innerHTML = html;
-}
 
   screenRoot.querySelectorAll(".open-app").forEach((link) => {
     link.addEventListener("click", (e) => {
@@ -718,8 +738,6 @@ function openAppOrStore(scheme, androidUrl, iosUrl) {
 ------------------------------------------------------- */
 async function checkUserAndStart() {
   try {
-    console.log("checkUserAndStart appelé");
-
     const [infoRes, randoRes] = await Promise.all([
       fetch("./data/info.json")
         .then((r) => {
@@ -728,13 +746,22 @@ async function checkUserAndStart() {
         })
         .catch((error) => {
           console.error("Erreur lors du chargement de info.json:", error);
-          return {};
+          return {}; // ✅ Retourne un objet vide si info.json échoue
         }),
       fetchRandoDetails().catch((error) => {
         console.warn("Erreur lors du chargement des données de rando:", error);
         return null;
       })
     ]);
+
+    infoContent = infoRes; // ✅ infoContent est toujours défini (même vide)
+    prochaineRando = randoRes;
+    // ...
+  } catch (error) {
+    console.error("Erreur lors du démarrage :", error);
+    navigate("inscription", { title: "Inscription" });
+  }
+}
 
     infoContent = infoRes;
     prochaineRando = randoRes;
