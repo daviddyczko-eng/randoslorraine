@@ -427,26 +427,28 @@ function renderRandoDetails(r) {
           <div class="detail-row"><span>Heure de départ</span><span>${escapeHtml(depart)}</span></div>
           ${rando.rendezVous ? `<div class="detail-row"><span>Rendez-vous</span><span>${escapeHtml(rando.rendezVous)}</span></div>` : ''}
     `;
-
-    if (tel0) {
-      const pilote1 = pilotes[0] ? `Proposé par ${escapeHtml(pilotes[0])}` : "Contact";
-      html += `
-        <div class="detail-row">
-          <span>${pilote1}</span>
-          <span>${escapeHtml(tel0)}</span>
-        </div>
-      `;
-    }
-
-    if (tel1) {
-      const pilote2 = pilotes[1] ? ` & ${escapeHtml(pilotes[1]).replace(/&amp;/g, '&')}` : "";
-      html += `
-        <div class="detail-row">
-          <span>${pilote2}</span>
-          <span>${escapeHtml(tel1)}</span>
-        </div>
-      `;
-    }
+      
+      // ✅ Afficher les téléphones avec les prénoms des pilotes
+      if (tel0) {
+        const pilote1 = pilotes[0] ? `Proposé par ${escapeHtml(pilotes[0])}` : "Contact";
+        html += `
+          <div class="detail-row">
+            <span>${pilote1}</span>
+            <span>${escapeHtml(tel0)}</span>
+          </div>
+        `;
+      }
+      
+      if (tel1) {
+        // ✅ Correction ici : Remplacer &amp; par &
+        const pilote2 = pilotes[1] ? ` & ${escapeHtml(pilotes[1]).replace(/&amp;/g, '&')}` : "";
+        html += `
+          <div class="detail-row">
+            <span>${pilote2}</span>
+            <span>${escapeHtml(tel1)}</span>
+          </div>
+        `;
+      }
 
     html += `
         </div>
