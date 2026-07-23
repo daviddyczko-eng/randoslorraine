@@ -595,74 +595,45 @@ function renderInfoPage(key) {
 
   for (const section of page.sections) {
     html += `<section class="info-section"><h3>${escapeHtml(section.heading)}</h3>`;
-
-    if (section.items) {
-      html += `<ul>${section.items.map((i) => `<li>${escapeHtml(i)}</li>`).join("")}</ul>`;
-    }
-     
-   if (section.text) {
-     html += section.text
-       .map((t) => {
-         if (typeof t === "string") {
-           return `<p class="info-text">${escapeHtml(t)}</p>`;
-         }
    
-         // ✅ Gérer les liens avec store_android et store_ios
-         if (t.store_android || t.store_ios) {
-           const userAgent = navigator.userAgent || navigator.vendor || window.opera;
-           let url = "#";
-   
-           // Détecter si l'utilisateur est sur Android ou iOS
-           if (/android/i.test(userAgent)) {
-             url = t.store_android || "#";
-           } else if (/iPad|iPhone|iPod/.test(userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)) {
-             url = t.store_ios || "#";
-           } else {
-             // Par défaut, ouvrir le store Android (ou un lien générique)
-             url = t.store_android || t.store_ios || "#";
-           }
-   
-           return `
-             <p class="info-text">
-               <a href="${url}" target="_blank" rel="noopener" class="info-link">
-                 ${escapeHtml(t.label)}
-               </a>
-             </p>
-           `;
-         }
-   
-         // ✅ Gérer les liens avec scheme
-         return `
-           <p class="info-text">
-             <a href="${t.scheme || '#'}" class="info-link">
-               ${escapeHtml(t.label)}
-             </a>
-           </p>
-         `;
-       })
-       .join("");
-   }
-   
-   if (section.links) {
-     html += section.links
-       .map(
-         (l) => {
-           // ✅ Gérer les liens normaux (http/https)
-           if (l.url.startsWith("http://") || l.url.startsWith("https://")) {
+   // ✅ Gérer les items et links côte-à-côte
+   if (section.items && section.links && section.items.length === section.links.length) {
+     html += `<ul>`;
+     for (let i = 0; i < section.items.length; i++) {
+       const item = section.items[i];
+       const link = section.links[i];
+       html += `
+         <li>
+           ${escapeHtml(item)} :
+           <a href="${link.url}" class="info-link">${escapeHtml(link.label)}</a>
+         </li>
+       `;
+     }
+     html += `</ul>`;
+   } else {
+     // ✅ Fallback : afficher les items normalement
+     if (section.items) {
+       html += `<ul>${section.items.map((i) => `<li>${escapeHtml(i)}</li>`).join("")}</ul>`;
+     }
+     // ✅ Fallback : afficher les links normalement
+     if (section.links) {
+       html += section.links
+         .map(
+           (l) => {
+             if (l.url.startsWith("http://") || l.url.startsWith("https://")) {
+               return `<p><a href="${l.url}" target="_blank" rel="noopener" class="info-link">${escapeHtml(l.label)}</a></p>`;
+             }
+             if (l.url.startsWith("tel:")) {
+               return `<p><a href="${l.url}" class="info-link">${escapeHtml(l.label)}</a></p>`;
+             }
+             if (l.url.startsWith("sms:")) {
+               return `<p><a href="${l.url}" class="info-link">${escapeHtml(l.label)}</a></p>`;
+             }
              return `<p><a href="${l.url}" target="_blank" rel="noopener" class="info-link">${escapeHtml(l.label)}</a></p>`;
            }
-           // ✅ Gérer les liens tel: et sms:
-           if (l.url.startsWith("tel:")) {
-             return `<p><a href="${l.url}" class="info-link">${escapeHtml(l.label)}</a></p>`;
-           }
-           if (l.url.startsWith("sms:")) {
-             return `<p><a href="${l.url}" class="info-link">${escapeHtml(l.label)}</a></p>`;
-           }
-           // ✅ Par défaut
-           return `<p><a href="${l.url}" target="_blank" rel="noopener" class="info-link">${escapeHtml(l.label)}</a></p>`;
-         }
-       )
-       .join("");
+         )
+         .join("");
+     }
    }
 
     if (section.footer) {
