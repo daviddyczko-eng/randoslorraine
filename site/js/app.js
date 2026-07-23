@@ -430,41 +430,38 @@ function renderRandoDetails(r) {
           ${rando.rendezVous ? `<div class="detail-row"><span>Rendez-vous</span><span>${escapeHtml(rando.rendezVous)}</span></div>` : ''}
     `;
       
-      // ✅ Afficher les téléphones avec les prénoms des pilotes
-      if (tel0) {
-        const pilote1 = pilotes[0] ? `Proposé par ${escapeHtml(pilotes[0])}` : "Contact";
-        html += `
-          <div class="detail-row">
-            <span>${pilote1}</span>
-            <span>${escapeHtml(tel0)}</span>
-          </div>
-        `;
-      }
-      
-      if (tel1) {
-        const pilote2 = pilotes[1] ? ` & ${pilotes[1]}` : "";
-        html += `
-          <div class="detail-row">
-            <span>${pilote2}</span>
-            <span>${escapeHtml(tel1)}</span>
-          </div>
-        `;
-      }
+   // ✅ Afficher les pilotes + téléphones comme boutons cliquables
+   if (tel0) {
+     const pilote1 = pilotes[0] ? `Proposé par ${escapeHtml(pilotes[0])}` : "Contact";
+     html += `
+       <div class="detail-row detail-row--clickable" onclick="window.location.href='tel:${tel0.replace(/\s/g, "")}'">
+         <span>${pilote1}</span>
+         <span>${escapeHtml(tel0)}</span>
+       </div>
+     `;
+   }
+   
+   if (tel1) {
+     const pilote2 = pilotes[1] ? ` & ${pilotes[1]}` : "";
+     html += `
+       <div class="detail-row detail-row--clickable" onclick="window.location.href='tel:${tel1.replace(/\s/g, "")}'">
+         <span>${pilote2}</span>
+         <span>${escapeHtml(tel1)}</span>
+       </div>
+     `;
+   }
 
     html += `
         </div>
     `;
 
-    if (mapsUrl || tel0 || tel1) {
+    if (mapsUrl || url) {
       html += `<div class="btn-row">`;
       if (mapsUrl) {
         html += `<a class="btn btn--primary" href="${mapsUrl}" target="_blank" rel="noopener">M'y rendre</a>`;
       }
-      if (tel0) {
-        html += `<a class="btn btn--secondary" href="tel:${tel0.replace(/\s/g, "")}">Appeler</a>`;
-      }
-      if (tel1) {
-        html += `<a class="btn btn--secondary" href="tel:${tel1.replace(/\s/g, "")}">Appeler</a>`;
+      if (url) {
+        html += `<a class="btn btn--secondary" href="tel:${url.replace(/\s/g, "")}">En savoir plus</a>`;
       }
       html += `</div>`;
     }
