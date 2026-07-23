@@ -615,22 +615,28 @@ function renderInfoPage(key) {
         )
         .join("");
     }
-
-    if (section.links) {
-      html += section.links
-        .map(
-          (l) => {
-            if (l.url.startsWith("tel:")) {
-              return `<p><a href="${l.url}" class="info-link">${escapeHtml(l.label)}</a></p>`;
-            }
-            if (l.url.startsWith("sms:")) {
-              return `<p><a href="${l.url}" class="info-link">${escapeHtml(l.label)}</a></p>`;
-            }
-            return `<p><a href="${l.url}" target="_blank" rel="noopener" class="info-link">${escapeHtml(l.label)}</a></p>`;
-          }
-        )
-        .join("");
-    }
+   
+   if (section.links) {
+     html += section.links
+       .map(
+         (l) => {
+           // ✅ Gérer les liens normaux (http/https)
+           if (l.url.startsWith("http://") || l.url.startsWith("https://")) {
+             return `<p><a href="${l.url}" target="_blank" rel="noopener" class="info-link">${escapeHtml(l.label)}</a></p>`;
+           }
+           // ✅ Gérer les liens tel: et sms:
+           if (l.url.startsWith("tel:")) {
+             return `<p><a href="${l.url}" class="info-link">${escapeHtml(l.label)}</a></p>`;
+           }
+           if (l.url.startsWith("sms:")) {
+             return `<p><a href="${l.url}" class="info-link">${escapeHtml(l.label)}</a></p>`;
+           }
+           // ✅ Par défaut
+           return `<p><a href="${l.url}" target="_blank" rel="noopener" class="info-link">${escapeHtml(l.label)}</a></p>`;
+         }
+       )
+       .join("");
+   }
 
     if (section.footer) {
       html += `<p class="info-footer">${escapeHtml(section.footer)}</p>`;
