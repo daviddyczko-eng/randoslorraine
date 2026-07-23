@@ -322,6 +322,7 @@ function renderRandoDetails(r) {
       return;
     }
 
+    // Extraire les coordonnées GPS
     let lat, lng;
     if (rando.gps) {
       const coords = rando.gps.split(',').map(coord => parseFloat(coord.trim()));
@@ -331,87 +332,138 @@ function renderRandoDetails(r) {
 
     const mapsUrl = lat && lng ? `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}` : null;
 
+    // Extraire les informations de lieu
     const commune = (rando.lieu && rando.lieu.commune) ? rando.lieu.commune : "Lieu inconnu";
     const pays = (rando.lieu && rando.lieu.pays) ? rando.lieu.pays : null;
     const departement = (rando.lieu && rando.lieu.departement) ? rando.lieu.departement : null;
 
+    // Extraire les heures
     const accueil = rando.heureAccueil || rando.lieu?.heureAccueil || "Heure d'accueil non spécifiée";
     const depart = rando.heureDepart || rando.lieu?.heureDepart || "Heure de départ non spécifiée";
 
-   // Extraire les pilotes depuis la chaîne "Proposé par Pascal &amp; David"
-   let pilotes = [];
-   if (rando.pilotes) {
-     const pilotesText = rando.pilotes
-       .replace(/&amp;/g, '&')  // Remplace &amp; par &
-       .replace(/^Proposé par\s*/i, '')  // Supprime "Proposé par " au début
-       .replace(/&/g, ',')  // Remplace & par , pour séparer les noms
-       .split(',')
-       .map(p => p.trim())
-       .filter(p => p.length > 0);
-   
-     pilotes = pilotesText;
-   }
+    // Extraire les pilotes depuis la chaîne "Proposé par Pascal & David"
+    let pilotes = [];
+    if (rando.pilotes) {
+      const pilotesText = rando.pilotes
+        .replace(/&amp;/g, '&')
+        .replace(/^Proposé par\s*/i, '')
+        .replace(/&/g, ',')
+        .split(',')
+        .map(p => p.trim())
+        .filter(p => p.length > 0);
 
+      pilotes = pilotesText;
+    }
+
+    // Extraire les téléphones
     const tel0 = (rando.telephones && rando.telephones[0]) ? rando.telephones[0] : null;
     const tel1 = (rando.telephones && rando.telephones[1]) ? rando.telephones[1] : null;
 
+    // Construire le HTML
     let html = `
       <div class="screen">
         <div class="detail-list">
-          <div class="detail-row"><span>Date</span><span>${escapeHtml(rando.date || "Date inconnue")}</span></div>
-          <div class="detail-row"><span>Lieu</span><span>${escapeHtml(commune)}</span></div>
     `;
 
+    // ✅ Ajouter les informations avec texte en vert foncé et gras à gauche
+    html += `
+          <div class="detail-row">
+            <span class="detail-row__label">Date</span>
+            <span class="detail-row__value">${escapeHtml(rando.date || "Date inconnue")}</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-row__label">Lieu</span>
+            <span class="detail-row__value">${escapeHtml(commune)}</span>
+          </div>
+    `;
+
+    // ✅ Afficher Pays et Département UNIQUEMENT si Pays ≠ "France"
     if (pays && pays.toLowerCase() !== "france") {
       html += `
-        <div class="detail-row"><span>Pays</span><span>${escapeHtml(pays)}</span></div>
+          <div class="detail-row">
+            <span class="detail-row__label">Pays</span>
+            <span class="detail-row__value">${escapeHtml(pays)}</span>
+          </div>
       `;
       if (departement) {
         html += `
-          <div class="detail-row"><span>Département</span><span>${escapeHtml(departement)}</span></div>
+          <div class="detail-row">
+            <span class="detail-row__label">Département</span>
+            <span class="detail-row__value">${escapeHtml(departement)}</span>
+          </div>
         `;
       }
     }
 
     html += `
-          <div class="detail-row"><span>Heure d'accueil</span><span>${escapeHtml(accueil)}</span></div>
-          <div class="detail-row"><span>Heure de départ</span><span>${escapeHtml(depart)}</span></div>
-          ${rando.rendezVous ? `<div class="detail-row"><span>Rendez-vous</span><span>${escapeHtml(rando.rendezVous)}</span></div>` : ''}
+          <div class="detail-row">
+            <span class="detail-row__label">Heure d'accueil</span>
+            <span class="detail-row__value">${escapeHtml(accueil)}</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-row__label">Heure de départ</span>
+            <span class="detail-row__value">${escapeHtml(depart)}</span>
+          </div>
     `;
-      
-   // ✅ Afficher les pilotes + téléphones comme boutons cliquables
-   if (tel0) {
-     const pilote1 = pilotes[0] ? `Proposé par ${escapeHtml(pilotes[0])}` : "Contact";
-     html += `
-       <div class="detail-row detail-row--clickable" onclick="window.location.href='tel:${tel0.replace(/\s/g, "")}'">
-         <span>${pilote1}</span>
-         <span>${escapeHtml(tel0)}📞</span>
-       </div>
-     `;
-   }
-   
-   if (tel1) {
-     const pilote2 = pilotes[1] ? ` & ${pilotes[1]}` : "";
-     html += `
-       <div class="detail-row detail-row--clickable" onclick="window.location.href='tel:${tel1.replace(/\s/g, "")}'">
-         <span>${pilote2}</span>
-         <span>${escapeHtml(tel1)}📞</span>
-       </div>
-     `;
-   }
+
+    // ✅ Cadre "Rendez-vous" avec icône 📍 et cliquable
+    if (rando.rendezVous) {
+      html += `
+          <div class="detail-row detail-row--clickable" onclick="window.open('${mapsUrl}', '_blank')">
+            <span class="detail-row__label">Rendez-vous</span>
+            <span class="detail-row__value">
+              ${escapeHtml(rando.rendezVous)} 📍
+            </span>
+          </div>
+      `;
+    }
+
+    // ✅ Afficher les pilotes + téléphones comme boutons cliquables
+    if (tel0) {
+      const pilote1 = pilotes[0] ? `Proposé par ${escapeHtml(pilotes[0])}` : "Contact";
+      html += `
+        <div class="detail-row detail-row--clickable" onclick="window.location.href='tel:${tel0.replace(/\s/g, "")}'">
+          <span class="detail-row__label">${pilote1}</span>
+          <span class="detail-row__value">📞 ${escapeHtml(tel0)}</span>
+        </div>
+      `;
+    }
+
+    if (tel1) {
+      const pilote2 = pilotes[1] ? `& ${escapeHtml(pilotes[1])}` : "";
+      html += `
+        <div class="detail-row detail-row--clickable" onclick="window.location.href='tel:${tel1.replace(/\s/g, "")}'">
+          <span class="detail-row__label">${pilote2}</span>
+          <span class="detail-row__value">📞 ${escapeHtml(tel1)}</span>
+        </div>
+      `;
+    }
 
     html += `
         </div>
     `;
 
-   if (mapsUrl) {
-     html += `<div class="btn-row">
-       <a class="btn btn--primary" href="${mapsUrl}" target="_blank" rel="noopener">M'y rendre</a>
-     </div>`;
-   }
+    // ✅ Remplacer "M'y rendre" par deux boutons côte-à-côte
+    html += `
+        <div class="btn-row">
+          <button class="btn btn--primary" id="btn-covoiturage-propose">Je propose un covoiturage.</button>
+          <button class="btn btn--primary" id="btn-covoiturage-recherche">Je voudrais un covoiturage.</button>
+        </div>
+    `;
 
     html += `</div>`;
     screenRoot.innerHTML = html;
+
+    // ✅ Écouteurs pour les boutons de covoiturage
+    $("#btn-covoiturage-propose").addEventListener("click", () => {
+      alert("Fonctionnalité 'Je propose un covoiturage' à implémenter.");
+      // TODO: Implémenter la logique pour proposer un covoiturage
+    });
+
+    $("#btn-covoiturage-recherche").addEventListener("click", () => {
+      alert("Fonctionnalité 'Je voudrais un covoiturage' à implémenter.");
+      // TODO: Implémenter la logique pour rechercher un covoiturage
+    });
   };
 
   const showError = (message) => {
