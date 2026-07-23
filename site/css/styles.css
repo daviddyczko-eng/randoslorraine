@@ -280,6 +280,14 @@ svg path {
   text-align: right;
 }
 
+.home-card--clickable {
+  cursor: pointer;
+}
+
+.home-card--clickable:hover {
+  background-color: var(--brand-tint-strong);
+}
+
 .qr-box {
   display: inline-block;
   padding: 6px;
