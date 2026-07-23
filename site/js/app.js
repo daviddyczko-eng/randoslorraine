@@ -570,6 +570,7 @@ function renderInfoPage(key) {
     return;
   }
 
+  // ✅ Cas spécial pour "lien-internet"
   if (key === "lien-internet") {
     const lienInternet = infoContent["lien-internet"];
     if (lienInternet?.links?.length > 0) {
@@ -595,46 +596,100 @@ function renderInfoPage(key) {
 
   for (const section of page.sections) {
     html += `<section class="info-section"><h3>${escapeHtml(section.heading)}</h3>`;
-   
-   // ✅ Gérer les items et links côte-à-côte
-   if (section.items && section.links && section.items.length === section.links.length) {
-     html += `<ul>`;
-     for (let i = 0; i < section.items.length; i++) {
-       const item = section.items[i];
-       const link = section.links[i];
-       html += `
-         <li>
-           ${escapeHtml(item)} :
-           <a href="${link.url}" class="info-link">${escapeHtml(link.label)}</a>
-         </li>
-       `;
-     }
-     html += `</ul>`;
-   } else {
-     // ✅ Fallback : afficher les items normalement
-     if (section.items) {
-       html += `<ul>${section.items.map((i) => `<li>${escapeHtml(i)}</li>`).join("")}</ul>`;
-     }
-     // ✅ Fallback : afficher les links normalement
-     if (section.links) {
-       html += section.links
-         .map(
-           (l) => {
-             if (l.url.startsWith("http://") || l.url.startsWith("https://")) {
-               return `<p><a href="${l.url}" target="_blank" rel="noopener" class="info-link">${escapeHtml(l.label)}</a></p>`;
-             }
-             if (l.url.startsWith("tel:")) {
-               return `<p><a href="${l.url}" class="info-link">${escapeHtml(l.label)}</a></p>`;
-             }
-             if (l.url.startsWith("sms:")) {
-               return `<p><a href="${l.url}" class="info-link">${escapeHtml(l.label)}</a></p>`;
-             }
-             return `<p><a href="${l.url}" target="_blank" rel="noopener" class="info-link">${escapeHtml(l.label)}</a></p>`;
-           }
-         )
-         .join("");
-     }
-   }
+
+    // ✅ Gérer les items et links côte-à-côte (pour les urgences et l'assurance)
+    if (section.items && section.links && section.items.length === section.links.length) {
+      html += `<ul>`;
+      for (let i = 0; i < section.items.length; i++) {
+        const item = section.items[i];
+        const link = section.links[i];
+        html += `
+          <li>
+            ${escapeHtml(item)} :
+            <a href="${link.url}" class="info-link">${escapeHtml(link.label)}</a>
+          </li>
+        `;
+      }
+      html += `</ul>`;
+    }
+    // ✅ Gérer les items avec des liens HTML intégrés (ex: "<a href="tel:...">")
+    else if (section.items && section.items.some(i => i.includes('<a href='))) {
+      html += `<ul>`;
+      section.items.forEach((i) => {
+        if (i.includes('<a href="tel:') || i.includes('<a href="sms:')) {
+          html += `<li>${i}</li>`; // ✅ Garder le HTML tel quel
+        } else {
+          html += `<li>${escapeHtml(i)}</li>`; // ✅ Sinon, échapper normalement
+        }
+      });
+      html += `</ul>`;
+    }
+    // ✅ Gérer les items simples (sans liens)
+    else if (section.items) {
+      html += `<ul>${section.items.map((i) => `<li>${escapeHtml(i)}</li>`).join("")}</ul>`;
+    }
+
+    // ✅ Gérer les liens vers les stores (Trash Spotter, Clean 4 Green, etc.)
+    if (section.text) {
+      html += section.text
+        .map((t) => {
+          if (typeof t === "string") {
+            return `<p class="info-text">${escapeHtml(t)}</p>`;
+          }
+          // ✅ Gérer les liens avec store_android et store_ios
+          if (t.store_android || t.store_ios) {
+            const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+            let url = "#";
+
+            // Détecter si l'utilisateur est sur Android ou iOS
+            if (/android/i.test(userAgent)) {
+              url = t.store_android || "#";
+            } else if (/iPad|iPhone|iPod/.test(userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)) {
+              url = t.store_ios || "#";
+            } else {
+              // Par défaut, ouvrir le store Android
+              url = t.store_android || t.store_ios || "#";
+            }
+
+            return `
+              <p class="info-text">
+                <a href="${url}" target="_blank" rel="noopener" class="info-link">
+                  ${escapeHtml(t.label)}
+                </a>
+              </p>
+            `;
+          }
+          // ✅ Gérer les liens avec scheme
+          return `
+            <p class="info-text">
+              <a href="${t.scheme || '#'}" class="info-link">
+                ${escapeHtml(t.label)}
+              </a>
+            </p>
+          `;
+        })
+        .join("");
+    }
+
+    // ✅ Gérer les liens simples (ex: liens dans la section "lien-internet")
+    if (section.links && !section.items) {
+      html += section.links
+        .map(
+          (l) => {
+            if (l.url.startsWith("http://") || l.url.startsWith("https://")) {
+              return `<p><a href="${l.url}" target="_blank" rel="noopener" class="info-link">${escapeHtml(l.label)}</a></p>`;
+            }
+            if (l.url.startsWith("tel:")) {
+              return `<p><a href="${l.url}" class="info-link">${escapeHtml(l.label)}</a></p>`;
+            }
+            if (l.url.startsWith("sms:")) {
+              return `<p><a href="${l.url}" class="info-link">${escapeHtml(l.label)}</a></p>`;
+            }
+            return `<p><a href="${l.url}" target="_blank" rel="noopener" class="info-link">${escapeHtml(l.label)}</a></p>`;
+          }
+        )
+        .join("");
+    }
 
     if (section.footer) {
       html += `<p class="info-footer">${escapeHtml(section.footer)}</p>`;
