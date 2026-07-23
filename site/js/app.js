@@ -83,64 +83,7 @@ function renderQr(container, text, size = 100) {
 }
 
 /* -------------------------------------------------------
-   🌐 API Rando (cache contourné)
-------------------------------------------------------- */
-async function fetchRandoDetails() {
-  console.log("fetchRandoDetails appelé");
-
-  if (!navigator.onLine) {
-    const saved = localStorage.getItem("prochaineRando");
-    if (saved) {
-      console.log("Hors ligne : chargement des données depuis localStorage.");
-      return JSON.parse(saved);
-    } else {
-      throw new Error("Aucune donnée disponible hors-ligne.");
-    }
-  }
-
-  try {
-    console.log("Tentative de chargement depuis l'API...");
-    const res = await fetch(
-      "https://randoslorraine.pages.dev/api/rando?ts=" + Date.now(),
-      {
-        method: "GET",
-        mode: "cors",
-        cache: "no-store",
-        headers: {
-          "Cache-Control": "no-cache, no-store, must-revalidate",
-          "Pragma": "no-cache",
-          "Expires": "0"
-        }
-      }
-    );
-
-    if (!res.ok) {
-      throw new Error(`Erreur HTTP ${res.status}`);
-    }
-
-    const data = await res.json();
-    console.log("Données reçues de l'API:", data);
-
-    localStorage.setItem("prochaineRando", JSON.stringify(data));
-    console.log("Données sauvegardées dans localStorage.");
-
-    return data;
-
-  } catch (apiError) {
-    console.warn("L'API a échoué, tentative de chargement depuis localStorage...", apiError);
-
-    const saved = localStorage.getItem("prochaineRando");
-    if (saved) {
-      console.log("Fallback : données chargées depuis localStorage.");
-      return JSON.parse(saved);
-    } else {
-      throw new Error("Aucune donnée disponible (ni en ligne, ni hors ligne).");
-    }
-  }
-}
-
-/* -------------------------------------------------------
-   📄 Fonctions de rendu (définies AVANT navigate)
+   📄 Fonctions de rendu
 ------------------------------------------------------- */
 
 function renderAccueil(prenom, nom) {
@@ -573,6 +516,63 @@ function renderInfoPage(key) {
 }
 
 /* -------------------------------------------------------
+   🌐 API Rando (cache contourné)
+------------------------------------------------------- */
+async function fetchRandoDetails() {
+  console.log("fetchRandoDetails appelé");
+
+  if (!navigator.onLine) {
+    const saved = localStorage.getItem("prochaineRando");
+    if (saved) {
+      console.log("Hors ligne : chargement des données depuis localStorage.");
+      return JSON.parse(saved);
+    } else {
+      throw new Error("Aucune donnée disponible hors-ligne.");
+    }
+  }
+
+  try {
+    console.log("Tentative de chargement depuis l'API...");
+    const res = await fetch(
+      "https://randoslorraine.pages.dev/api/rando?ts=" + Date.now(),
+      {
+        method: "GET",
+        mode: "cors",
+        cache: "no-store",
+        headers: {
+          "Cache-Control": "no-cache, no-store, must-revalidate",
+          "Pragma": "no-cache",
+          "Expires": "0"
+        }
+      }
+    );
+
+    if (!res.ok) {
+      throw new Error(`Erreur HTTP ${res.status}`);
+    }
+
+    const data = await res.json();
+    console.log("Données reçues de l'API:", data);
+
+    localStorage.setItem("prochaineRando", JSON.stringify(data));
+    console.log("Données sauvegardées dans localStorage.");
+
+    return data;
+
+  } catch (apiError) {
+    console.warn("L'API a échoué, tentative de chargement depuis localStorage...", apiError);
+
+    const saved = localStorage.getItem("prochaineRando");
+    if (saved) {
+      console.log("Fallback : données chargées depuis localStorage.");
+      return JSON.parse(saved);
+    } else {
+      throw new Error("Aucune donnée disponible (ni en ligne, ni hors ligne).");
+    }
+  }
+}
+
+/* -------------------------------------------------------
    📄 Navigation
 ------------------------------------------------------- */
 function navigate(screen, options = {}) {
@@ -598,6 +598,31 @@ function navigate(screen, options = {}) {
     default:
       console.error(`Écran inconnu: ${screen}`);
       return renderAccueil(options.prenom, options.nom);
+  }
+}
+
+/* -------------------------------------------------------
+   🔧 Fonction manquante : openAppOrStore
+------------------------------------------------------- */
+function openAppOrStore(scheme, androidUrl, iosUrl) {
+  if (!scheme && !androidUrl && !iosUrl) {
+    alert("L'application n'est pas encore disponible sur les stores.");
+    return;
+  }
+
+  if (scheme) {
+    window.location.href = scheme;
+    setTimeout(() => {
+      if (androidUrl && /Android|webOS|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+        window.location.href = androidUrl;
+      } else if (iosUrl) {
+        window.location.href = iosUrl;
+      }
+    }, 500);
+  } else if (androidUrl && /Android|webOS|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+    window.location.href = androidUrl;
+  } else if (iosUrl) {
+    window.location.href = iosUrl;
   }
 }
 
@@ -657,31 +682,6 @@ async function checkUserAndStart() {
   } catch (error) {
     console.error("Erreur lors du démarrage :", error);
     navigate("inscription", { title: "Inscription" });
-  }
-}
-
-/* -------------------------------------------------------
-   🔧 Fonction manquante : openAppOrStore
-------------------------------------------------------- */
-function openAppOrStore(scheme, androidUrl, iosUrl) {
-  if (!scheme && !androidUrl && !iosUrl) {
-    alert("L'application n'est pas encore disponible sur les stores.");
-    return;
-  }
-
-  if (scheme) {
-    window.location.href = scheme;
-    setTimeout(() => {
-      if (androidUrl && /Android|webOS|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
-        window.location.href = androidUrl;
-      } else if (iosUrl) {
-        window.location.href = iosUrl;
-      }
-    }, 500);
-  } else if (androidUrl && /Android|webOS|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
-    window.location.href = androidUrl;
-  } else if (iosUrl) {
-    window.location.href = iosUrl;
   }
 }
 
