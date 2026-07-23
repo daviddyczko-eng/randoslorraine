@@ -548,10 +548,15 @@ async function checkUserAndStart() {
 
     // Charger les données de l'utilisateur et les infos en parallèle
     const [infoRes, randoRes] = await Promise.all([
-      fetch("./data/info.json").then((r) => {
-        if (!r.ok) throw new Error(`Erreur HTTP ${r.status} pour info.json`);
-        return r.json();
-      }),
+      fetch("./data/info.json")
+        .then((r) => {
+          if (!r.ok) throw new Error(`Erreur HTTP ${r.status} pour info.json`);
+          return r.json();
+        })
+        .catch((error) => {
+          console.error("Erreur lors du chargement de info.json:", error);
+          return {}; // Retourne un objet vide si info.json échoue
+        }),
       fetchRandoDetails().catch((error) => {
         console.warn("Erreur lors du chargement des données de rando:", error);
         return null; // Ne pas bloquer si les données de rando échouent
