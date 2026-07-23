@@ -563,14 +563,13 @@ function renderInfoPage(key) {
         .map((t) =>
           typeof t === "string"
             ? `<p class="info-text">${escapeHtml(t)}</p>`
-            : `<p class="info-text">
-                 <a href="#" class="open-app"
-                    data-scheme="${t.scheme ?? ""}"
-                    data-android="${t.store_android ?? ""}"
-                    data-ios="${t.store_ios ?? ""}">
-                    ${escapeHtml(t.label)}
-                 </a>
-               </p>`
+            : `
+              <p class="info-text">
+                <a href="${t.scheme || '#'}" class="info-link">
+                  ${escapeHtml(t.label)}
+                </a>
+              </p>
+            `
         )
         .join("");
     }
@@ -579,7 +578,7 @@ function renderInfoPage(key) {
       html += section.links
         .map(
           (l) =>
-            `<p><a href="${escapeHtml(l.url)}" target="_blank" rel="noopener">${escapeHtml(l.label)}</a></p>`
+            `<p><a href="${l.url}" target="_blank" rel="noopener" class="info-link">${escapeHtml(l.label)}</a></p>`
         )
         .join("");
     }
@@ -593,6 +592,7 @@ function renderInfoPage(key) {
 
   html += `</div>`;
   screenRoot.innerHTML = html;
+}
 
   screenRoot.querySelectorAll(".open-app").forEach((link) => {
     link.addEventListener("click", (e) => {
