@@ -101,42 +101,46 @@ function renderAccueil(prenom, nom) {
 
   screenRoot.innerHTML = `
     <div class="screen">
-      <div class="welcome">
-        <p>Bonjour ${escapeHtml(prenom)} ${escapeHtml(nom)} !</p>
-      </div>
+      <div class="card-list">
+        <!-- ✅ Premier cadre : Bonjour + QR code -->
+        <div class="home-card" id="btn-carte">
+          <span class="home-card__title">Bonjour ${escapeHtml(prenom)} !</span>
+          <div id="qr-small" style="display: inline-block; margin-left: 10px;"></div>
+        </div>
 
-      <div class="menu">
-        <button class="home-card" id="btn-carte">
-          <span>Ma carte</span>
-        </button>
-
-        <button class="home-card" id="btn-rando">
-          <span>Prochaine randonnée</span>
-          <span class="rando-preview">
+        <!-- ✅ Deuxième cadre : Prochaine randonnée -->
+        <div class="home-card" id="btn-rando">
+          <span class="home-card__title">Prochaine randonnée</span>
+          <span class="home-card__preview">
             ${escapeHtml(dateText)}<br>
             <small>${escapeHtml(lieuText)}</small>
           </span>
-        </button>
+        </div>
 
-        <button class="home-card" id="btn-info-avant">
-          <span>Avant le départ</span>
-        </button>
+        <!-- ✅ Autres cadres -->
+        <div class="home-card" id="btn-info-avant">
+          <span class="home-card__title">Avant le départ</span>
+        </div>
 
-        <button class="home-card" id="btn-info-accident">
-          <span>En cas d'accident</span>
-        </button>
+        <div class="home-card" id="btn-info-accident">
+          <span class="home-card__title">En cas d'accident</span>
+        </div>
 
-        <button class="home-card" id="btn-info-tarifs">
-          <span>Tout sur les tarifs</span>
-        </button>
+        <div class="home-card" id="btn-info-tarifs">
+          <span class="home-card__title">Tout sur les tarifs</span>
+        </div>
 
-        <button class="home-card" id="btn-info-lien">
-          <span>Lien internet</span>
-        </button>
+        <div class="home-card" id="btn-info-lien">
+          <span class="home-card__title">Lien internet</span>
+        </div>
       </div>
     </div>
   `;
 
+  // ✅ Générer le QR code en petit dans le premier cadre
+  renderQr($("#qr-small"), qrData(prenom, nom), 60); // Taille réduite à 60px
+
+  // Écouteurs d'événements
   $("#btn-carte").addEventListener("click", () => {
     navigate("carte", { prenom, nom, title: "Ma carte", showBack: true });
   });
