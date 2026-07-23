@@ -228,7 +228,7 @@ function renderAccueil(prenom, nom) {
 
   $("#btn-info-accident").addEventListener("click", () => {
     navigate("info", {
-      infoKey: "en-cas-accident",
+      infoKey: "accident",
       title: "En cas d'accident",
       showBack: true,
       onBack: () => {
