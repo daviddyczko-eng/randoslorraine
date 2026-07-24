@@ -458,13 +458,12 @@ $("#form-correction").addEventListener("submit", (e) => {
         nom: newNom,
         title: "Ma carte",
         showBack: true,
-        onBack: () => {
-    const user = getUser();
-    navigate("accueil", {
-        prenom: user.prenom,
-        nom: user.nom,
-    });
-}
+        onBack: () => navigate("carte", {
+    prenom,
+    nom,
+    title: "Ma carte",
+    showBack: true
+})
             })
     });
 });
