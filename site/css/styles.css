@@ -106,8 +106,8 @@ svg path {
 }
 
 .app-link {
-  color: var(--brand); /* Vert clair */
-  font-weight: 600;
+  color: var(--brand);
+  font-weight: bold;
   text-decoration: none;
 }
 
