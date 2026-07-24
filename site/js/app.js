@@ -485,45 +485,45 @@ function renderRandoDetails(r) {
             </span>
           </div>
     `;
-
-    if (rando.rendezVous) {
-      html += `
-          <div class="detail-row detail-row--clickable" onclick="window.open('${mapsUrl}', '_blank')">
-            <span class="detail-row__label">Rendez-vous</span>
-            <span class="detail-row__value">
-              ${escapeHtml(rando.rendezVous)}
-              ${mapsUrl ? `<button class="info-button" title="Ouvrir dans Google Maps"> ⓟ</button>` : ''}
-            </span>
-          </div>
-      `;
-    }
-
-    if (tel0) {
-      const pilote1 = pilotes[0] ? `Proposé par ${escapeHtml(pilotes[0])}` : "Contact";
-      html += `
-        <div class="detail-row detail-row--clickable" onclick="window.location.href='tel:${tel0.replace(/\s/g, "")}'">
-          <span class="detail-row__label">${pilote1}</span>
-          <span class="detail-row__value">
-            ${escapeHtml(tel0)}
-            <button class="info-button" title="Appeler ${tel0}"> ✆</button>
-          </span>
-        </div>
-      `;
-    }
-
-    if (tel1) {
-      const pilote2 = pilotes[1] ? `& ${escapeHtml(pilotes[1])}` : "";
-      html += `
-        <div class="detail-row detail-row--clickable" onclick="window.location.href='tel:${tel1.replace(/\s/g, "")}'">
-          <span class="detail-row__label">${pilote2}</span>
-          <span class="detail-row__value">
-            ${escapeHtml(tel1)}
-            <button class="info-button" title="Appeler ${tel1}"> ✆</button>
-          </span>
-        </div>
-      `;
-    }
-
+   
+   if (rando.rendezVous) {
+     html += `
+       <div class="detail-row">
+         <span class="detail-row__label">Rendez-vous</span>
+         <span class="detail-row__value">
+           ${escapeHtml(rando.rendezVous)}
+           ${mapsUrl ? `<button class="info-button" onclick="window.open('${mapsUrl}', '_blank')" title="Ouvrir dans Google Maps"> ⓟ</button>` : ''}
+         </span>
+       </div>
+     `;
+   }
+   
+   if (tel0) {
+     const pilote1 = pilotes[0] ? `Proposé par ${escapeHtml(pilotes[0])}` : "Contact";
+     html += `
+       <div class="detail-row">
+         <span class="detail-row__label">${pilote1}</span>
+         <span class="detail-row__value">
+           ${escapeHtml(tel0)}
+           <button class="info-button" onclick="window.location.href='tel:${tel0.replace(/\s/g, "")}'" title="Appeler ${tel0}"> ✆</button>
+         </span>
+       </div>
+     `;
+   }
+   
+   if (tel1) {
+     const pilote2 = pilotes[1] ? `& ${escapeHtml(pilotes[1])}` : "";
+     html += `
+       <div class="detail-row">
+         <span class="detail-row__label">${pilote2}</span>
+         <span class="detail-row__value">
+           ${escapeHtml(tel1)}
+           <button class="info-button" onclick="window.location.href='tel:${tel1.replace(/\s/g, "")}'" title="Appeler ${tel1}"> ✆</button>
+         </span>
+       </div>
+     `;
+   }
+     
     html += `
         </div>
         <div class="btn-row">
