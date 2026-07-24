@@ -345,6 +345,42 @@ svg path {
   text-align: right;
 }
 
+/* Style pour l'icône "i" dans le titre */
+.detail-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.detail-title {
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--brand-darker);
+}
+
+.info-icon {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background-color: white;
+  border: 1px solid var(--brand);
+  color: var(--brand);
+  font-style: normal;
+  font-weight: bold;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.info-icon:hover {
+  background-color: var(--brand-pale);
+}
+
 .info-section {
   margin-bottom: 16px;
   padding: 16px;
