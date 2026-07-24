@@ -165,6 +165,7 @@ function isToday(dateString) {
   );
 }
 
+
 /* -------------------------------------------------------
    📄 Fonctions de rendu
 ------------------------------------------------------- */
@@ -457,6 +458,155 @@ function renderCorrection(prenom, nom, email = "", telephone = "") {
   });
 }
 
+/* -------------------------------------------------------
+   🚗 Fonctions pour le covoiturage
+------------------------------------------------------- */
+
+// Variables globales pour stocker les données de covoiturage
+let covoiturageData = {
+  places: 0,
+  lieu: "",
+  message: "",
+  isEditing: false
+};
+
+// Fonction pour ouvrir une fenêtre modale
+function openModal(modalId) {
+  document.getElementById(modalId).style.display = "flex";
+}
+
+// Fonction pour fermer une fenêtre modale
+function closeModal(modalId) {
+  document.getElementById(modalId).style.display = "none";
+}
+
+// Fonction pour initialiser les modales de covoiturage
+function initCovoiturageModals() {
+  // Modale "Proposer un covoiturage"
+  const proposeModal = document.getElementById("covoiturage-propose-modal");
+  const confirmModal = document.getElementById("covoiturage-confirm-modal");
+
+  // Bouton "Proposer" dans la modale de proposition
+  document.getElementById("covoiturage-propose-confirm")?.addEventListener("click", () => {
+    const places = document.getElementById("covoiturage-places")?.value;
+    const lieu = document.getElementById("covoiturage-lieu")?.value;
+
+    if (!places || !lieu) {
+      alert("Veuillez remplir tous les champs.");
+      return;
+    }
+
+    const user = getUser();
+    if (!user) {
+      alert("Utilisateur non trouvé.");
+      return;
+    }
+
+    const rando = prochaineRando;
+    if (!rando) {
+      alert("Aucune randonnée disponible.");
+      return;
+    }
+
+    const date = rando.date || "date inconnue";
+    const commune = (rando.lieu && rando.lieu.commune) ? rando.lieu.commune : "lieu inconnu";
+    const prenom = user.prenom || "Prénom";
+    const nom = user.nom || "Nom";
+    const telephone = user.telephone || "téléphone non renseigné";
+    const email = user.email || "email non renseigné";
+
+    // Créer le message
+    const initialeNom = nom.charAt(0).toUpperCase();
+    const message = `Je (${prenom} ${nom.charAt(0).toUpperCase()}. ) vous propose de covoiturer pour la randonnée du ${date} à ${commune} et vous donne rendez-vous à ${lieu}. Merci de me contacter directement au ${telephone} ou à cette adresse ${email} pour définir une heure et un lieu précis. Je dispose de ${places} places.`;
+
+    // Stocker les données
+    covoiturageData = {
+      places,
+      lieu,
+      message,
+      isEditing: false
+    };
+
+    // Afficher le message dans la modale de confirmation
+    document.getElementById("covoiturage-message").textContent = message;
+    document.getElementById("covoiturage-message-edit").value = message;
+
+    // Fermer la modale de proposition et ouvrir la modale de confirmation
+    closeModal("covoiturage-propose-modal");
+    openModal("covoiturage-confirm-modal");
+  });
+
+  // Bouton "Annuler" dans la modale de proposition
+  document.getElementById("covoiturage-propose-cancel")?.addEventListener("click", () => {
+    closeModal("covoiturage-propose-modal");
+  });
+
+  // Bouton "Valider cette proposition" dans la modale de confirmation
+  document.getElementById("covoiturage-confirm-validate")?.addEventListener("click", () => {
+    sendCovoiturageEmail();
+    closeModal("covoiturage-confirm-modal");
+    alert("Votre proposition de covoiturage a été envoyée avec succès !");
+  });
+
+  // Bouton "Modifier ma proposition" dans la modale de confirmation
+  document.getElementById("covoiturage-confirm-edit")?.addEventListener("click", () => {
+    const messageEdit = document.getElementById("covoiturage-message-edit");
+    const messageDisplay = document.getElementById("covoiturage-message");
+
+    if (covoiturageData.isEditing) {
+      // Sauvegarder les modifications
+      covoiturageData.message = messageEdit.value;
+      messageDisplay.textContent = messageEdit.value;
+      messageEdit.style.display = "none";
+      document.getElementById("covoiturage-confirm-edit").textContent = "Modifier ma proposition";
+      covoiturageData.isEditing = false;
+    } else {
+      // Activer le mode édition
+      messageEdit.value = covoiturageData.message;
+      messageDisplay.style.display = "none";
+      messageEdit.style.display = "block";
+      document.getElementById("covoiturage-confirm-edit").textContent = "Valider ma proposition";
+      covoiturageData.isEditing = true;
+    }
+  });
+
+  // Bouton "Annuler ma proposition" dans la modale de confirmation
+  document.getElementById("covoiturage-confirm-cancel")?.addEventListener("click", () => {
+    closeModal("covoiturage-confirm-modal");
+  });
+}
+
+// Fonction pour envoyer l'email de proposition de covoiturage
+function sendCovoiturageEmail() {
+  const user = getUser();
+  if (!user) {
+    alert("Utilisateur non trouvé.");
+    return;
+  }
+
+  const email = user.email || "";
+  const rando = prochaineRando;
+  const date = rando?.date || "date inconnue";
+
+  // Récupérer le message (édité ou non)
+  const message = covoiturageData.isEditing ?
+    document.getElementById("covoiturage-message-edit").value :
+    covoiturageData.message;
+
+  // Objet de l'email
+  const subject = `Proposition de covoiturage pour le ${date}`;
+
+  // Corps de l'email
+  const body = encodeURIComponent(message);
+
+  // Lien mailto avec destinataire, copie, objet et corps
+  const mailtoLink = `mailto:dd88@laposte.net?cc=${email}&subject=${encodeURIComponent(subject)}&body=${body}`;
+
+  // Ouvrir le client mail par défaut
+  window.open(mailtoLink, "_blank");
+}
+
+// Modifier renderRandoDetails pour utiliser les modales
 function renderRandoDetails(r) {
   console.log("renderRandoDetails appelé avec:", r);
 
@@ -479,12 +629,9 @@ function renderRandoDetails(r) {
       return;
     }
 
-    // ✅ Récupérer l'URL de la randonnée depuis l'API
     const randoUrl = rando.url || null;
-    const randoTitle = isToday(rando.date) ? "Rando du jour" : "Prochaine randonnée"; // ✅ Titre dynamique
-
-    // ✅ Mettre à jour le titre de la page
-    appBarTitle.textContent = randoTitle; // ✅ Déplacé ici
+    const randoTitle = isToday(rando.date) ? "Rando du jour" : "Prochaine randonnée";
+    appBarTitle.textContent = randoTitle;
 
     let lat, lng;
     if (rando.gps) {
@@ -494,11 +641,9 @@ function renderRandoDetails(r) {
     }
 
     const mapsUrl = lat && lng ? `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}` : null;
-
     const commune = (rando.lieu && rando.lieu.commune) ? rando.lieu.commune : "Lieu inconnu";
     const pays = (rando.lieu && rando.lieu.pays) ? rando.lieu.pays : null;
     const departement = (rando.lieu && rando.lieu.departement) ? rando.lieu.departement : null;
-
     const accueil = rando.heureAccueil || rando.lieu?.heureAccueil || "Heure d'accueil non spécifiée";
     const depart = rando.heureDepart || rando.lieu?.heureDepart || "Heure de départ non spécifiée";
 
@@ -533,33 +678,33 @@ function renderRandoDetails(r) {
 
     if (pays && pays.toLowerCase() !== "france") {
       html += `
-          <div class="detail-row">
-            <span class="detail-row__label">Pays</span>
-            <span class="detail-row__value">${escapeHtml(pays)}</span>
-          </div>
+        <div class="detail-row">
+          <span class="detail-row__label">Pays</span>
+          <span class="detail-row__value">${escapeHtml(pays)}</span>
+        </div>
       `;
       if (departement) {
         html += `
-          <div class="detail-row">
-            <span class="detail-row__label">Département</span>
-            <span class="detail-row__value">${escapeHtml(departement)}</span>
-          </div>
+        <div class="detail-row">
+          <span class="detail-row__label">Département</span>
+          <span class="detail-row__value">${escapeHtml(departement)}</span>
+        </div>
         `;
       }
     }
 
     html += `
-          <div class="detail-row">
-            <span class="detail-row__label">Heure d'accueil</span>
-            <span class="detail-row__value">${escapeHtml(accueil)}</span>
-          </div>
-          <div class="detail-row">
-            <span class="detail-row__label">Heure de départ</span>
-            <span class="detail-row__value">
-              ${escapeHtml(depart)}
-              ${randoUrl ? `<button class="info-button" onclick="window.open('${randoUrl}', '_blank')" title="Voir la page de la randonnée"> ⓘ</button>` : ''}
-            </span>
-          </div>
+      <div class="detail-row">
+        <span class="detail-row__label">Heure d'accueil</span>
+        <span class="detail-row__value">${escapeHtml(accueil)}</span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-row__label">Heure de départ</span>
+        <span class="detail-row__value">
+          ${escapeHtml(depart)}
+          ${randoUrl ? `<button class="info-button" onclick="window.open('${randoUrl}', '_blank')" title="Voir la page de la randonnée"> ⓘ</button>` : ''}
+        </span>
+      </div>
     `;
 
     if (rando.rendezVous) {
@@ -601,18 +746,22 @@ function renderRandoDetails(r) {
     }
 
     html += `
-        </div>
-        <div class="btn-row">
-          <button class="btn btn--primary" id="btn-covoiturage-propose">Je propose un covoiturage.</button>
-          <button class="btn btn--primary" id="btn-covoiturage-recherche">Je voudrais un covoiturage.</button>
-        </div>
       </div>
+      <div class="btn-row">
+        <button class="btn btn--primary" id="btn-covoiturage-propose">Je propose un covoiturage.</button>
+        <button class="btn btn--primary" id="btn-covoiturage-recherche">Je voudrais un covoiturage.</button>
+      </div>
+    </div>
     `;
 
     screenRoot.innerHTML = html;
 
+    // ✅ Initialiser les modales de covoiturage
+    initCovoiturageModals();
+
+    // ✅ Écouteur pour le bouton "Je propose un covoiturage"
     $("#btn-covoiturage-propose").addEventListener("click", () => {
-      alert("Fonctionnalité 'Je propose un covoiturage' à implémenter.");
+      openModal("covoiturage-propose-modal");
     });
 
     $("#btn-covoiturage-recherche").addEventListener("click", () => {
@@ -620,6 +769,8 @@ function renderRandoDetails(r) {
     });
   };
 
+  // ... (le reste de la fonction reste inchangé)
+}
   const showError = (message) => {
     console.error("Erreur dans renderRandoDetails:", message);
     screenRoot.innerHTML = `
