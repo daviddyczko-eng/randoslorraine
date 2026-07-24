@@ -11,10 +11,23 @@ export function getUser() {
 }
 
 export function saveUser({ prenom, nom, dateInscription, email = "", telephone = "" }) {
-  localStorage.setItem(
-    STORAGE_KEY,
-    JSON.stringify({ prenom, nom, dateInscription, email, telephone })
-  );
+    try {
+        localStorage.setItem(
+            STORAGE_KEY,
+            JSON.stringify({
+                prenom,
+                nom,
+                dateInscription,
+                email,
+                telephone
+            })
+        );
+        return true;
+    }
+    catch (e) {
+        console.error(e);
+        return false;
+    }
 }
 
 export function clearUser() {
