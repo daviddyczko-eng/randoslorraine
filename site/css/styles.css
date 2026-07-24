@@ -358,7 +358,6 @@ svg path {
   justify-content: center;
   vertical-align: middle;
   color: var(--brand-darker);
-  font-weight: bold;
   text-decoration: none;
 }
 
