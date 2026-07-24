@@ -288,6 +288,14 @@ function renderInscription() {
           <label for="nom">Nom</label>
           <input id="nom" required autocomplete="family-name">
         </div>
+        <div class="field">
+          <label for="email">Adresse de messagerie électronique</label>
+          <input id="email" type="email" required autocomplete="email" placeholder="ex: votre@email.com">
+        </div>
+        <div class="field">
+          <label for="telephone">Numéro de téléphone (format international)</label>
+          <input id="telephone" type="tel" required autocomplete="tel" placeholder="ex: +33612345678">
+        </div>
         <div class="btn-row">
           <button type="button" class="btn btn--ghost" id="btn-quit">Quitter l'application</button>
           <button type="submit" class="btn btn--primary">Valider mon inscription</button>
@@ -306,11 +314,25 @@ function renderInscription() {
 
     const prenom = formatName($("#prenom").value);
     const nom = formatName($("#nom").value);
+    const email = $("#email").value.trim();
+    const telephone = $("#telephone").value.trim();
     const dateInscription = new Date().toISOString();
 
-    console.log(`Prénom: ${prenom}, Nom: ${nom}, Date: ${dateInscription}`);
+    // Validation du format du téléphone (optionnel)
+    if (telephone && !/^\+\d{10,15}$/.test(telephone)) {
+      alert("Le numéro de téléphone doit être au format international (ex: +33612345678).");
+      return;
+    }
 
-    const success = saveUser({ prenom, nom, dateInscription });
+    // Validation du format de l'email (optionnel)
+    if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      alert("L'adresse e-mail n'est pas valide.");
+      return;
+    }
+
+    console.log(`Prénom: ${prenom}, Nom: ${nom}, Email: ${email}, Téléphone: ${telephone}, Date: ${dateInscription}`);
+
+    const success = saveUser({ prenom, nom, email, telephone, dateInscription });
     if (!success) {
       console.error("Échec de la sauvegarde de l'utilisateur.");
       alert("Une erreur est survenue. Veuillez réessayer.");
