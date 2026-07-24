@@ -390,7 +390,7 @@ function renderCarte(prenom, nom) {
   });
 }
 
-function renderCorrection(prenom, nom) {
+function renderCorrection() {
     const user = getUser();
 
     screenRoot.innerHTML = `
@@ -427,7 +427,7 @@ function renderCorrection(prenom, nom) {
                  required>
         </div>
 
-        <button class="btn btn--primary btn--block">
+        <button type="submit" class="btn btn--primary btn--block">
             Valider
         </button>
 
@@ -435,37 +435,33 @@ function renderCorrection(prenom, nom) {
     </div>
     `;
 
-$("#form-correction").addEventListener("submit", (e) => {
-    e.preventDefault();
+    $("#form-correction").addEventListener("submit", (e) => {
+        e.preventDefault();
 
-    const newPrenom = formatName($("#prenom").value);
-    const newNom = formatName($("#nom").value);
-    const newEmail = $("#email").value.trim();
-    const newTelephone = $("#telephone").value.trim();
+        const newPrenom = formatName($("#prenom").value);
+        const newNom = formatName($("#nom").value);
+        const newEmail = $("#email").value.trim();
+        const newTelephone = $("#telephone").value.trim();
 
-    const user = getUser();
+        saveUser({
+            ...user,
+            prenom: newPrenom,
+            nom: newNom,
+            email: newEmail,
+            telephone: newTelephone
+        });
 
-    saveUser({
-        ...user,                     // conserve tous les champs existants
-        prenom: newPrenom,
-        nom: newNom,
-        email: newEmail,
-        telephone: newTelephone
+        navigate("carte", {
+            prenom: newPrenom,
+            nom: newNom,
+            title: "Ma carte",
+            showBack: true,
+            onBack: () => navigate("accueil", {
+                prenom: newPrenom,
+                nom: newNom
+            })
+        });
     });
-
-    navigate("carte", {
-        prenom: newPrenom,
-        nom: newNom,
-        title: "Ma carte",
-        showBack: true,
-        onBack: () => navigate("carte", {
-    prenom,
-    nom,
-    title: "Ma carte",
-    showBack: true
-})
-            });
-});
 }
 
 function renderRandoDetails(r) {
