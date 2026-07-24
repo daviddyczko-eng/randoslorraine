@@ -442,7 +442,6 @@ function renderRandoDetails(r) {
     const tel0 = (rando.telephones && rando.telephones[0]) ? rando.telephones[0] : null;
     const tel1 = (rando.telephones && rando.telephones[1]) ? rando.telephones[1] : null;
 
-    // ✅ Supprimer le titre "Prochaine randonnée" en noir et ajouter l'icône 🛈 après "Heure de départ"
     let html = `
       <div class="screen">
         <div class="detail-list">
@@ -482,7 +481,7 @@ function renderRandoDetails(r) {
             <span class="detail-row__label">Heure de départ</span>
             <span class="detail-row__value">
               ${escapeHtml(depart)}
-              ${randoUrl ? `<button class="info-button" onclick="window.open('${randoUrl}', '_blank')" title="Voir la page de la randonnée">🛈</button>` : ''}
+              ${randoUrl ? `<button class="info-button" onclick="window.open('${randoUrl}', '_blank')" title="Voir la page de la randonnée">ⓘ</button>` : ''}
             </span>
           </div>
     `;
