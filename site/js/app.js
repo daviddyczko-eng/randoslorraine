@@ -604,33 +604,55 @@ function renderInfoPage(key) {
   for (const section of page.sections) {
     html += `<section class="info-section"><h3>${escapeHtml(section.heading)}</h3>`;
 
-   // ✅ Gérer les items et links côte-à-côte (même si les tableaux n'ont pas la même longueur)
-   if (section.items && section.links) {
-     html += `<ul>`;
-     for (let i = 0; i < section.items.length; i++) {
-       const item = section.items[i];
-       const link = section.links[i]; // ✅ link peut être undefined si i >= section.links.length
-   
-       if (link) {
-         // ✅ Si un lien existe pour cet item, l'afficher à côté
-         html += `
-           <li>
-             ${escapeHtml(item)} :
-             <a href="${link.url}" class="info-link">${escapeHtml(link.label)}</a>
-           </li>
-         `;
-       } else {
-         // ✅ Sinon, afficher l'item seul (ex: "sociétaire MAIF 3163163A")
-         html += `<li>${escapeHtml(item)}</li>`;
-       }
-     }
-     html += `</ul>`;
-   }
+    // ✅ Gérer les items et links côte-à-côte (pour les urgences et l'assurance)
+    if (section.items && section.links) {
+      html += `<ul>`;
+      for (let i = 0; i < section.items.length; i++) {
+        const item = section.items[i];
+        const link = section.links[i];
+
+        if (link) {
+          // ✅ Si le lien a store_android ou store_ios, ouvrir le bon store
+          if (link.store_android || link.store_ios) {
+            const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+            let url = "#";
+
+            if (/android/i.test(userAgent)) {
+              url = link.store_android || "#";
+            } else if (/iPad|iPhone|iPod/.test(userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)) {
+              url = link.store_ios || "#";
+            } else {
+              url = link.store_android || link.store_ios || "#";
+            }
+
+            html += `
+              <li>
+                ${escapeHtml(item)} :
+                <a href="${url}" target="_blank" rel="noopener" class="info-link">${escapeHtml(link.label)}</a>
+              </li>
+            `;
+          }
+          // ✅ Sinon, utiliser l'URL normale (tel:, sms:, http:)
+          else if (link.url) {
+            html += `
+              <li>
+                ${escapeHtml(item)} :
+                <a href="${link.url}" class="info-link">${escapeHtml(link.label)}</a>
+              </li>
+            `;
+          }
+        } else {
+          // ✅ Sinon, afficher l'item seul (ex: "sociétaire MAIF 3163163A")
+          html += `<li>${escapeHtml(item)}</li>`;
+        }
+      }
+      html += `</ul>`;
+    }
     // ✅ Gérer les items avec des liens HTML intégrés (ex: "<a href="tel:...">")
     else if (section.items && section.items.some(i => i.includes('<a href='))) {
       html += `<ul>`;
       section.items.forEach((i) => {
-        if (i.includes('<a href="tel:') || i.includes('<a href="sms:')) {
+        if (i.includes('<a href="tel:') || i.includes('<a href="sms:') || i.includes('<a href="http')) {
           html += `<li>${i}</li>`; // ✅ Garder le HTML tel quel
         } else {
           html += `<li>${escapeHtml(i)}</li>`; // ✅ Sinon, échapper normalement
@@ -655,13 +677,11 @@ function renderInfoPage(key) {
             const userAgent = navigator.userAgent || navigator.vendor || window.opera;
             let url = "#";
 
-            // Détecter si l'utilisateur est sur Android ou iOS
             if (/android/i.test(userAgent)) {
               url = t.store_android || "#";
             } else if (/iPad|iPhone|iPod/.test(userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)) {
               url = t.store_ios || "#";
             } else {
-              // Par défaut, ouvrir le store Android
               url = t.store_android || t.store_ios || "#";
             }
 
@@ -690,16 +710,33 @@ function renderInfoPage(key) {
       html += section.links
         .map(
           (l) => {
-            if (l.url.startsWith("http://") || l.url.startsWith("https://")) {
-              return `<p><a href="${l.url}" target="_blank" rel="noopener" class="info-link">${escapeHtml(l.label)}</a></p>`;
+            if (l.url) {
+              if (l.url.startsWith("http://") || l.url.startsWith("https://")) {
+                return `<p><a href="${l.url}" target="_blank" rel="noopener" class="info-link">${escapeHtml(l.label)}</a></p>`;
+              }
+              if (l.url.startsWith("tel:")) {
+                return `<p><a href="${l.url}" class="info-link">${escapeHtml(l.label)}</a></p>`;
+              }
+              if (l.url.startsWith("sms:")) {
+                return `<p><a href="${l.url}" class="info-link">${escapeHtml(l.label)}</a></p>`;
+              }
             }
-            if (l.url.startsWith("tel:")) {
-              return `<p><a href="${l.url}" class="info-link">${escapeHtml(l.label)}</a></p>`;
+            // ✅ Gérer les liens avec store_android et store_ios
+            if (l.store_android || l.store_ios) {
+              const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+              let url = "#";
+
+              if (/android/i.test(userAgent)) {
+                url = l.store_android || "#";
+              } else if (/iPad|iPhone|iPod/.test(userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)) {
+                url = l.store_ios || "#";
+              } else {
+                url = l.store_android || l.store_ios || "#";
+              }
+
+              return `<p><a href="${url}" target="_blank" rel="noopener" class="info-link">${escapeHtml(l.label)}</a></p>`;
             }
-            if (l.url.startsWith("sms:")) {
-              return `<p><a href="${l.url}" class="info-link">${escapeHtml(l.label)}</a></p>`;
-            }
-            return `<p><a href="${l.url}" target="_blank" rel="noopener" class="info-link">${escapeHtml(l.label)}</a></p>`;
+            return `<p><a href="${l.url || '#'}" target="_blank" rel="noopener" class="info-link">${escapeHtml(l.label)}</a></p>`;
           }
         )
         .join("");
