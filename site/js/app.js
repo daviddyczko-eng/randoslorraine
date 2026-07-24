@@ -458,11 +458,11 @@ function renderCorrection() {
             nom: newNom,
             title: "Ma carte",
             showBack: true,
-            onBack: () => navigate("carte", {
+            onBack: () => navigate("accueil", {
                 prenom: newPrenom,
                 nom: newNom,
-               title: "Ma carte",
-               showBack: true
+               title: "Rando's Lorraine",
+               showBack: false
             })
         });
     });
