@@ -345,40 +345,23 @@ svg path {
   text-align: right;
 }
 
-/* Style pour l'icône "i" dans le titre */
-.detail-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 16px;
-}
-
-.detail-title {
-  margin: 0;
+/* Style pour le bouton icône 🛈 */
+.info-button {
+  background: none;
+  border: none;
+  cursor: pointer;
   font-size: 1.2rem;
-  font-weight: 700;
-  color: var(--brand-darker);
-}
-
-.info-icon {
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  background-color: white;
-  border: 1px solid var(--brand);
-  color: var(--brand);
-  font-style: normal;
-  font-weight: bold;
-  font-size: 14px;
-  display: flex;
+  margin-left: 8px;
+  padding: 0;
+  color: var(--brand-dark);
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  cursor: pointer;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  vertical-align: middle;
 }
 
-.info-icon:hover {
-  background-color: var(--brand-pale);
+.info-button:hover {
+  opacity: 0.8;
 }
 
 .info-section {
