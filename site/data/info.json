@@ -67,14 +67,14 @@
         {"store_android": "https://play.google.com/store/apps/details?id=com.alertesecours",
             "store_ios": "https://apps.apple.com/fr/app/alerte-secours/id6708225143","label": "Alerte Secours"}
       ],
-      /* "text": [
+      <!-- "text": [
           {
             "label": "Alerte Secours",
             "scheme": null,
             "store_android": "https://play.google.com/store/apps/details?id=com.alertesecours",
             "store_ios": "https://apps.apple.com/fr/app/alerte-secours/id6708225143"
           }
-        ] */
+        ] -->
       },
       {
         "heading": "Informer :",
