@@ -56,16 +56,13 @@
         "Numéro européen",
         "SAMU-SAS",
         "Sapeurs-pompiers",
-        "Alerte par SMS",
-        "Application dédiée"
+        "Alerte par SMS"
       ],
       "links": [
         { "url": "tel:112", "label": "112" },
         { "url": "tel:15", "label": "15" },
         { "url": "tel:18", "label": "18" },
-        { "url": "sms:114", "label": "114" },
-        {"store_android": "https://play.google.com/store/apps/details?id=com.alertesecours",
-            "store_ios": "https://apps.apple.com/fr/app/alerte-secours/id6708225143","label": "Alerte Secours"}
+        { "url": "sms:114", "label": "114" }
       ],
       "text": [
           {
