@@ -502,7 +502,7 @@ function renderRandoDetails(r) {
       html += `
         <div class="detail-row detail-row--clickable" onclick="window.location.href='tel:${tel0.replace(/\s/g, "")}'">
           <span class="detail-row__label">${pilote1}</span>
-          <span class="detail-row__value">📞 ${escapeHtml(tel0)}</span>
+          <span class="detail-row__value">📞✆ ${escapeHtml(tel0)}</span>✆
         </div>
       `;
     }
