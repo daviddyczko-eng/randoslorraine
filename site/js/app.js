@@ -392,8 +392,8 @@ function renderCarte(prenom, nom) {
       nom,
       title: "Corriger",
       showBack: true,
-      onBack: () => navigate("carte", { prenom, nom }),
-       title: "Ma carte",
+      onBack: () => navigate("correction", { prenom, nom }),
+       title: "Corriger",
        showBack: true
     });
   });
