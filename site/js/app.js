@@ -387,8 +387,6 @@ function renderCarte(prenom, nom) {
     <div class="screen screen--center">
       <div id="qr-large"></div>
       <p class="carte-name">${escapeHtml(prenom)} ${escapeHtml(nom)}</p>
-      ${email ? `<p class="carte-email">${escapeHtml(email)}</p>` : ''}
-      ${telephone ? `<p class="carte-telephone">${escapeHtml(telephone)}</p>` : ''}
       <button class="btn btn--secondary" id="btn-corriger">Corriger</button>
     </div>
   `;
