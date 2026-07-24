@@ -492,7 +492,7 @@ function renderRandoDetails(r) {
             <span class="detail-row__label">Rendez-vous</span>
             <span class="detail-row__value">
               ${escapeHtml(rando.rendezVous)}
-              ${mapsUrl ? `<button class="info-button" title="Ouvrir dans Google Maps"> Ⓟ</button>` : ''}
+              ${mapsUrl ? `<button class="info-button" title="Ouvrir dans Google Maps"> ⓟ</button>` : ''}
             </span>
           </div>
       `;
