@@ -11,13 +11,13 @@
   "lang": "fr",
   "icons": [
     {
-      "src": "/site/icons/RL-logo.png",
+      "src": "icons/RL-logo.png",
       "sizes": "any",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/site/icons/RL-logo.png",
+      "src": "icons/RL-logo.png",
       "sizes": "any",
       "type": "image/png",
       "purpose": "maskable"
