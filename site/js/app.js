@@ -930,3 +930,5 @@ async function init() {
   // ✅ Naviguer vers la page appropriée
   navigate(result.screen, result.options);
 }
+
+init();
