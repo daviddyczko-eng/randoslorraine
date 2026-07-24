@@ -491,7 +491,7 @@ function renderRandoDetails(r) {
           <div class="detail-row detail-row--clickable" onclick="window.open('${mapsUrl}', '_blank')">
             <span class="detail-row__label">Rendez-vous</span>
             <span class="detail-row__value">
-              ${escapeHtml(rando.rendezVous)} ⛳📍
+              ${escapeHtml(rando.rendezVous)} Ⓟ⛳📍
             </span>
           </div>
       `;
