@@ -922,7 +922,7 @@ async function init() {
   const result = await checkUserAndStart();
 
   // ✅ Attendre 1 seconde avant de masquer le splash screen
-  await new Promise(resolve => setTimeout(resolve, 1000));
+  await new Promise(resolve => setTimeout(resolve, 700));
 
   // ✅ Masquer le splash screen
   splashEl.classList.add("hidden");
