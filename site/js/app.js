@@ -221,7 +221,14 @@ function renderAccueil(prenom, nom) {
   renderQr($("#qr-small"), qrData(prenom, nom), 60);
 
   $("#btn-carte").addEventListener("click", () => {
-    navigate("carte", { prenom, nom, title: "Ma carte", showBack: true });
+    navigate("carte", { prenom, nom, 
+      title: "Ma carte", 
+      showBack: true,
+      onBack: () => {
+         const user = getUser();
+         navigate("accueil", { prenom: user.prenom, nom: user.nom });
+      }
+      });
   });
 
   $("#btn-rando").addEventListener("click", () => {
