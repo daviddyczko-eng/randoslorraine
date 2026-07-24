@@ -10,10 +10,10 @@ export function getUser() {
   }
 }
 
-export function saveUser({ prenom, nom, dateInscription }) {
+export function saveUser({ prenom, nom, dateInscription, email = "", telephone = "" }) {
   localStorage.setItem(
     STORAGE_KEY,
-    JSON.stringify({ prenom, nom, dateInscription })
+    JSON.stringify({ prenom, nom, dateInscription, email, telephone })
   );
 }
 
