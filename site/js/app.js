@@ -385,9 +385,9 @@ function renderCarte(prenom, nom) {
       nom,
       title: "Corriger",
       showBack: true,
-      onBack: () => navigate("carte", { prenom, nom }),
-       title: "Ma carte",
-       showBack: true
+      onBack: () => navigate("accueil", { prenom, nom }),
+       title: "Rando's Lorraine",
+       showBack: false
     });
   });
 }
