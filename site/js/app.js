@@ -465,6 +465,7 @@ $("#form-correction").addEventListener("submit", (e) => {
             })
     });
 });
+}
 
 function renderRandoDetails(r) {
   console.log("renderRandoDetails appelé avec:", r);
