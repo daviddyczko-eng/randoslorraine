@@ -491,7 +491,8 @@ function renderRandoDetails(r) {
           <div class="detail-row detail-row--clickable" onclick="window.open('${mapsUrl}', '_blank')">
             <span class="detail-row__label">Rendez-vous</span>
             <span class="detail-row__value">
-              ${escapeHtml(rando.rendezVous)} Ⓟ
+              ${escapeHtml(rando.rendezVous)}
+              ${mapsUrl ? `<button class="info-button" title="Ouvrir dans Google Maps"> Ⓟ</button>` : ''}
             </span>
           </div>
       `;
@@ -502,7 +503,10 @@ function renderRandoDetails(r) {
       html += `
         <div class="detail-row detail-row--clickable" onclick="window.location.href='tel:${tel0.replace(/\s/g, "")}'">
           <span class="detail-row__label">${pilote1}</span>
-          <span class="detail-row__value">${escapeHtml(tel0)} ✆</span>
+          <span class="detail-row__value">
+            ${escapeHtml(tel0)}
+            <button class="info-button" title="Appeler ${tel0}"> ✆</button>
+          </span>
         </div>
       `;
     }
@@ -512,7 +516,10 @@ function renderRandoDetails(r) {
       html += `
         <div class="detail-row detail-row--clickable" onclick="window.location.href='tel:${tel1.replace(/\s/g, "")}'">
           <span class="detail-row__label">${pilote2}</span>
-          <span class="detail-row__value">${escapeHtml(tel1)} ✆</span>
+          <span class="detail-row__value">
+            ${escapeHtml(tel1)}
+            <button class="info-button" title="Appeler ${tel1}"> ✆</button>
+          </span>
         </div>
       `;
     }
