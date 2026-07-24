@@ -345,12 +345,11 @@ svg path {
   text-align: right;
 }
 
-/* Style pour le bouton icône 🛈 */
 .info-button {
   background: none;
   border: none;
   cursor: pointer;
-  font-size: 1.2rem;
+  font-size: 1.5rem;
   margin-left: 8px;
   padding: 0;
   color: var(--brand-dark);
@@ -358,6 +357,9 @@ svg path {
   align-items: center;
   justify-content: center;
   vertical-align: middle;
+  color: var(--brand-darker);
+  font-weight: bold;
+  text-decoration: none;
 }
 
 .info-button:hover {
