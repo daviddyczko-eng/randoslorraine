@@ -56,6 +56,7 @@ function escapeHtml(str) {
    🖥️ Gestion des écrans
 ------------------------------------------------------- */
 function showMain(showBack, title, onBack) {
+   console.log(`Affichage de l'écran principal avec titre: ${title}`);
   screenRoot.innerHTML = "";
   mainEl.classList.remove("hidden");
   appBarTitle.textContent = title;
