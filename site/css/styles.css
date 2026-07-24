@@ -105,6 +105,16 @@ svg path {
   height: 28px;
 }
 
+.app-link {
+  color: var(--brand); /* Vert clair */
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.app-link:hover {
+  text-decoration: underline;
+}
+
 .screen {
   padding: 16px;
   padding-bottom: calc(16px + var(--safe-bottom));
