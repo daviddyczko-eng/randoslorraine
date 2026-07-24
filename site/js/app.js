@@ -464,8 +464,7 @@ $("#form-correction").addEventListener("submit", (e) => {
     title: "Ma carte",
     showBack: true
 })
-            })
-    });
+            });
 });
 }
 
