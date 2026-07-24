@@ -481,7 +481,7 @@ function renderRandoDetails(r) {
             <span class="detail-row__label">Heure de départ</span>
             <span class="detail-row__value">
               ${escapeHtml(depart)}
-              ${randoUrl ? `<button class="info-button" onclick="window.open('${randoUrl}', '_blank')" title="Voir la page de la randonnée">ⓘ</button>` : ''}
+              ${randoUrl ? `<button class="info-button" onclick="window.open('${randoUrl}', '_blank')" title="Voir la page de la randonnée"> ⓘ</button>` : ''}
             </span>
           </div>
     `;
