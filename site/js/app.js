@@ -56,7 +56,6 @@ function escapeHtml(str) {
    🖥️ Gestion des écrans
 ------------------------------------------------------- */
 function showMain(showBack, title, onBack) {
-  splashEl.classList.add("hidden");
   mainEl.classList.remove("hidden");
   appBarTitle.textContent = title;
   appBarBack.classList.toggle("hidden", !showBack);
@@ -919,13 +918,15 @@ async function init() {
     }
   });
 
-  // ✅ Charger les données et attendre 1 seconde avant de naviguer
-  await checkUserAndStart();
+  // ✅ Charger les données
+  const result = await checkUserAndStart();
 
   // ✅ Attendre 1 seconde avant de masquer le splash screen
   await new Promise(resolve => setTimeout(resolve, 1000));
 
   // ✅ Masquer le splash screen
   splashEl.classList.add("hidden");
-  mainEl.classList.remove("hidden");
+
+  // ✅ Naviguer vers la page appropriée
+  navigate(result.screen, result.options);
 }
