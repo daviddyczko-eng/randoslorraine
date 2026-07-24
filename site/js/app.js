@@ -407,6 +407,9 @@ function renderRandoDetails(r) {
       return;
     }
 
+    // ✅ Récupérer l'URL de la randonnée depuis l'API
+    const randoUrl = rando.url || null;
+
     let lat, lng;
     if (rando.gps) {
       const coords = rando.gps.split(',').map(coord => parseFloat(coord.trim()));
@@ -439,8 +442,13 @@ function renderRandoDetails(r) {
     const tel0 = (rando.telephones && rando.telephones[0]) ? rando.telephones[0] : null;
     const tel1 = (rando.telephones && rando.telephones[1]) ? rando.telephones[1] : null;
 
+    // ✅ Ajouter l'icône "i" dans le titre avec un lien vers rando.url
     let html = `
       <div class="screen">
+        <div class="detail-header">
+          <h2 class="detail-title">Prochaine randonnée</h2>
+          ${randoUrl ? `<button class="info-icon" onclick="window.open('${randoUrl}', '_blank')" title="Voir la page de la randonnée">i</button>` : ''}
+        </div>
         <div class="detail-list">
           <div class="detail-row">
             <span class="detail-row__label">Date</span>
