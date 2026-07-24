@@ -458,7 +458,9 @@ function renderCorrection() {
             showBack: true,
             onBack: () => navigate("carte", {
                 prenom: newPrenom,
-                nom: newNom
+                nom: newNom,
+               title: "Ma carte",
+               showBack: true
             })
         });
     });
