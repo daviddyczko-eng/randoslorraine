@@ -56,10 +56,12 @@ function escapeHtml(str) {
    🖥️ Gestion des écrans
 ------------------------------------------------------- */
 function showMain(showBack, title, onBack) {
+  screenRoot.innerHTML = "";
   mainEl.classList.remove("hidden");
   appBarTitle.textContent = title;
   appBarBack.classList.toggle("hidden", !showBack);
   appBarIcon.classList.toggle("hidden", showBack);
+
   backHandler = onBack || (() => {
     const user = getUser();
     if (user?.prenom && user?.nom) {
@@ -376,10 +378,16 @@ function renderCotisation(prenom, nom, dateInscription) {
 }
 
 function renderCarte(prenom, nom) {
+  const user = getUser();
+  const email = user?.email || "";
+  const telephone = user?.telephone || "";
+
   screenRoot.innerHTML = `
     <div class="screen screen--center">
       <div id="qr-large"></div>
       <p class="carte-name">${escapeHtml(prenom)} ${escapeHtml(nom)}</p>
+      ${email ? `<p class="carte-email">${escapeHtml(email)}</p>` : ''}
+      ${telephone ? `<p class="carte-telephone">${escapeHtml(telephone)}</p>` : ''}
       <button class="btn btn--secondary" id="btn-corriger">Corriger</button>
     </div>
   `;
@@ -390,89 +398,64 @@ function renderCarte(prenom, nom) {
     navigate("correction", {
       prenom,
       nom,
+      email,
+      telephone,
       title: "Corriger",
       showBack: true,
-      onBack: () => navigate("correction", { prenom, nom }),
-       title: "Corriger",
-       showBack: true
+      onBack: () => navigate("accueil", { prenom, nom }),
     });
   });
 }
 
-function renderCorrection() {
-    const user = getUser();
-
-    screenRoot.innerHTML = `
+function renderCorrection(prenom, nom, email = "", telephone = "") {
+  screenRoot.innerHTML = `
     <div class="screen">
       <form id="form-correction" class="form">
-
         <div class="field">
           <label for="prenom">Prénom</label>
-          <input id="prenom"
-                 value="${escapeHtml(user?.prenom ?? "")}"
-                 required>
+          <input id="prenom" value="${escapeHtml(prenom)}" required>
         </div>
-
         <div class="field">
           <label for="nom">Nom</label>
-          <input id="nom"
-                 value="${escapeHtml(user?.nom ?? "")}"
-                 required>
+          <input id="nom" value="${escapeHtml(nom)}" required>
         </div>
-
         <div class="field">
           <label for="email">Adresse e-mail</label>
-          <input id="email"
-                 type="email"
-                 value="${escapeHtml(user?.email ?? "")}"
-                 required>
+          <input id="email" type="email" value="${escapeHtml(email)}" required>
         </div>
-
         <div class="field">
-          <label for="telephone">Téléphone</label>
-          <input id="telephone"
-                 type="tel"
-                 value="${escapeHtml(user?.telephone ?? "")}"
-                 required>
+          <label for="telephone">Numéro de téléphone (format international)</label>
+          <input id="telephone" type="tel" value="${escapeHtml(telephone)}" required placeholder="+33612345678">
         </div>
-
-        <button type="submit" class="btn btn--primary btn--block">
-            Valider
-        </button>
-
+        <button class="btn btn--primary btn--block">Valider</button>
       </form>
     </div>
-    `;
+  `;
 
-    $("#form-correction").addEventListener("submit", (e) => {
-        e.preventDefault();
+  $("#form-correction").addEventListener("submit", (e) => {
+    e.preventDefault();
+    const newPrenom = formatName($("#prenom").value);
+    const newNom = formatName($("#nom").value);
+    const newEmail = $("#email").value.trim();
+    const newTelephone = $("#telephone").value.trim();
+    const user = getUser();
 
-        const newPrenom = formatName($("#prenom").value);
-        const newNom = formatName($("#nom").value);
-        const newEmail = $("#email").value.trim();
-        const newTelephone = $("#telephone").value.trim();
-
-        saveUser({
-            ...user,
-            prenom: newPrenom,
-            nom: newNom,
-            email: newEmail,
-            telephone: newTelephone
-        });
-
-        navigate("carte", {
-            prenom: newPrenom,
-            nom: newNom,
-            title: "Ma carte",
-            showBack: true,
-            onBack: () => navigate("accueil", {
-                prenom: newPrenom,
-                nom: newNom //,
-              // title: "Ma carte",
-              // showBack: true
-            })
-        });
+    saveUser({
+      prenom: newPrenom,
+      nom: newNom,
+      email: newEmail,
+      telephone: newTelephone,
+      dateInscription: user?.dateInscription ?? new Date().toISOString(),
     });
+
+    navigate("carte", {
+      prenom: newPrenom,
+      nom: newNom,
+      title: "Ma carte",
+      showBack: true,
+      onBack: () => navigate("accueil", { prenom: newPrenom, nom: newNom }),
+    });
+  });
 }
 
 function renderRandoDetails(r) {
@@ -862,6 +845,8 @@ function navigate(screen, options = {}) {
   currentScreen = screen;
   showMain(options.showBack ?? false, options.title ?? "Rando's Lorraine", options.onBack);
 
+  screenRoot.innerHTML = "";
+
   switch (screen) {
     case "inscription":
       return renderInscription();
@@ -872,7 +857,7 @@ function navigate(screen, options = {}) {
     case "carte":
       return renderCarte(options.prenom, options.nom);
     case "correction":
-      return renderCorrection(options.prenom, options.nom);
+      return renderCorrection(options.prenom, options.nom, options.email, options.telephone);
     case "rando":
       return renderRandoDetails(options.rando);
     case "info":
