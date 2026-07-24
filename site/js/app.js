@@ -874,31 +874,28 @@ async function checkUserAndStart() {
 
     if (!user?.prenom || !user?.nom || !user?.dateInscription) {
       console.log("Aucun utilisateur trouvé, navigation vers inscription");
-      navigate("inscription", { title: "Inscription" });
-      return;
+      return { screen: "inscription", options: { title: "Inscription" } };
     }
 
     if (needsCotisation(user.dateInscription)) {
       console.log("Cotisation nécessaire, navigation vers cotisation");
-      navigate("cotisation", {
-        prenom: user.prenom,
-        nom: user.nom,
-        dateInscription: user.dateInscription,
-        title: "Vérification de votre cotisation",
-      });
-      return;
+      return {
+        screen: "cotisation",
+        options: {
+          prenom: user.prenom,
+          nom: user.nom,
+          dateInscription: user.dateInscription,
+          title: "Vérification de votre cotisation",
+        }
+      };
     }
 
     console.log("Navigation vers accueil avec utilisateur:", user.prenom, user.nom);
-    navigate("accueil", {
-      prenom: user.prenom,
-      nom: user.nom,
-      title: "Rando's Lorraine",
-    });
+    return { screen: "accueil", options: { prenom: user.prenom, nom: user.nom, title: "Rando's Lorraine" } };
 
   } catch (error) {
     console.error("Erreur lors du démarrage :", error);
-    navigate("inscription", { title: "Inscription" });
+    return { screen: "inscription", options: { title: "Inscription" } };
   }
 }
 
@@ -923,7 +920,16 @@ async function init() {
     }
   });
 
-  await checkUserAndStart();
-}
+  // ✅ Charger les données et attendre 1 seconde avant de naviguer
+  const result = await checkUserAndStart();
 
-init();
+  // ✅ Attendre 1 seconde avant de masquer le splash screen
+  await new Promise(resolve => setTimeout(resolve, 1000));
+
+  // ✅ Masquer le splash screen et naviguer vers la page appropriée
+  splashEl.classList.add("hidden");
+  mainEl.classList.remove("hidden");
+
+  // ✅ Naviguer vers la page appropriée
+  navigate(result.screen, result.options);
+}
