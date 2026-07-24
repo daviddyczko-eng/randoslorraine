@@ -391,43 +391,80 @@ function renderCarte(prenom, nom) {
 }
 
 function renderCorrection(prenom, nom) {
-  screenRoot.innerHTML = `
+    const user = getUser();
+
+    screenRoot.innerHTML = `
     <div class="screen">
       <form id="form-correction" class="form">
+
         <div class="field">
           <label for="prenom">Prénom</label>
-          <input id="prenom" value="${escapeHtml(prenom)}" required>
+          <input id="prenom"
+                 value="${escapeHtml(user?.prenom ?? "")}"
+                 required>
         </div>
+
         <div class="field">
           <label for="nom">Nom</label>
-          <input id="nom" value="${escapeHtml(nom)}" required>
+          <input id="nom"
+                 value="${escapeHtml(user?.nom ?? "")}"
+                 required>
         </div>
-        <button class="btn btn--primary btn--block">Valider</button>
+
+        <div class="field">
+          <label for="email">Adresse e-mail</label>
+          <input id="email"
+                 type="email"
+                 value="${escapeHtml(user?.email ?? "")}"
+                 required>
+        </div>
+
+        <div class="field">
+          <label for="telephone">Téléphone</label>
+          <input id="telephone"
+                 type="tel"
+                 value="${escapeHtml(user?.telephone ?? "")}"
+                 required>
+        </div>
+
+        <button class="btn btn--primary btn--block">
+            Valider
+        </button>
+
       </form>
     </div>
-  `;
+    `;
 
-  $("#form-correction").addEventListener("submit", (e) => {
+$("#form-correction").addEventListener("submit", (e) => {
     e.preventDefault();
+
     const newPrenom = formatName($("#prenom").value);
     const newNom = formatName($("#nom").value);
+    const newEmail = $("#email").value.trim();
+    const newTelephone = $("#telephone").value.trim();
+
     const user = getUser();
 
     saveUser({
-      prenom: newPrenom,
-      nom: newNom,
-      dateInscription: user?.dateInscription ?? new Date().toISOString(),
+        ...user,                     // conserve tous les champs existants
+        prenom: newPrenom,
+        nom: newNom,
+        email: newEmail,
+        telephone: newTelephone
     });
 
     navigate("carte", {
-      prenom: newPrenom,
-      nom: newNom,
-      title: "Ma carte",
-      showBack: true,
-      onBack: () => navigate("accueil", { prenom: newPrenom, nom: newNom }),
+        prenom: newPrenom,
+        nom: newNom,
+        title: "Ma carte",
+        showBack: true,
+        onBack: () =>
+            navigate("accueil", {
+                prenom: newPrenom,
+                nom: newNom
+            })
     });
-  });
-}
+});
 
 function renderRandoDetails(r) {
   console.log("renderRandoDetails appelé avec:", r);
