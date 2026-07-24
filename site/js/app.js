@@ -147,6 +147,23 @@ async function fetchRandoDetails() {
 }
 
 /* -------------------------------------------------------
+   📅 Vérifier si une date correspond à aujourd'hui
+------------------------------------------------------- */
+function isToday(dateString) {
+  if (!dateString) return false;
+
+  const today = new Date();
+  const randoDate = new Date(dateString);
+
+  // Comparer jour, mois et année (sans tenir compte de l'heure)
+  return (
+    randoDate.getDate() === today.getDate() &&
+    randoDate.getMonth() === today.getMonth() &&
+    randoDate.getFullYear() === today.getFullYear()
+  );
+}
+
+/* -------------------------------------------------------
    📄 Fonctions de rendu
 ------------------------------------------------------- */
 
@@ -155,10 +172,16 @@ function renderAccueil(prenom, nom) {
 
   let dateText = "Aucune date disponible";
   let lieuText = "Lieu inconnu";
+  let randoTitle = "Prochaine randonnée"; // ✅ Titre par défaut
 
   if (rando && typeof rando === 'object') {
     dateText = rando.date || "Date inconnue";
     lieuText = (rando.lieu && rando.lieu.commune) ? rando.lieu.commune : "Lieu inconnu";
+
+    // ✅ Vérifier si la date est aujourd'hui
+    if (isToday(rando.date)) {
+      randoTitle = "Rando du jour"; // ✅ Remplacer par "Rando du jour"
+    }
   }
 
   screenRoot.innerHTML = `
@@ -170,7 +193,7 @@ function renderAccueil(prenom, nom) {
         </div>
 
         <div class="home-card" id="btn-rando">
-          <span class="home-card__title">Prochaine randonnée</span>
+          <span class="home-card__title">${escapeHtml(randoTitle)}</span> <!-- ✅ Utiliser randoTitle -->
           <span class="home-card__preview">
             ${escapeHtml(dateText)}<br>
             <small>${escapeHtml(lieuText)}</small>
@@ -409,6 +432,7 @@ function renderRandoDetails(r) {
 
     // ✅ Récupérer l'URL de la randonnée depuis l'API
     const randoUrl = rando.url || null;
+    const randoTitle = isToday(rando.date) ? "Rando du jour" : "Prochaine randonnée"; // ✅ Titre dynamique
 
     let lat, lng;
     if (rando.gps) {
@@ -455,7 +479,7 @@ function renderRandoDetails(r) {
           </div>
     `;
 
-    if (pays && pays.toLowerCase() !== "france") {
+        if (pays && pays.toLowerCase() !== "france") {
       html += `
           <div class="detail-row">
             <span class="detail-row__label">Pays</span>
@@ -575,6 +599,10 @@ function renderRandoDetails(r) {
       });
   }
 }
+
+    // ✅ Mettre à jour le titre de la page
+    appBarTitle.textContent = randoTitle; // ✅ Utiliser randoTitle
+  };
 
 function renderInfoPage(key) {
   if (!infoContent) {
