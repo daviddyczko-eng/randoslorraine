@@ -50,24 +50,26 @@
           "Rassurer et couvrir la personne"
         ]
       },
-    {
-      "heading": "Prévenir les urgences :",
-      "items": [
-        "Numéro européen",
-        "SAMU-SAS",
-        "Sapeurs-pompiers",
-        "Alerte par SMS",
-        "Application dédiée"
-      ],
-      "links": [
-        { "url": "tel:112", "label": "112" },
-        { "url": "tel:15", "label": "15" },
-        { "url": "tel:18", "label": "18" },
-        { "url": "sms:114", "label": "114" },
-        { "label": "Alerte Secours",
+      {
+        "heading": "Prévenir les urgences :",
+        "items": [
+          "Numéro européen",
+          "SAMU-SAS",
+          "Sapeurs-pompiers",
+          "Alerte par SMS",
+          "Application dédiée"
+        ],
+        "links": [
+          { "url": "tel:112", "label": "112" },
+          { "url": "tel:15", "label": "15" },
+          { "url": "tel:18", "label": "18" },
+          { "url": "sms:114", "label": "114" },
+          {
+            "label": "Alerte Secours",
             "store_android": "https://play.google.com/store/apps/details?id=com.alertesecours",
-            "store_ios": "https://apps.apple.com/fr/app/alerte-secours/id6708225143"}
-      ],
+            "store_ios": "https://apps.apple.com/fr/app/alerte-secours/id6708225143"
+          }
+        ]
       },
       {
         "heading": "Informer :",
@@ -86,18 +88,18 @@
           "Garder le téléphone chargé autant que possible"
         ]
       },
-    {
-      "heading": "Contacter notre assurance",
-      "items": [
-        "en France",
-        "depuis l’étranger",
-        "sociétaire 3163163A"
-      ],
-      "links": [
-        { "url": "tel:0800875875", "label": "0 800 875 875" },
-        { "url": "tel:+33549774778", "label": "+33 5 49 77 47 78" },
-        { "url": "https://www.maif.fr/", "label": "MAIF" }
-      ]
+      {
+        "heading": "Contacter notre assurance",
+        "items": [
+          "en France",
+          "depuis l’étranger",
+          "sociétaire 3163163A"
+        ],
+        "links": [
+          { "url": "tel:0800875875", "label": "0 800 875 875" },
+          { "url": "tel:+33549774778", "label": "+33 5 49 77 47 78" },
+          { "url": "https://www.maif.fr/", "label": "MAIF" }
+        ]
       }
     ]
   },
@@ -139,14 +141,14 @@
       }
     ]
   },
-    
-    "lien-internet": {
-      "title": "Lien internet",
-      "links": [
-        {
-          "name": "Site officiel",
-          "url": "https://randoslorraine.org"
-        }
-      ]
-    }
+
+  "lien-internet": {
+    "title": "Lien internet",
+    "links": [
+      {
+        "name": "Site officiel",
+        "url": "https://randoslorraine.org"
+      }
+    ]
+  }
 }
