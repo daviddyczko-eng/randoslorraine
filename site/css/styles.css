@@ -448,6 +448,16 @@ svg path {
   width: 100%;
   text-align: center;
   box-shadow: var(--shadow);
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  /* width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);*/
+  z-index: 2000;
+  align-items: center;
+  justify-content: center;
 }
 
 .modal h2 {
@@ -461,18 +471,6 @@ svg path {
 }
 
 /* Style pour les fenêtres modales */
-.modal {
-  display: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  z-index: 2000;
-  align-items: center;
-  justify-content: center;
-}
 
 .modal-content {
   background-color: white;
