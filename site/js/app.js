@@ -397,3 +397,59 @@ function renderAccueil(prenom, nom) {
 
 }
 
+/* ==========================================================
+   Ma carte
+   ========================================================== */
+
+function renderCarte(prenom, nom) {
+
+    const user = getUser();
+
+    const email = user?.email ?? "";
+    const telephone = user?.telephone ?? "";
+
+    screenRoot.innerHTML = `
+        <div class="screen screen--center">
+
+            <div id="qr-large"></div>
+
+            <p class="carte-name">
+                ${escapeHtml(prenom)} ${escapeHtml(nom)}
+            </p>
+
+            <div class="btn-row">
+
+                <button
+                    class="btn btn--secondary"
+                    id="btn-corriger">
+
+                    Corriger mes informations
+
+                </button>
+
+            </div>
+
+        </div>
+    `;
+
+    renderQr(
+        $("#qr-large"),
+        qrData(prenom, nom),
+        260
+    );
+
+    $("#btn-corriger").addEventListener("click", () => {
+
+        navigate("correction", {
+
+            prenom,
+            nom,
+            email,
+            telephone
+
+        });
+
+    });
+
+}
+
