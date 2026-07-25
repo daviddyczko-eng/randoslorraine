@@ -453,3 +453,120 @@ function renderCarte(prenom, nom) {
 
 }
 
+/* ==========================================================
+   Correction des informations
+   ========================================================== */
+
+function renderCorrection(prenom, nom, email = "", telephone = "") {
+
+    screenRoot.innerHTML = `
+        <div class="screen">
+
+            <form id="form-correction" class="form">
+
+                <div class="field">
+                    <label for="prenom">Prénom</label>
+                    <input
+                        id="prenom"
+                        value="${escapeHtml(prenom)}"
+                        required>
+                </div>
+
+                <div class="field">
+                    <label for="nom">Nom</label>
+                    <input
+                        id="nom"
+                        value="${escapeHtml(nom)}"
+                        required>
+                </div>
+
+                <div class="field">
+                    <label for="email">
+                        Adresse de messagerie électronique
+                    </label>
+                    <input
+                        id="email"
+                        type="email"
+                        value="${escapeHtml(email)}"
+                        required>
+                </div>
+
+                <div class="field">
+                    <label for="telephone">
+                        Numéro de téléphone
+                    </label>
+                    <input
+                        id="telephone"
+                        type="tel"
+                        value="${escapeHtml(telephone)}"
+                        placeholder="+33612345678"
+                        required>
+                </div>
+
+                <div class="btn-row">
+
+                    <button
+                        type="submit"
+                        class="btn btn--primary btn--block">
+
+                        Enregistrer les modifications
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+    `;
+
+    $("#form-correction").addEventListener("submit", (e) => {
+
+        e.preventDefault();
+
+        const newPrenom = formatName($("#prenom").value);
+        const newNom = formatName($("#nom").value);
+        const newEmail = $("#email").value.trim();
+        const newTelephone = $("#telephone").value.trim();
+
+        // Vérification du téléphone
+        if (!/^\+\d{10,15}$/.test(newTelephone)) {
+            alert("Le téléphone doit être au format international (+33612345678).");
+            return;
+        }
+
+        // Vérification de l'email
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(newEmail)) {
+            alert("Adresse e-mail invalide.");
+            return;
+        }
+
+        // On conserve la date d'inscription
+        const oldUser = getUser();
+
+        saveUser({
+
+            prenom: newPrenom,
+            nom: newNom,
+            email: newEmail,
+            telephone: newTelephone,
+
+            dateInscription:
+                oldUser?.dateInscription ??
+                new Date().toISOString()
+
+        });
+
+        app.user = getUser();
+
+        navigate("carte", {
+
+            prenom: newPrenom,
+            nom: newNom
+
+        });
+
+    });
+
+}
+
