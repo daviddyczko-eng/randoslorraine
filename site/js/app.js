@@ -164,3 +164,71 @@ function goBack() {
     );
 
 }
+
+/* ==========================================================
+   Utilitaires
+   ========================================================== */
+
+const PARTICLES = [
+    "de",
+    "du",
+    "des",
+    "la",
+    "le",
+    "les",
+    "d'",
+    "l'",
+    "von"
+];
+
+function formatName(name) {
+
+    return name
+        .trim()
+        .split(/\s+/)
+        .map(word => {
+
+            if (PARTICLES.includes(word.toLowerCase()))
+                return word.toLowerCase();
+
+            return word.charAt(0).toUpperCase() +
+                   word.slice(1).toLowerCase();
+
+        })
+        .join(" ");
+
+}
+
+function escapeHtml(str) {
+
+    return String(str)
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;");
+
+}
+
+function renderQr(container,text,size=120){
+
+    container.innerHTML="";
+
+    const box=document.createElement("div");
+
+    box.className=size>120
+        ?"qr-box qr-box--lg"
+        :"qr-box";
+
+    container.appendChild(box);
+
+    new QRCode(box,{
+        text,
+        width:size,
+        height:size,
+        colorDark:"#3d7820",
+        colorLight:"#ffffff",
+        correctLevel:QRCode.CorrectLevel.M
+    });
+
+}
+
