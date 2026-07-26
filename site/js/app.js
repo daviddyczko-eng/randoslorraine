@@ -1,18 +1,32 @@
 /* ==========================================================
-   Rando's Lorraine
-   app.js
+   🚫 Désactivation du Service Worker
    ========================================================== */
 
-import { getUser, saveUser, needsCotisation, qrData } from "./storage.js";
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.getRegistrations().then((registrations) => {
+    registrations.forEach((registration) => registration.unregister());
+  });
+}
 
 /* ==========================================================
-   Sélecteur DOM
+   📦 Import des modules
+   ========================================================== */
+
+import {
+  getUser,
+  saveUser,
+  needsCotisation,
+  qrData
+} from "./storage.js";
+
+/* ==========================================================
+   🔧 Raccourci DOM
    ========================================================== */
 
 const $ = (selector) => document.querySelector(selector);
 
 /* ==========================================================
-   Eléments principaux
+   📌 Références DOM
    ========================================================== */
 
 const splashEl = $("#view-splash");
@@ -24,549 +38,325 @@ const appBarBack = $("#btn-back");
 const appBarIcon = $("#app-bar-icon");
 
 /* ==========================================================
-   Etat global de l'application
+   🌍 Etat global de l'application
    ========================================================== */
 
 const app = {
 
-    currentScreen: null,
+  user: null,
 
-    history: [],
+  prochaineRando: null,
 
-    user: null,
+  infoContent: null,
 
-    prochaineRando: null,
-
-    infoContent: null
+  currentScreen: null
 
 };
 
 /* ==========================================================
-   Barre de navigation
-   ========================================================== */
-
-function showMain(title = "Rando's Lorraine", showBack = false) {
-
-    mainEl.classList.remove("hidden");
-
-    appBarTitle.textContent = title;
-
-    appBarBack.classList.toggle("hidden", !showBack);
-
-    appBarIcon.classList.toggle("hidden", showBack);
-
-}
-
-/* ==========================================================
-   Navigation
-   ========================================================== */
-
-function navigate(screen, options = {}, addToHistory = true) {
-
-    if (addToHistory && app.currentScreen !== null) {
-
-        app.history.push({
-            screen: app.currentScreen,
-            options: structuredClone(options)
-        });
-
-    }
-
-    app.currentScreen = screen;
-
-    screenRoot.innerHTML = "";
-
-    switch (screen) {
-
-        case "inscription":
-
-            showMain("Inscription", false);
-            renderInscription();
-            break;
-
-        case "cotisation":
-
-            showMain("Cotisation", false);
-            renderCotisation(
-                options.prenom,
-                options.nom,
-                options.dateInscription
-            );
-            break;
-
-        case "accueil":
-
-            showMain("Rando's Lorraine", false);
-            renderAccueil(
-                options.prenom,
-                options.nom
-            );
-            break;
-
-        case "carte":
-
-            showMain("Ma carte", true);
-            renderCarte(
-                options.prenom,
-                options.nom
-            );
-            break;
-
-        case "correction":
-
-            showMain("Corriger", true);
-            renderCorrection(
-                options.prenom,
-                options.nom,
-                options.email,
-                options.telephone
-            );
-            break;
-
-        case "rando":
-
-            showMain("Prochaine randonnée", true);
-            renderRandoDetails(options.rando);
-            break;
-
-        case "info":
-
-            showMain(options.title, true);
-            renderInfoPage(options.infoKey);
-            break;
-
-        default:
-
-            console.error("Écran inconnu :", screen);
-
-    }
-
-}
-
-/* ==========================================================
-   Retour arrière
-   ========================================================== */
-
-function goBack() {
-
-    if (app.history.length === 0) {
-
-        return;
-
-    }
-
-    const previous = app.history.pop();
-
-    navigate(
-        previous.screen,
-        previous.options,
-        false
-    );
-
-}
-
-/* ==========================================================
-   Utilitaires
+   🔤 Particules des noms
    ========================================================== */
 
 const PARTICLES = [
-    "de",
-    "du",
-    "des",
-    "la",
-    "le",
-    "les",
-    "d'",
-    "l'",
-    "von"
+
+  "de",
+  "du",
+  "des",
+  "la",
+  "le",
+  "les",
+  "d'",
+  "l'",
+  "von"
+
 ];
+
+/* ==========================================================
+   🚗 Etat du covoiturage
+   ========================================================== */
+
+const covoiturage = {
+
+  places: 0,
+
+  lieu: "",
+
+  message: "",
+
+  editing: false
+
+};
+
+/* ==========================================================
+   🔤 Formatage des noms
+   ========================================================== */
 
 function formatName(name) {
 
-    return name
-        .trim()
-        .split(/\s+/)
-        .map(word => {
+  return name
+    .trim()
+    .split(/\s+/)
+    .map((word) => {
 
-            if (PARTICLES.includes(word.toLowerCase()))
-                return word.toLowerCase();
+      if (PARTICLES.includes(word.toLowerCase())) {
+        return word.toLowerCase();
+      }
 
-            return word.charAt(0).toUpperCase() +
-                   word.slice(1).toLowerCase();
+      return (
+        word.charAt(0).toUpperCase() +
+        word.slice(1).toLowerCase()
+      );
 
-        })
-        .join(" ");
-
-}
-
-function escapeHtml(str) {
-
-    return String(str)
-        .replace(/&/g,"&amp;")
-        .replace(/</g,"&lt;")
-        .replace(/>/g,"&gt;")
-        .replace(/"/g,"&quot;");
+    })
+    .join(" ");
 
 }
 
-function renderQr(container,text,size=120){
+/* ==========================================================
+   🔒 Protection HTML
+   ========================================================== */
 
-    container.innerHTML="";
+function escapeHtml(value) {
 
-    const box=document.createElement("div");
-
-    box.className=size>120
-        ?"qr-box qr-box--lg"
-        :"qr-box";
-
-    container.appendChild(box);
-
-    new QRCode(box,{
-        text,
-        width:size,
-        height:size,
-        colorDark:"#3d7820",
-        colorLight:"#ffffff",
-        correctLevel:QRCode.CorrectLevel.M
-    });
+  return String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
 
 }
 
-function renderAccueil(prenom, nom) {
+/* ==========================================================
+   📅 Date du jour ?
+   ========================================================== */
 
-  const rando = app.prochaineRando;
+function isToday(dateString) {
 
-  let dateText = "Aucune date disponible";
-  let lieuText = "Lieu inconnu";
-  let randoTitle = "Prochaine randonnée";
+  if (!dateString) return false;
 
-  if (rando && typeof rando === "object") {
+  const today = new Date();
+  const date = new Date(dateString);
 
-    dateText = rando.date || "Date inconnue";
+  return (
 
-    lieuText =
-      rando.lieu?.commune ||
-      "Lieu inconnu";
+    today.getDate() === date.getDate() &&
+    today.getMonth() === date.getMonth() &&
+    today.getFullYear() === date.getFullYear()
 
-    if (isToday(rando.date)) {
-      randoTitle = "Rando du jour";
-    }
-  }
-
-  screenRoot.innerHTML = `
-    <div class="screen">
-
-      <div class="card-list">
-
-        <div class="home-card" id="btn-carte">
-          <span class="home-card__title">
-            Bonjour ${escapeHtml(prenom)} !
-          </span>
-
-          <div id="qr-small"></div>
-        </div>
-
-        <div class="home-card" id="btn-rando">
-
-          <span class="home-card__title">
-            ${escapeHtml(randoTitle)}
-          </span>
-
-          <span class="home-card__preview">
-            ${escapeHtml(dateText)}<br>
-            <small>${escapeHtml(lieuText)}</small>
-          </span>
-
-        </div>
-
-        <div class="home-card" id="btn-info-avant">
-          <span class="home-card__title">
-            Avant le départ
-          </span>
-        </div>
-
-        <div class="home-card" id="btn-info-accident">
-          <span class="home-card__title">
-            En cas d'accident
-          </span>
-        </div>
-
-        <div class="home-card" id="btn-info-tarifs">
-          <span class="home-card__title">
-            Tout sur les tarifs
-          </span>
-        </div>
-
-        <div
-          class="home-card home-card--clickable"
-          id="btn-site">
-
-          <span class="home-card__title">
-            Site internet
-          </span>
-
-        </div>
-
-      </div>
-
-    </div>
-  `;
-
-  renderQr(
-    $("#qr-small"),
-    qrData(prenom, nom),
-    60
   );
 
-  /* ================================
-     Carte
-     ================================ */
+}
 
-  $("#btn-carte").addEventListener("click", () => {
+/* ==========================================================
+   🔳 Affichage du QR Code
+   ========================================================== */
 
-    navigate("carte", {
-      prenom,
-      nom
-    });
+function renderQr(container, text, size = 100) {
 
-  });
+  container.innerHTML = "";
 
-  /* ================================
-     Prochaine randonnée
-     ================================ */
+  const box = document.createElement("div");
 
-  $("#btn-rando").addEventListener("click", () => {
+  box.className =
+    size > 120
+      ? "qr-box qr-box--lg"
+      : "qr-box";
 
-    navigate("rando", {
-      rando: app.prochaineRando
-    });
+  container.appendChild(box);
 
-  });
+  new QRCode(box, {
 
-  /* ================================
-     Avant le départ
-     ================================ */
+    text,
 
-  $("#btn-info-avant").addEventListener("click", () => {
+    width: size,
 
-    navigate("info", {
-      infoKey: "avant-depart",
-      title: "Avant le départ"
-    });
+    height: size,
 
-  });
+    colorDark: "#3d7820",
 
-  /* ================================
-     Accident
-     ================================ */
+    colorLight: "#ffffff",
 
-  $("#btn-info-accident").addEventListener("click", () => {
-
-    navigate("info", {
-      infoKey: "accident",
-      title: "En cas d'accident"
-    });
-
-  });
-
-  /* ================================
-     Tarifs
-     ================================ */
-
-  $("#btn-info-tarifs").addEventListener("click", () => {
-
-    navigate("info", {
-      infoKey: "tarifs",
-      title: "Tout sur les tarifs"
-    });
-
-  });
-
-  /* ================================
-     Site Internet
-     ================================ */
-
-  $("#btn-site").addEventListener("click", () => {
-
-    window.open(
-      "https://randoslorraine.org",
-      "_blank"
-    );
+    correctLevel: QRCode.CorrectLevel.M
 
   });
 
 }
 
 /* ==========================================================
-   Ma carte
+   👤 Chargement utilisateur
    ========================================================== */
 
-function renderCarte(prenom, nom) {
+function loadUser() {
 
-    const user = getUser();
+  app.user = getUser();
 
-    const email = user?.email ?? "";
-    const telephone = user?.telephone ?? "";
-
-    screenRoot.innerHTML = `
-        <div class="screen screen--center">
-
-            <div id="qr-large"></div>
-
-            <p class="carte-name">
-                ${escapeHtml(prenom)} ${escapeHtml(nom)}
-            </p>
-
-            <div class="btn-row">
-
-                <button
-                    class="btn btn--secondary"
-                    id="btn-corriger">
-
-                    Corriger mes informations
-
-                </button>
-
-            </div>
-
-        </div>
-    `;
-
-    renderQr(
-        $("#qr-large"),
-        qrData(prenom, nom),
-        260
-    );
-
-    $("#btn-corriger").addEventListener("click", () => {
-
-        navigate("correction", {
-
-            prenom,
-            nom,
-            email,
-            telephone
-
-        });
-
-    });
+  return app.user;
 
 }
 
 /* ==========================================================
-   Correction des informations
+   💾 Sauvegarde utilisateur
    ========================================================== */
 
-function renderCorrection(prenom, nom, email = "", telephone = "") {
+function storeUser(data) {
 
-    screenRoot.innerHTML = `
-        <div class="screen">
+  saveUser(data);
 
-            <form id="form-correction" class="form">
+  app.user = getUser();
 
-                <div class="field">
-                    <label for="prenom">Prénom</label>
-                    <input
-                        id="prenom"
-                        value="${escapeHtml(prenom)}"
-                        required>
-                </div>
+}
 
-                <div class="field">
-                    <label for="nom">Nom</label>
-                    <input
-                        id="nom"
-                        value="${escapeHtml(nom)}"
-                        required>
-                </div>
+/* ==========================================================
+   📄 Changement d'écran
+   ========================================================== */
 
-                <div class="field">
-                    <label for="email">
-                        Adresse de messagerie électronique
-                    </label>
-                    <input
-                        id="email"
-                        type="email"
-                        value="${escapeHtml(email)}"
-                        required>
-                </div>
+function setScreen(html) {
 
-                <div class="field">
-                    <label for="telephone">
-                        Numéro de téléphone
-                    </label>
-                    <input
-                        id="telephone"
-                        type="tel"
-                        value="${escapeHtml(telephone)}"
-                        placeholder="+33612345678"
-                        required>
-                </div>
+  screenRoot.innerHTML = html;
 
-                <div class="btn-row">
+}
 
-                    <button
-                        type="submit"
-                        class="btn btn--primary btn--block">
+/* ==========================================================
+   🖥️ Barre d'application
+   ========================================================== */
 
-                        Enregistrer les modifications
+function showMain(title, showBack = false) {
 
-                    </button>
+  mainEl.classList.remove("hidden");
 
-                </div>
+  appBarTitle.textContent = title;
 
-            </form>
+  appBarBack.classList.toggle("hidden", !showBack);
 
-        </div>
-    `;
+  appBarIcon.classList.toggle("hidden", showBack);
 
-    $("#form-correction").addEventListener("submit", (e) => {
+}
 
-        e.preventDefault();
+/* ==========================================================
+   ⬅️ Gestion du bouton Retour
+   ========================================================== */
 
-        const newPrenom = formatName($("#prenom").value);
-        const newNom = formatName($("#nom").value);
-        const newEmail = $("#email").value.trim();
-        const newTelephone = $("#telephone").value.trim();
+appBarBack.addEventListener("click", () => {
 
-        // Vérification du téléphone
-        if (!/^\+\d{10,15}$/.test(newTelephone)) {
-            alert("Le téléphone doit être au format international (+33612345678).");
-            return;
-        }
+  switch (app.currentScreen) {
 
-        // Vérification de l'email
-        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(newEmail)) {
-            alert("Adresse e-mail invalide.");
-            return;
-        }
+    case "carte":
+      navigate("accueil");
+      break;
 
-        // On conserve la date d'inscription
-        const oldUser = getUser();
+    case "correction":
+      navigate("carte");
+      break;
 
-        saveUser({
+    case "rando":
+      navigate("accueil");
+      break;
 
-            prenom: newPrenom,
-            nom: newNom,
-            email: newEmail,
-            telephone: newTelephone,
+    case "info":
+      navigate("accueil");
+      break;
 
-            dateInscription:
-                oldUser?.dateInscription ??
-                new Date().toISOString()
+    default:
+      navigate("accueil");
 
-        });
+  }
 
-        app.user = getUser();
+});
 
-        navigate("carte", {
+/* ==========================================================
+   🧭 Navigation
+   ========================================================== */
 
-            prenom: newPrenom,
-            nom: newNom
+function navigate(screen, options = {}) {
 
-        });
+  app.currentScreen = screen;
 
-    });
+  switch (screen) {
+
+    case "inscription":
+
+      showMain("Inscription");
+
+      renderInscription();
+
+      break;
+
+    case "cotisation":
+
+      showMain("Vérification de votre cotisation");
+
+      renderCotisation(
+        app.user.prenom,
+        app.user.nom,
+        app.user.dateInscription
+      );
+
+      break;
+
+    case "accueil":
+
+      showMain("Rando's Lorraine");
+
+      renderAccueil(
+        app.user.prenom,
+        app.user.nom
+      );
+
+      break;
+
+    case "carte":
+
+      showMain("Ma carte", true);
+
+      renderCarte(
+        app.user.prenom,
+        app.user.nom
+      );
+
+      break;
+
+    case "correction":
+
+      showMain("Corriger", true);
+
+      renderCorrection(
+        app.user.prenom,
+        app.user.nom,
+        app.user.email,
+        app.user.telephone
+      );
+
+      break;
+
+    case "rando":
+
+      showMain(
+
+        isToday(app.prochaineRando?.date)
+          ? "Rando du jour"
+          : "Prochaine randonnée",
+
+        true
+
+      );
+
+      renderRandoDetails(app.prochaineRando);
+
+      break;
+
+    case "info":
+
+      showMain(options.title ?? "Informations", true);
+
+      renderInfoPage(options.infoKey);
+
+      break;
+
+    default:
+
+      navigate("accueil");
+
+  }
 
 }
 
