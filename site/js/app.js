@@ -360,3 +360,366 @@ function navigate(screen, options = {}) {
 
 }
 
+/* ==========================================================
+   🌐 Chargement de la prochaine randonnée
+   ========================================================== */
+
+async function fetchRandoDetails() {
+
+  if (!navigator.onLine) {
+
+    const cache = localStorage.getItem("prochaineRando");
+
+    if (cache) {
+
+      app.prochaineRando = JSON.parse(cache);
+
+      return app.prochaineRando;
+
+    }
+
+    throw new Error(
+      "Aucune donnée disponible hors connexion."
+    );
+
+  }
+
+  try {
+
+    const response = await fetch(
+
+      `https://randoslorraine.pages.dev/api/rando?ts=${Date.now()}`,
+
+      {
+        cache: "no-store",
+
+        headers: {
+
+          "Cache-Control": "no-cache",
+
+          Pragma: "no-cache"
+
+        }
+
+      }
+
+    );
+
+    if (!response.ok) {
+
+      throw new Error(
+
+        `Erreur HTTP ${response.status}`
+
+      );
+
+    }
+
+    const data = await response.json();
+
+    app.prochaineRando = data;
+
+    localStorage.setItem(
+
+      "prochaineRando",
+
+      JSON.stringify(data)
+
+    );
+
+    return data;
+
+  }
+
+  catch (error) {
+
+    console.warn(
+
+      "API indisponible, utilisation du cache.",
+
+      error
+
+    );
+
+    const cache = localStorage.getItem("prochaineRando");
+
+    if (cache) {
+
+      app.prochaineRando = JSON.parse(cache);
+
+      return app.prochaineRando;
+
+    }
+
+    throw error;
+
+  }
+
+}
+
+/* ==========================================================
+   🚀 Vérification au démarrage
+   ========================================================== */
+
+async function checkUserAndStart() {
+
+  try {
+
+    const [info, rando] = await Promise.all([
+
+      fetch("./data/info.json").then((response) => {
+
+        if (!response.ok) {
+          throw new Error("Impossible de charger info.json");
+        }
+
+        return response.json();
+
+      }),
+
+      fetchRandoDetails().catch(() => null)
+
+    ]);
+
+    app.infoContent = info;
+    app.prochaineRando = rando;
+
+  }
+
+  catch (error) {
+
+    console.error(error);
+
+    app.infoContent = {};
+    app.prochaineRando = null;
+
+  }
+
+  loadUser();
+
+  if (!app.user) {
+
+    navigate("inscription");
+
+    return;
+
+  }
+
+  if (!app.user.prenom ||
+      !app.user.nom ||
+      !app.user.dateInscription) {
+
+    navigate("inscription");
+
+    return;
+
+  }
+
+  if (needsCotisation(app.user.dateInscription)) {
+
+    navigate("cotisation");
+
+    return;
+
+  }
+
+  navigate("accueil");
+
+}
+
+/* ==========================================================
+   🚀 Initialisation
+   ========================================================== */
+
+async function init() {
+
+  splashEl.classList.remove("hidden");
+
+  mainEl.classList.add("hidden");
+
+  await checkUserAndStart();
+
+  await new Promise((resolve) => {
+
+    setTimeout(resolve, 500);
+
+  });
+
+  splashEl.classList.add("hidden");
+
+  mainEl.classList.remove("hidden");
+
+}
+
+/* ==========================================================
+   ▶️ Lancement
+   ========================================================== */
+
+init();
+
+/* ==========================================================
+   📝 Inscription
+   ========================================================== */
+
+function renderInscription() {
+
+  setScreen(`
+    <div class="screen">
+
+      <p class="alert alert--danger">
+        Tu dois être à jour de ta cotisation pour utiliser cette application.
+      </p>
+
+      <form id="form-inscription" class="form">
+
+        <div class="field">
+          <label>Prénom</label>
+          <input id="prenom" required>
+        </div>
+
+        <div class="field">
+          <label>Nom</label>
+          <input id="nom" required>
+        </div>
+
+        <div class="field">
+          <label>Adresse électronique</label>
+          <input id="email"
+                 type="email"
+                 required>
+        </div>
+
+        <div class="field">
+          <label>Téléphone</label>
+          <input id="telephone"
+                 type="tel"
+                 placeholder="+33612345678"
+                 required>
+        </div>
+
+        <div class="btn-row">
+
+          <button
+            type="button"
+            class="btn btn--ghost"
+            id="btn-quit">
+
+            Quitter
+
+          </button>
+
+          <button
+            type="submit"
+            class="btn btn--primary">
+
+            Valider
+
+          </button>
+
+        </div>
+
+      </form>
+
+    </div>
+  `);
+
+  $("#btn-quit").onclick = () =>
+    alert("Fermez simplement cette fenêtre.");
+
+  $("#form-inscription").onsubmit = (event) => {
+
+    event.preventDefault();
+
+    const prenom = formatName($("#prenom").value);
+
+    const nom = formatName($("#nom").value);
+
+    const email = $("#email").value.trim();
+
+    const telephone = $("#telephone").value.trim();
+
+    if (!/^\+\d{10,15}$/.test(telephone)) {
+
+      alert(
+        "Le téléphone doit être au format international."
+      );
+
+      return;
+
+    }
+
+    storeUser({
+
+      prenom,
+
+      nom,
+
+      email,
+
+      telephone,
+
+      dateInscription: new Date().toISOString()
+
+    });
+
+    navigate("accueil");
+
+  };
+
+}
+
+/* ==========================================================
+   💳 Vérification cotisation
+   ========================================================== */
+
+function renderCotisation() {
+
+  const year = new Date().getFullYear();
+
+  setScreen(`
+    <div class="screen">
+
+      <div class="cotisation-box">
+
+        <p>
+
+          Je déclare être à jour de ma cotisation
+          pour l'année ${year}.
+
+        </p>
+
+      </div>
+
+      <div class="btn-row">
+
+        <button
+          class="btn btn--primary"
+          id="btn-cotisation">
+
+          Je confirme
+
+        </button>
+
+      </div>
+
+    </div>
+  `);
+
+  $("#btn-cotisation").onclick = () => {
+
+    storeUser({
+
+      ...app.user,
+
+      cotisationAnnee: year,
+
+      tarif: 0
+
+    });
+
+    navigate("accueil");
+
+  };
+
+}
+
