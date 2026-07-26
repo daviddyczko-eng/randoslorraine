@@ -1,15 +1,6 @@
 /* ==========================================================
-   🚫 Désactivation du Service Worker
-   ========================================================== */
-
-if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.getRegistrations().then((registrations) => {
-    registrations.forEach((registration) => registration.unregister());
-  });
-}
-
-/* ==========================================================
-   📦 Import des modules
+   Rando's Lorraine
+   Application principale
    ========================================================== */
 
 import {
@@ -20,14 +11,20 @@ import {
 } from "./storage.js";
 
 /* ==========================================================
-   🔧 Raccourci DOM
+   Désactivation du Service Worker
+   ========================================================== */
+
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.getRegistrations().then((regs) => {
+    regs.forEach((r) => r.unregister());
+  });
+}
+
+/* ==========================================================
+   Raccourcis DOM
    ========================================================== */
 
 const $ = (selector) => document.querySelector(selector);
-
-/* ==========================================================
-   📌 Références DOM
-   ========================================================== */
 
 const splashEl = $("#view-splash");
 const mainEl = $("#view-main");
@@ -38,7 +35,7 @@ const appBarBack = $("#btn-back");
 const appBarIcon = $("#app-bar-icon");
 
 /* ==========================================================
-   🌍 Etat global de l'application
+   Etat global de l'application
    ========================================================== */
 
 const app = {
@@ -49,16 +46,58 @@ const app = {
 
   infoContent: null,
 
-  currentScreen: null
+  currentScreen: "splash",
+
+  history: []
 
 };
 
 /* ==========================================================
-   🔤 Particules des noms
+   Chargement utilisateur
+   ========================================================== */
+
+function loadUser() {
+  app.user = getUser();
+}
+
+function storeUser(data) {
+
+  saveUser(data);
+
+  loadUser();
+
+}
+
+/* ==========================================================
+   Gestion de l'historique
+   ========================================================== */
+
+function pushHistory(screen) {
+
+  if (
+    app.history.length === 0 ||
+    app.history[app.history.length - 1] !== screen
+  ) {
+
+    app.history.push(screen);
+
+  }
+
+}
+
+function popHistory() {
+
+  app.history.pop();
+
+  return app.history[app.history.length - 1] || "accueil";
+
+}
+
+/* ==========================================================
+   Outils
    ========================================================== */
 
 const PARTICLES = [
-
   "de",
   "du",
   "des",
@@ -68,28 +107,7 @@ const PARTICLES = [
   "d'",
   "l'",
   "von"
-
 ];
-
-/* ==========================================================
-   🚗 Etat du covoiturage
-   ========================================================== */
-
-const covoiturage = {
-
-  places: 0,
-
-  lieu: "",
-
-  message: "",
-
-  editing: false
-
-};
-
-/* ==========================================================
-   🔤 Formatage des noms
-   ========================================================== */
 
 function formatName(name) {
 
@@ -112,103 +130,19 @@ function formatName(name) {
 
 }
 
-/* ==========================================================
-   🔒 Protection HTML
-   ========================================================== */
+function escapeHtml(text) {
 
-function escapeHtml(value) {
+  return String(text)
 
-  return String(value ?? "")
     .replace(/&/g, "&amp;")
+
     .replace(/</g, "&lt;")
+
     .replace(/>/g, "&gt;")
+
     .replace(/"/g, "&quot;");
 
 }
-
-/* ==========================================================
-   📅 Date du jour ?
-   ========================================================== */
-
-function isToday(dateString) {
-
-  if (!dateString) return false;
-
-  const today = new Date();
-  const date = new Date(dateString);
-
-  return (
-
-    today.getDate() === date.getDate() &&
-    today.getMonth() === date.getMonth() &&
-    today.getFullYear() === date.getFullYear()
-
-  );
-
-}
-
-/* ==========================================================
-   🔳 Affichage du QR Code
-   ========================================================== */
-
-function renderQr(container, text, size = 100) {
-
-  container.innerHTML = "";
-
-  const box = document.createElement("div");
-
-  box.className =
-    size > 120
-      ? "qr-box qr-box--lg"
-      : "qr-box";
-
-  container.appendChild(box);
-
-  new QRCode(box, {
-
-    text,
-
-    width: size,
-
-    height: size,
-
-    colorDark: "#3d7820",
-
-    colorLight: "#ffffff",
-
-    correctLevel: QRCode.CorrectLevel.M
-
-  });
-
-}
-
-/* ==========================================================
-   👤 Chargement utilisateur
-   ========================================================== */
-
-function loadUser() {
-
-  app.user = getUser();
-
-  return app.user;
-
-}
-
-/* ==========================================================
-   💾 Sauvegarde utilisateur
-   ========================================================== */
-
-function storeUser(data) {
-
-  saveUser(data);
-
-  app.user = getUser();
-
-}
-
-/* ==========================================================
-   📄 Changement d'écran
-   ========================================================== */
 
 function setScreen(html) {
 
@@ -216,510 +150,143 @@ function setScreen(html) {
 
 }
 
-/* ==========================================================
-   🖥️ Barre d'application
-   ========================================================== */
-
-function showMain(title, showBack = false) {
-
-  mainEl.classList.remove("hidden");
+function setTitle(title) {
 
   appBarTitle.textContent = title;
 
-  appBarBack.classList.toggle("hidden", !showBack);
+}
 
-  appBarIcon.classList.toggle("hidden", showBack);
+function showBackButton(show) {
+
+  appBarBack.classList.toggle("hidden", !show);
+
+  appBarIcon.classList.toggle("hidden", show);
 
 }
 
 /* ==========================================================
-   ⬅️ Gestion du bouton Retour
+   Navigation
    ========================================================== */
 
-appBarBack.addEventListener("click", () => {
+const SCREEN_TITLES = {
 
-  switch (app.currentScreen) {
+  inscription: "Inscription",
 
-    case "carte":
-      navigate("accueil");
-      break;
+  cotisation: "Vérification de votre cotisation",
 
-    case "correction":
-      navigate("carte");
-      break;
+  accueil: "Rando's Lorraine",
 
-    case "rando":
-      navigate("accueil");
-      break;
+  carte: "Ma carte",
 
-    case "info":
-      navigate("accueil");
-      break;
+  correction: "Corriger",
 
-    default:
-      navigate("accueil");
+  rando: "Prochaine randonnée",
 
-  }
+  info: "Informations"
 
-});
+};
 
-/* ==========================================================
-   🧭 Navigation
-   ========================================================== */
-
-function navigate(screen, options = {}) {
+function showScreen(screen) {
 
   app.currentScreen = screen;
+
+  pushHistory(screen);
+
+  const title = SCREEN_TITLES[screen] ?? "Rando's Lorraine";
+
+  setTitle(title);
+
+  showBackButton(screen !== "accueil");
+
+}
+
+function navigate(screen, data = null) {
+
+  showScreen(screen);
 
   switch (screen) {
 
     case "inscription":
-
-      showMain("Inscription");
-
       renderInscription();
-
       break;
 
     case "cotisation":
-
-      showMain("Vérification de votre cotisation");
-
-      renderCotisation(
-        app.user.prenom,
-        app.user.nom,
-        app.user.dateInscription
-      );
-
+      renderCotisation();
       break;
 
     case "accueil":
-
-      showMain("Rando's Lorraine");
-
-      renderAccueil(
-        app.user.prenom,
-        app.user.nom
-      );
-
+      renderAccueil();
       break;
 
     case "carte":
-
-      showMain("Ma carte", true);
-
-      renderCarte(
-        app.user.prenom,
-        app.user.nom
-      );
-
+      renderCarte();
       break;
 
     case "correction":
-
-      showMain("Corriger", true);
-
-      renderCorrection(
-        app.user.prenom,
-        app.user.nom,
-        app.user.email,
-        app.user.telephone
-      );
-
+      renderCorrection();
       break;
 
     case "rando":
-
-      showMain(
-
-        isToday(app.prochaineRando?.date)
-          ? "Rando du jour"
-          : "Prochaine randonnée",
-
-        true
-
-      );
-
-      renderRandoDetails(app.prochaineRando);
-
+      renderRandoDetails(data ?? app.prochaineRando);
       break;
 
     case "info":
-
-      showMain(options.title ?? "Informations", true);
-
-      renderInfoPage(options.infoKey);
-
+      renderInfoPage(data);
       break;
 
     default:
-
-      navigate("accueil");
-
-  }
-
-}
-
-/* ==========================================================
-   🌐 Chargement de la prochaine randonnée
-   ========================================================== */
-
-async function fetchRandoDetails() {
-
-  if (!navigator.onLine) {
-
-    const cache = localStorage.getItem("prochaineRando");
-
-    if (cache) {
-
-      app.prochaineRando = JSON.parse(cache);
-
-      return app.prochaineRando;
-
-    }
-
-    throw new Error(
-      "Aucune donnée disponible hors connexion."
-    );
-
-  }
-
-  try {
-
-    const response = await fetch(
-
-      `https://randoslorraine.pages.dev/api/rando?ts=${Date.now()}`,
-
-      {
-        cache: "no-store",
-
-        headers: {
-
-          "Cache-Control": "no-cache",
-
-          Pragma: "no-cache"
-
-        }
-
-      }
-
-    );
-
-    if (!response.ok) {
-
-      throw new Error(
-
-        `Erreur HTTP ${response.status}`
-
-      );
-
-    }
-
-    const data = await response.json();
-
-    app.prochaineRando = data;
-
-    localStorage.setItem(
-
-      "prochaineRando",
-
-      JSON.stringify(data)
-
-    );
-
-    return data;
-
-  }
-
-  catch (error) {
-
-    console.warn(
-
-      "API indisponible, utilisation du cache.",
-
-      error
-
-    );
-
-    const cache = localStorage.getItem("prochaineRando");
-
-    if (cache) {
-
-      app.prochaineRando = JSON.parse(cache);
-
-      return app.prochaineRando;
-
-    }
-
-    throw error;
+      renderAccueil();
 
   }
 
 }
 
 /* ==========================================================
-   🚀 Vérification au démarrage
+   Bouton retour
    ========================================================== */
 
-async function checkUserAndStart() {
+appBarBack.onclick = () => {
 
-  try {
-
-    const [info, rando] = await Promise.all([
-
-      fetch("./data/info.json").then((response) => {
-
-        if (!response.ok) {
-          throw new Error("Impossible de charger info.json");
-        }
-
-        return response.json();
-
-      }),
-
-      fetchRandoDetails().catch(() => null)
-
-    ]);
-
-    app.infoContent = info;
-    app.prochaineRando = rando;
-
-  }
-
-  catch (error) {
-
-    console.error(error);
-
-    app.infoContent = {};
-    app.prochaineRando = null;
-
-  }
-
-  loadUser();
-
-  if (!app.user) {
-
-    navigate("inscription");
-
-    return;
-
-  }
-
-  if (!app.user.prenom ||
-      !app.user.nom ||
-      !app.user.dateInscription) {
-
-    navigate("inscription");
-
-    return;
-
-  }
-
-  if (needsCotisation(app.user.dateInscription)) {
-
-    navigate("cotisation");
-
-    return;
-
-  }
-
-  navigate("accueil");
-
-}
-
-/* ==========================================================
-   🚀 Initialisation
-   ========================================================== */
-
-async function init() {
-
-  splashEl.classList.remove("hidden");
-
-  mainEl.classList.add("hidden");
-
-  await checkUserAndStart();
-
-  await new Promise((resolve) => {
-
-    setTimeout(resolve, 500);
-
-  });
-
-  splashEl.classList.add("hidden");
-
-  mainEl.classList.remove("hidden");
-
-}
-
-/* ==========================================================
-   ▶️ Lancement
-   ========================================================== */
-
-init();
-
-/* ==========================================================
-   📝 Inscription
-   ========================================================== */
-
-function renderInscription() {
-
-  setScreen(`
-    <div class="screen">
-
-      <p class="alert alert--danger">
-        Tu dois être à jour de ta cotisation pour utiliser cette application.
-      </p>
-
-      <form id="form-inscription" class="form">
-
-        <div class="field">
-          <label>Prénom</label>
-          <input id="prenom" required>
-        </div>
-
-        <div class="field">
-          <label>Nom</label>
-          <input id="nom" required>
-        </div>
-
-        <div class="field">
-          <label>Adresse électronique</label>
-          <input id="email"
-                 type="email"
-                 required>
-        </div>
-
-        <div class="field">
-          <label>Téléphone</label>
-          <input id="telephone"
-                 type="tel"
-                 placeholder="+33612345678"
-                 required>
-        </div>
-
-        <div class="btn-row">
-
-          <button
-            type="button"
-            class="btn btn--ghost"
-            id="btn-quit">
-
-            Quitter
-
-          </button>
-
-          <button
-            type="submit"
-            class="btn btn--primary">
-
-            Valider
-
-          </button>
-
-        </div>
-
-      </form>
-
-    </div>
-  `);
-
-  $("#btn-quit").onclick = () =>
-    alert("Fermez simplement cette fenêtre.");
-
-  $("#form-inscription").onsubmit = (event) => {
-
-    event.preventDefault();
-
-    const prenom = formatName($("#prenom").value);
-
-    const nom = formatName($("#nom").value);
-
-    const email = $("#email").value.trim();
-
-    const telephone = $("#telephone").value.trim();
-
-    if (!/^\+\d{10,15}$/.test(telephone)) {
-
-      alert(
-        "Le téléphone doit être au format international."
-      );
-
-      return;
-
-    }
-
-    storeUser({
-
-      prenom,
-
-      nom,
-
-      email,
-
-      telephone,
-
-      dateInscription: new Date().toISOString()
-
-    });
+  if (app.history.length <= 1) {
 
     navigate("accueil");
 
-  };
+    return;
 
-}
+  }
 
-/* ==========================================================
-   💳 Vérification cotisation
-   ========================================================== */
+  app.history.pop();
 
-function renderCotisation() {
+  const previous = popHistory();
 
-  const year = new Date().getFullYear();
+  switch (previous) {
 
-  setScreen(`
-    <div class="screen">
+    case "accueil":
+      renderAccueil();
+      break;
 
-      <div class="cotisation-box">
+    case "carte":
+      renderCarte();
+      break;
 
-        <p>
+    case "correction":
+      renderCorrection();
+      break;
 
-          Je déclare être à jour de ma cotisation
-          pour l'année ${year}.
+    case "rando":
+      renderRandoDetails(app.prochaineRando);
+      break;
 
-        </p>
+    case "info":
+      renderInfoPage();
+      break;
 
-      </div>
+    default:
+      renderAccueil();
 
-      <div class="btn-row">
+  }
 
-        <button
-          class="btn btn--primary"
-          id="btn-cotisation">
+  showScreen(previous);
 
-          Je confirme
-
-        </button>
-
-      </div>
-
-    </div>
-  `);
-
-  $("#btn-cotisation").onclick = () => {
-
-    storeUser({
-
-      ...app.user,
-
-      cotisationAnnee: year,
-
-      tarif: 0
-
-    });
-
-    navigate("accueil");
-
-  };
-
-}
+};
 
