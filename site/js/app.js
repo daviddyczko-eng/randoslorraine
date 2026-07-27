@@ -290,3 +290,330 @@ appBarBack.onclick = () => {
 
 };
 
+/* ==========================================================
+   Accueil
+   ========================================================== */
+
+function renderAccueil() {
+
+  const user = app.user;
+
+  const rando = app.prochaineRando;
+
+  let titreRando = "Prochaine randonnée";
+  let date = "Aucune date";
+  let commune = "";
+
+  if (rando) {
+
+    if (isToday(rando.date)) {
+      titreRando = "Rando du jour";
+    }
+
+    date = rando.date ?? "Date inconnue";
+
+    commune = rando.lieu?.commune ?? "";
+
+  }
+
+  setScreen(`
+
+    <div class="screen">
+
+      <div class="card-list">
+
+        <div class="home-card" id="btn-carte">
+
+          <div>
+
+            <div class="home-card__title">
+              Bonjour ${escapeHtml(user.prenom)} !
+            </div>
+
+          </div>
+
+          <div id="qr-small"></div>
+
+        </div>
+
+
+        <div class="home-card" id="btn-rando">
+
+          <div class="home-card__title">
+
+            ${titreRando}
+
+          </div>
+
+          <div class="home-card__preview">
+
+            ${escapeHtml(date)}
+
+            <br>
+
+            <small>${escapeHtml(commune)}</small>
+
+          </div>
+
+        </div>
+
+
+        <div class="home-card" id="btn-avant">
+
+          <div class="home-card__title">
+
+            Avant le départ
+
+          </div>
+
+        </div>
+
+
+        <div class="home-card" id="btn-accident">
+
+          <div class="home-card__title">
+
+            En cas d'accident
+
+          </div>
+
+        </div>
+
+
+        <div class="home-card" id="btn-tarifs">
+
+          <div class="home-card__title">
+
+            Tout sur les tarifs
+
+          </div>
+
+        </div>
+
+
+        <div
+          class="home-card"
+          id="btn-site">
+
+          <div class="home-card__title">
+
+            Site internet
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  `);
+
+  renderQr(
+
+    $("#qr-small"),
+
+    qrData(user.prenom, user.nom),
+
+    60
+
+  );
+
+  $("#btn-carte").onclick = () => {
+
+    navigate("carte");
+
+  };
+
+  $("#btn-rando").onclick = () => {
+
+    navigate("rando");
+
+  };
+
+  $("#btn-avant").onclick = () => {
+
+    navigate("info", "avant-depart");
+
+  };
+
+  $("#btn-accident").onclick = () => {
+
+    navigate("info", "accident");
+
+  };
+
+  $("#btn-tarifs").onclick = () => {
+
+    navigate("info", "tarifs");
+
+  };
+
+  $("#btn-site").onclick = () => {
+
+    window.open(
+      "https://randoslorraine.org",
+      "_blank"
+    );
+
+  };
+
+}
+
+/* ==========================================================
+   Carte d'adhérent
+   ========================================================== */
+
+function renderCarte() {
+
+  const user = app.user;
+
+  setScreen(`
+    <div class="screen screen--center">
+
+      <div id="qr-large"></div>
+
+      <p class="carte-name">
+        ${escapeHtml(user.prenom)} ${escapeHtml(user.nom)}
+      </p>
+
+      <button
+        id="btn-corriger"
+        class="btn btn--secondary">
+        Corriger
+      </button>
+
+    </div>
+  `);
+
+  renderQr(
+    $("#qr-large"),
+    qrData(user.prenom, user.nom),
+    260
+  );
+
+  $("#btn-corriger").onclick = () => {
+    navigate("correction");
+  };
+
+}
+
+
+/* ==========================================================
+   Correction des informations
+   ========================================================== */
+
+function renderCorrection() {
+
+  const user = app.user;
+
+  setScreen(`
+    <div class="screen">
+
+      <form id="form-correction" class="form">
+
+        <div class="field">
+          <label>Prénom</label>
+          <input
+            id="prenom"
+            value="${escapeHtml(user.prenom)}"
+            required>
+        </div>
+
+        <div class="field">
+          <label>Nom</label>
+          <input
+            id="nom"
+            value="${escapeHtml(user.nom)}"
+            required>
+        </div>
+
+        <div class="field">
+          <label>Adresse e-mail</label>
+          <input
+            id="email"
+            type="email"
+            value="${escapeHtml(user.email ?? "")}"
+            required>
+        </div>
+
+        <div class="field">
+          <label>Téléphone</label>
+          <input
+            id="telephone"
+            type="tel"
+            value="${escapeHtml(user.telephone ?? "")}"
+            placeholder="+33612345678"
+            required>
+        </div>
+
+        <div class="btn-row">
+
+          <button
+            type="submit"
+            class="btn btn--primary">
+
+            Enregistrer
+
+          </button>
+
+        </div>
+
+      </form>
+
+    </div>
+  `);
+
+  $("#form-correction").onsubmit = (e) => {
+
+    e.preventDefault();
+
+    const prenom = formatName($("#prenom").value);
+
+    const nom = formatName($("#nom").value);
+
+    const email = $("#email").value.trim();
+
+    const telephone = $("#telephone").value.trim();
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+
+      alert("Adresse e-mail invalide.");
+
+      return;
+
+    }
+
+    if (!/^\+\d{10,15}$/.test(telephone)) {
+
+      alert("Le téléphone doit être au format international.");
+
+      return;
+
+    }
+
+    app.user = {
+
+      ...app.user,
+
+      prenom,
+
+      nom,
+
+      email,
+
+      telephone,
+
+      // IMPORTANT : on conserve la date d'inscription
+      dateInscription: app.user.dateInscription
+
+    };
+
+    saveUser(app.user);
+
+    navigate("carte");
+
+  };
+
+}
+
