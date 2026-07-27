@@ -617,3 +617,829 @@ function renderCorrection() {
 
 }
 
+/* ==========================================================
+   Affichage de la randonnée
+   ========================================================== */
+
+function renderRandoDetails(r = app.prochaineRando) {
+
+  setScreen(`
+    <div class="screen screen--center">
+      <p class="loading-text">Chargement des informations…</p>
+    </div>
+  `);
+
+  const show = (rando) => {
+
+    if (!rando) {
+
+      screenRoot.innerHTML = `
+        <div class="screen screen--center">
+          <p class="alert alert--danger">
+            Aucune randonnée disponible.
+          </p>
+        </div>
+      `;
+
+      return;
+    }
+
+    app.prochaineRando = rando;
+
+    setTitle(
+      isToday(rando.date)
+        ? "Rando du jour"
+        : "Prochaine randonnée"
+    );
+
+    /* ----------------------------
+       Coordonnées GPS
+    ----------------------------- */
+
+    let mapsUrl = null;
+
+    if (rando.gps) {
+
+      const [lat, lng] = rando.gps
+        .split(",")
+        .map(v => parseFloat(v.trim()));
+
+      if (!isNaN(lat) && !isNaN(lng)) {
+
+        mapsUrl =
+          `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`;
+
+      }
+
+    }
+
+    /* ----------------------------
+       Informations générales
+    ----------------------------- */
+
+    const commune =
+      rando.lieu?.commune ?? "Lieu inconnu";
+
+    const pays =
+      rando.lieu?.pays ?? null;
+
+    const departement =
+      rando.lieu?.departement ?? null;
+
+    const accueil =
+      rando.heureAccueil ??
+      rando.lieu?.heureAccueil ??
+      "Non précisée";
+
+    const depart =
+      rando.heureDepart ??
+      rando.lieu?.heureDepart ??
+      "Non précisée";
+
+    const randoUrl = rando.url ?? null;
+
+    /* ----------------------------
+       Pilotes
+    ----------------------------- */
+
+    let pilotes = [];
+
+    if (rando.pilotes) {
+
+      pilotes = rando.pilotes
+        .replace(/&amp;/g, "&")
+        .replace(/^Proposé par\s*/i, "")
+        .replace(/&/g, ",")
+        .split(",")
+        .map(p => p.trim())
+        .filter(Boolean);
+
+    }
+
+    const tel0 = rando.telephones?.[0] ?? null;
+    const tel1 = rando.telephones?.[1] ?? null;
+
+    /* Le HTML commence dans le Bloc 6B */
+
+    let html = `
+      <div class="screen">
+
+        <div class="detail-list">
+
+           <div class="detail-row">
+          <span class="detail-row__label">
+            Date
+          </span>
+
+          <span class="detail-row__value">
+            ${escapeHtml(rando.date ?? "Date inconnue")}
+          </span>
+        </div>
+
+        <div class="detail-row">
+          <span class="detail-row__label">
+            Lieu
+          </span>
+
+          <span class="detail-row__value">
+            ${escapeHtml(commune)}
+          </span>
+        </div>
+`;
+
+    if (pays && pays.toLowerCase() !== "france") {
+
+      html += `
+
+        <div class="detail-row">
+
+          <span class="detail-row__label">
+
+            Pays
+
+          </span>
+
+          <span class="detail-row__value">
+
+            ${escapeHtml(pays)}
+
+          </span>
+
+        </div>
+
+      `;
+
+      if (departement) {
+
+        html += `
+
+          <div class="detail-row">
+
+            <span class="detail-row__label">
+
+              Département
+
+            </span>
+
+            <span class="detail-row__value">
+
+              ${escapeHtml(departement)}
+
+            </span>
+
+          </div>
+
+        `;
+
+      }
+
+    }
+
+    html += `
+
+        <div class="detail-row">
+
+          <span class="detail-row__label">
+
+            Heure d'accueil
+
+          </span>
+
+          <span class="detail-row__value">
+
+            ${escapeHtml(accueil)}
+
+          </span>
+
+        </div>
+
+        <div class="detail-row">
+
+          <span class="detail-row__label">
+
+            Heure de départ
+
+          </span>
+
+          <span class="detail-row__value">
+
+            ${escapeHtml(depart)}
+
+            ${randoUrl
+              ? `<button
+                    class="info-button"
+                    title="Voir la page de la randonnée"
+                    onclick="window.open('${randoUrl}','_blank')">
+                    ⓘ
+                 </button>`
+              : ""}
+
+          </span>
+
+        </div>
+
+    `;
+
+    if (rando.rendezVous) {
+
+      html += `
+
+        <div class="detail-row">
+
+          <span class="detail-row__label">
+
+            Rendez-vous
+
+          </span>
+
+          <span class="detail-row__value">
+
+            ${escapeHtml(rando.rendezVous)}
+
+            ${mapsUrl
+              ? `<button
+                    class="info-button"
+                    title="Ouvrir Google Maps"
+                    onclick="window.open('${mapsUrl}','_blank')">
+                    ⓟ
+                 </button>`
+              : ""}
+
+          </span>
+
+        </div>
+
+      `;
+
+    }
+
+         /* ----------------------------
+       Pilotes
+    ----------------------------- */
+
+    if (tel0) {
+
+      html += `
+
+        <div class="detail-row">
+
+          <span class="detail-row__label">
+
+            ${pilotes[0]
+              ? "Proposé par " + escapeHtml(pilotes[0])
+              : "Contact"}
+
+          </span>
+
+          <span class="detail-row__value">
+
+            ${escapeHtml(tel0)}
+
+            <button
+              class="info-button"
+              title="Appeler"
+              onclick="window.location.href='tel:${tel0.replace(/\s/g,'')}'">
+
+              ✆
+
+            </button>
+
+          </span>
+
+        </div>
+
+      `;
+
+    }
+
+
+    if (tel1) {
+
+      html += `
+
+        <div class="detail-row">
+
+          <span class="detail-row__label">
+
+            ${pilotes[1]
+              ? "&nbsp;" + escapeHtml(pilotes[1])
+              : ""}
+
+          </span>
+
+          <span class="detail-row__value">
+
+            ${escapeHtml(tel1)}
+
+            <button
+              class="info-button"
+              title="Appeler"
+              onclick="window.location.href='tel:${tel1.replace(/\s/g,'')}'">
+
+              ✆
+
+            </button>
+
+          </span>
+
+        </div>
+
+      `;
+
+    }
+
+
+    /* ----------------------------
+       Boutons
+    ----------------------------- */
+
+    html += `
+
+        </div>
+
+        <div class="btn-row">
+
+          <button
+            id="btn-covoiturage-propose"
+            class="btn btn--primary">
+
+            Je propose un covoiturage
+
+          </button>
+
+          <button
+            id="btn-covoiturage-recherche"
+            class="btn btn--secondary">
+
+            Je voudrais un covoiturage
+
+          </button>
+
+        </div>
+
+      </div>
+
+    `;
+
+    screenRoot.innerHTML = html;
+
+
+    /* ----------------------------
+       Initialisation
+    ----------------------------- */
+
+    initCovoiturageModals();
+
+
+    $("#btn-covoiturage-propose").onclick = () => {
+
+      openModal("covoiturage-propose-modal");
+
+    };
+
+
+    $("#btn-covoiturage-recherche").onclick = () => {
+
+      alert("Fonction en cours de développement.");
+
+    };
+
+       }; // fin de show()
+
+
+  /* =====================================================
+     Affichage d'une erreur
+     ===================================================== */
+
+  const showError = (message) => {
+
+    screenRoot.innerHTML = `
+
+      <div class="screen screen--center">
+
+        <p class="alert alert--danger">
+
+          ${escapeHtml(message)}
+
+        </p>
+
+        <button
+          id="btn-retry"
+          class="btn btn--primary">
+
+          Réessayer
+
+        </button>
+
+      </div>
+
+    `;
+
+    $("#btn-retry").onclick = () => {
+
+      renderRandoDetails();
+
+    };
+
+  };
+
+
+  /* =====================================================
+     Affichage ou chargement des données
+     ===================================================== */
+
+  if (r) {
+
+    show(r);
+
+    return;
+
+  }
+
+
+  fetchRandoDetails()
+
+    .then((data) => {
+
+      app.prochaineRando = data;
+
+      show(data);
+
+    })
+
+    .catch((err) => {
+
+      console.error(err);
+
+      showError(
+
+        "Impossible de charger les informations de la randonnée."
+
+      );
+
+    });
+
+}   // ← fin de renderRandoDetails
+
+/* ==========================================================
+   Pages d'information
+   ========================================================== */
+
+function renderInfoPage(key) {
+
+  const page = app.infoContent?.[key];
+
+  if (!page) {
+
+    setScreen(`
+      <div class="screen screen--center">
+        <p class="alert alert--danger">
+          Contenu indisponible.
+        </p>
+      </div>
+    `);
+
+    return;
+
+  }
+
+  let html = `<div class="screen">`;
+
+  for (const section of page.sections) {
+
+    html += `
+      <section class="info-section">
+
+        <h3>${escapeHtml(section.heading)}</h3>
+    `;
+
+    /* ------------------------
+       Liste simple
+    ------------------------- */
+
+    if (section.items) {
+
+      html += "<ul>";
+
+      section.items.forEach(item => {
+
+        html += `<li>${escapeHtml(item)}</li>`;
+
+      });
+
+      html += "</ul>";
+
+    }
+
+    /* ------------------------
+       Texte
+    ------------------------- */
+
+    if (section.text) {
+
+      section.text.forEach(t => {
+
+        if (typeof t === "string") {
+
+          html += `
+            <p class="info-text">
+              ${escapeHtml(t)}
+            </p>
+          `;
+
+        }
+
+        else {
+
+          let url = "#";
+
+          if (t.url) {
+
+            url = t.url;
+
+          }
+
+          else if (t.store_android || t.store_ios) {
+
+            const ua = navigator.userAgent;
+
+            if (/Android/i.test(ua))
+
+              url = t.store_android;
+
+            else
+
+              url = t.store_ios;
+
+          }
+
+          html += `
+            <p class="info-text">
+
+              <a
+                class="app-link"
+                href="${url}"
+                target="_blank"
+                rel="noopener">
+
+                ${escapeHtml(t.label)}
+
+              </a>
+
+            </p>
+          `;
+
+        }
+
+      });
+
+    }
+
+    /* ------------------------
+       Liens
+    ------------------------- */
+
+    if (section.links) {
+
+      section.links.forEach(link => {
+
+        let url = link.url;
+
+        if (!url && (link.store_android || link.store_ios)) {
+
+          const ua = navigator.userAgent;
+
+          url =
+
+            /Android/i.test(ua)
+
+            ? link.store_android
+
+            : link.store_ios;
+
+        }
+
+        html += `
+          <p>
+
+            <a
+              class="info-link"
+              href="${url}"
+              target="_blank"
+              rel="noopener">
+
+              ${escapeHtml(link.label)}
+
+            </a>
+
+          </p>
+        `;
+
+      });
+
+    }
+
+    if (section.footer) {
+
+      html += `
+        <p class="info-footer">
+
+          ${escapeHtml(section.footer)}
+
+        </p>
+      `;
+
+    }
+
+    html += `</section>`;
+
+  }
+
+  html += `</div>`;
+
+  setScreen(html);
+
+}
+
+/* ==========================================================
+   Navigation
+   ========================================================== */
+
+function navigate(screen, options = {}) {
+
+  app.currentScreen = screen;
+
+  showMain(
+    options.showBack ?? false,
+    options.title ?? "Rando's Lorraine",
+    options.onBack
+  );
+
+  switch (screen) {
+
+    case "inscription":
+      return renderInscription();
+
+    case "cotisation":
+      return renderCotisation(
+        options.prenom,
+        options.nom,
+        options.dateInscription
+      );
+
+    case "accueil":
+      return renderAccueil(
+        options.prenom,
+        options.nom
+      );
+
+    case "carte":
+      return renderCarte(
+        options.prenom,
+        options.nom
+      );
+
+    case "correction":
+      return renderCorrection(
+        options.prenom,
+        options.nom,
+        options.email,
+        options.telephone
+      );
+
+    case "rando":
+      return renderRandoDetails(
+        app.prochaineRando
+      );
+
+    case "info":
+      return renderInfoPage(
+        options.infoKey
+      );
+
+    default:
+
+      console.warn("Ecran inconnu :", screen);
+
+      navigate("accueil", {
+        prenom: app.user.prenom,
+        nom: app.user.nom
+      });
+
+  }
+
+}
+
+
+/* ==========================================================
+   Chargement initial
+   ========================================================== */
+
+async function checkUserAndStart() {
+
+  try {
+
+    const [info, rando] = await Promise.all([
+
+      fetch("./data/info.json")
+        .then(r => r.json()),
+
+      fetchRandoDetails()
+
+    ]);
+
+    app.infoContent = info;
+    app.prochaineRando = rando;
+
+  }
+
+  catch(e){
+
+    console.error(e);
+
+  }
+
+
+  app.user = getUser();
+
+
+  if (!app.user) {
+
+    navigate("inscription", {
+
+      title: "Inscription"
+
+    });
+
+    return;
+
+  }
+
+
+  if (needsCotisation(app.user.dateInscription)) {
+
+    navigate("cotisation", {
+
+      prenom: app.user.prenom,
+      nom: app.user.nom,
+      dateInscription: app.user.dateInscription,
+      title: "Cotisation"
+
+    });
+
+    return;
+
+  }
+
+
+  navigate("accueil", {
+
+    prenom: app.user.prenom,
+    nom: app.user.nom,
+    title: "Rando's Lorraine"
+
+  });
+
+}
+
+
+/* ==========================================================
+   Initialisation
+   ========================================================== */
+
+function init() {
+
+  appBarBack.onclick = () => {
+
+    if (typeof backHandler === "function") {
+
+      backHandler();
+
+    }
+
+    else {
+
+      navigate("accueil", {
+
+        prenom: app.user.prenom,
+        nom: app.user.nom
+
+      });
+
+    }
+
+  };
+
+
+  setTimeout(() => {
+
+    splashEl.classList.add("hidden");
+
+    checkUserAndStart();
+
+  }, 600);
+
+}
+
+
+init();
