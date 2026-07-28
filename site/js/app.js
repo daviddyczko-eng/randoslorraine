@@ -161,3 +161,204 @@ async function init() {
 
 document.addEventListener("DOMContentLoaded", init);
 
+/* ============================================================
+ * AFFICHAGE PRINCIPAL
+ * ============================================================
+ */
+
+function showMain(html) {
+
+    main.innerHTML = html;
+
+    window.scrollTo({
+        top: 0,
+        behavior: "instant"
+    });
+
+}
+
+/* ============================================================
+ * QR CODE
+ * ============================================================
+ */
+
+function renderQr(container, text, size = 180) {
+
+    if (!container) return;
+
+    container.innerHTML = "";
+
+    new QRCode(container, {
+        text,
+        width: size,
+        height: size,
+        correctLevel: QRCode.CorrectLevel.M
+    });
+
+}
+
+/* ============================================================
+ * ACCUEIL
+ * ============================================================
+ */
+
+function renderAccueil() {
+
+    setTitle("Randos Lorraine");
+
+    showBack(false);
+
+    showMain(`
+        <section class="home">
+
+            <h2>Bienvenue ${user?.prenom ?? ""}</h2>
+
+            <div id="qr-small" class="qr"></div>
+
+            <div class="cards">
+
+                <button id="btn-rando">
+                    🥾 Randonnée
+                </button>
+
+                <button id="btn-carte">
+                    🗺 Carte
+                </button>
+
+                <button id="btn-info">
+                    ℹ Informations
+                </button>
+
+                <button id="btn-covoit">
+                    🚗 Covoiturage
+                </button>
+
+                <button id="btn-profil">
+                    👤 Mon profil
+                </button>
+
+            </div>
+
+        </section>
+    `);
+
+    renderQr(
+        $("#qr-small"),
+        qrData(user),
+        160
+    );
+
+    $("#btn-rando").onclick = () => navigate(SCREENS.RANDO);
+
+    $("#btn-carte").onclick = () => navigate(SCREENS.MAP);
+
+    $("#btn-info").onclick = () =>
+        navigate(SCREENS.INFO, {
+            infoKey: "avant-depart"
+        });
+
+    $("#btn-covoit").onclick = () =>
+        navigate(SCREENS.CARPOOL);
+
+    $("#btn-profil").onclick = () =>
+        navigate(SCREENS.PROFILE);
+
+}
+
+/* ============================================================
+ * PROFIL
+ * ============================================================
+ */
+
+function renderProfile() {
+
+    setTitle("Mon profil");
+
+    showBack(true);
+
+    showMain(`
+
+        <section class="profile">
+
+            <div id="qr-large"></div>
+
+            <table class="profil">
+
+                <tr>
+                    <th>Nom</th>
+                    <td>${user.nom}</td>
+                </tr>
+
+                <tr>
+                    <th>Prénom</th>
+                    <td>${user.prenom}</td>
+                </tr>
+
+                <tr>
+                    <th>Email</th>
+                    <td>${user.email}</td>
+                </tr>
+
+                <tr>
+                    <th>Téléphone</th>
+                    <td>${user.telephone}</td>
+                </tr>
+
+            </table>
+
+        </section>
+
+    `);
+
+    renderQr(
+        $("#qr-large"),
+        qrData(user),
+        260
+    );
+
+}
+
+/* ============================================================
+ * INFORMATIONS
+ * ============================================================
+ */
+
+function renderInfoPage(key) {
+
+    setTitle("Informations");
+
+    showBack(true);
+
+    const page = INFO_PAGES[key];
+
+    if (!page) {
+
+        showMain("<p>Contenu indisponible.</p>");
+
+        return;
+
+    }
+
+    showMain(page);
+
+}
+
+/* ============================================================
+ * PAGE EN COURS DE CHARGEMENT
+ * ============================================================
+ */
+
+function renderLoading(message = "Chargement...") {
+
+    showMain(`
+        <div class="loading">
+
+            <div class="spinner"></div>
+
+            <p>${message}</p>
+
+        </div>
+    `);
+
+}
+
