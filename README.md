@@ -19,27 +19,7 @@ location.reload();
 ## Structure
 
 ```
-site
 
-    css
-        styles.css
-    data
-        info.json
-    icons
-        RL-logo.png
-        RL-symb.png
-    js
-        app.js
-        qrcode.min.js
-        storage.js
-    _worker.js
-    index.html
-    manifest.webmanifest
-    sw.js
-
-.assetsignore
-README.md
-wrangler.toml
 ```
 
 ## Installer sur l'écran d'accueil
