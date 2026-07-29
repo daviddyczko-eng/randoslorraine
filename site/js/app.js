@@ -272,3 +272,249 @@ async function fetchRandoDetails(){
 
 }
 
+/* ============================================================
+ * Navigation
+ * ============================================================
+ */
+
+function navigate(screen, options = {}) {
+
+    console.log("navigate →", screen, options);
+
+    currentScreen = screen;
+
+    currentUser = getUser();
+
+    showMain(
+        options.showBack ?? false,
+        options.title ?? "Rando's Lorraine",
+        options.onBack
+    );
+
+    screenRoot.replaceChildren();
+
+    switch (screen) {
+
+        case "inscription":
+            return renderInscription();
+
+        case "cotisation":
+            return renderCotisation(
+                options.prenom,
+                options.nom,
+                options.dateInscription
+            );
+
+        case "accueil":
+            return renderAccueil(
+                options.prenom,
+                options.nom
+            );
+
+        case "carte":
+            return renderCarte(
+                options.prenom,
+                options.nom
+            );
+
+        case "correction":
+            return renderCorrection(
+                options.prenom,
+                options.nom,
+                options.email,
+                options.telephone
+            );
+
+        case "rando":
+            return renderRando(options.rando ?? prochaineRando);
+
+        case "info":
+            return renderInfoPage(options.infoKey);
+
+        default:
+
+            console.warn("Écran inconnu :", screen);
+
+            return renderAccueil(
+                currentUser?.prenom,
+                currentUser?.nom
+            );
+    }
+
+}
+
+/* ============================================================
+ * Ouverture application / Store
+ * ============================================================
+ */
+
+function openAppOrStore(scheme, androidUrl, iosUrl) {
+
+    if (!scheme && !androidUrl && !iosUrl) {
+
+        alert("Application indisponible.");
+
+        return;
+
+    }
+
+    const isAndroid =
+        /Android|webOS|BlackBerry|IEMobile|Opera Mini/i
+        .test(navigator.userAgent);
+
+    if (scheme) {
+
+        window.location.href = scheme;
+
+        setTimeout(() => {
+
+            if (isAndroid && androidUrl)
+                window.location.href = androidUrl;
+
+            else if (iosUrl)
+                window.location.href = iosUrl;
+
+        },500);
+
+        return;
+
+    }
+
+    if (isAndroid && androidUrl)
+        window.location.href = androidUrl;
+
+    else if (iosUrl)
+        window.location.href = iosUrl;
+
+}
+
+/* ============================================================
+ * Chargement des données
+ * ============================================================
+ */
+
+async function checkUserAndStart() {
+
+    console.log("checkUserAndStart()");
+
+    try{
+
+        const [info,rando]=await Promise.all([
+
+            fetch("./data/info.json")
+            .then(r=>{
+
+                if(!r.ok)
+                    throw new Error(r.status);
+
+                return r.json();
+
+            }),
+
+            fetchRandoDetails()
+
+        ]);
+
+        infoContent=info;
+
+        prochaineRando=rando;
+
+    }
+
+    catch(err){
+
+        console.error(err);
+
+    }
+
+    currentUser=getUser();
+
+    if(
+        !currentUser?.prenom ||
+        !currentUser?.nom ||
+        !currentUser?.dateInscription
+    ){
+
+        return{
+
+            screen:"inscription",
+
+            options:{
+
+                title:"Inscription"
+
+            }
+
+        };
+
+    }
+
+    if(
+        needsCotisation(
+            currentUser.dateInscription
+        )
+    ){
+
+        return{
+
+            screen:"cotisation",
+
+            options:{
+
+                prenom:currentUser.prenom,
+
+                nom:currentUser.nom,
+
+                dateInscription:
+                    currentUser.dateInscription,
+
+                title:"Cotisation"
+
+            }
+
+        };
+
+    }
+
+    return{
+
+        screen:"accueil",
+
+        options:{
+
+            prenom:currentUser.prenom,
+
+            nom:currentUser.nom,
+
+            title:"Rando's Lorraine"
+
+        }
+
+    };
+
+}
+
+/* ============================================================
+ * Initialisation
+ * ============================================================
+ */
+
+async function init(){
+
+    console.log("Initialisation");
+
+    const start=await checkUserAndStart();
+
+    await new Promise(resolve=>setTimeout(resolve,500));
+
+    splashEl.classList.add("hidden");
+
+    navigate(
+        start.screen,
+        start.options
+    );
+
+}
+
+init();
+
