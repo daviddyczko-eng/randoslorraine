@@ -1421,39 +1421,3 @@ window.appDebug = {
 console.log(
     "✅ app.js chargé correctement."
 );
-
-/* ============================================================
- * Initialisation finale
- * ============================================================ */
-
-document.addEventListener("DOMContentLoaded", () => {
-
-    console.log("DOM chargé.");
-
-    init();
-
-});
-
-window.addEventListener("online", () => {
-
-    console.log("Connexion rétablie.");
-
-});
-
-window.addEventListener("offline", () => {
-
-    console.warn("Mode hors ligne.");
-
-});
-
-window.addEventListener("error", (event) => {
-
-    console.error("Erreur JavaScript :", event.error);
-
-});
-
-window.addEventListener("unhandledrejection", (event) => {
-
-    console.error("Promise rejetée :", event.reason);
-
-});
