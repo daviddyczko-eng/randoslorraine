@@ -1184,3 +1184,276 @@ ${escapeHtml(section.footer)}
 
 }
 
+/* ============================================================
+ * Gestion des modales de covoiturage
+ * ============================================================ */
+
+function openModal(id) {
+
+    const modal = document.getElementById(id);
+
+    if (!modal) {
+
+        console.warn(`Modal "${id}" introuvable.`);
+        return;
+
+    }
+
+    modal.classList.remove("hidden");
+    modal.setAttribute("aria-hidden", "false");
+
+}
+
+function closeModal(id) {
+
+    const modal = document.getElementById(id);
+
+    if (!modal) {
+
+        return;
+
+    }
+
+    modal.classList.add("hidden");
+    modal.setAttribute("aria-hidden", "true");
+
+}
+
+function initCovoiturageModals() {
+
+    document
+        .querySelectorAll("[data-close-modal]")
+        .forEach(btn => {
+
+            btn.onclick = () => {
+
+                const modal =
+                    btn.closest(".modal");
+
+                if (modal) {
+
+                    closeModal(modal.id);
+
+                }
+
+            };
+
+        });
+
+    document
+        .querySelectorAll(".modal")
+        .forEach(modal => {
+
+            modal.onclick = (e) => {
+
+                if (e.target === modal) {
+
+                    closeModal(modal.id);
+
+                }
+
+            };
+
+        });
+
+    document.onkeydown = (e) => {
+
+        if (e.key !== "Escape") return;
+
+        document
+            .querySelectorAll(".modal")
+            .forEach(modal => {
+
+                if (!modal.classList.contains("hidden")) {
+
+                    closeModal(modal.id);
+
+                }
+
+            });
+
+    };
+
+}
+
+/* ============================================================
+ * Fonctions utilitaires
+ * ============================================================ */
+
+/**
+ * Retourne vrai si la date correspond à aujourd'hui.
+ * Accepte :
+ *   "15/07/2026"
+ *   "2026-07-15"
+ *   Date(...)
+ */
+function isToday(dateValue) {
+
+    if (!dateValue) return false;
+
+    let d;
+
+    if (dateValue instanceof Date) {
+
+        d = dateValue;
+
+    }
+    else if (typeof dateValue === "string") {
+
+        if (dateValue.includes("/")) {
+
+            const p = dateValue.split("/");
+
+            d = new Date(
+                Number(p[2]),
+                Number(p[1]) - 1,
+                Number(p[0])
+            );
+
+        }
+        else {
+
+            d = new Date(dateValue);
+
+        }
+
+    }
+    else {
+
+        return false;
+
+    }
+
+    if (isNaN(d.getTime()))
+        return false;
+
+    const today = new Date();
+
+    return (
+        d.getDate() === today.getDate() &&
+        d.getMonth() === today.getMonth() &&
+        d.getFullYear() === today.getFullYear()
+    );
+
+}
+
+/* ============================================================
+ * Ouvre un lien externe
+ * ============================================================ */
+
+function openExternal(url) {
+
+    if (!url)
+        return;
+
+    window.open(
+        url,
+        "_blank",
+        "noopener,noreferrer"
+    );
+
+}
+
+/* ============================================================
+ * Téléphone
+ * ============================================================ */
+
+function callPhone(number) {
+
+    if (!number)
+        return;
+
+    window.location.href =
+        "tel:" + number.replace(/\s/g, "");
+
+}
+
+/* ============================================================
+ * SMS
+ * ============================================================ */
+
+function sendSMS(number) {
+
+    if (!number)
+        return;
+
+    window.location.href =
+        "sms:" + number.replace(/\s/g, "");
+
+}
+
+/* ============================================================
+ * Google Maps
+ * ============================================================ */
+
+function openMaps(lat, lng) {
+
+    if (
+        lat == null ||
+        lng == null
+    )
+        return;
+
+    const url =
+        `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`;
+
+    openExternal(url);
+
+}
+
+/* ============================================================
+ * Debug
+ * ============================================================ */
+
+window.appDebug = {
+
+    navigate,
+    getUser,
+    saveUser,
+    fetchRandoDetails,
+    renderAccueil,
+    renderRandoDetails,
+    renderCarte,
+    renderInfoPage
+
+};
+
+console.log(
+    "✅ app.js chargé correctement."
+);
+
+/* ============================================================
+ * Initialisation finale
+ * ============================================================ */
+
+document.addEventListener("DOMContentLoaded", () => {
+
+    console.log("DOM chargé.");
+
+    init();
+
+});
+
+window.addEventListener("online", () => {
+
+    console.log("Connexion rétablie.");
+
+});
+
+window.addEventListener("offline", () => {
+
+    console.warn("Mode hors ligne.");
+
+});
+
+window.addEventListener("error", (event) => {
+
+    console.error("Erreur JavaScript :", event.error);
+
+});
+
+window.addEventListener("unhandledrejection", (event) => {
+
+    console.error("Promise rejetée :", event.reason);
+
+});
