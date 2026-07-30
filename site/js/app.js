@@ -968,3 +968,219 @@ Je recherche un covoiturage
 
 }
 
+/* ============================================================
+ * Page d'information
+ * ============================================================ */
+
+function renderInfoPage(key) {
+
+    if (!infoContent) {
+
+        screenRoot.replaceChildren();
+
+        screenRoot.insertAdjacentHTML(
+            "afterbegin",
+            `
+            <div class="screen">
+                <p>Les informations ne sont pas disponibles.</p>
+            </div>
+            `
+        );
+
+        return;
+
+    }
+
+    const page = infoContent[key];
+
+    if (!page) {
+
+        screenRoot.replaceChildren();
+
+        screenRoot.insertAdjacentHTML(
+            "afterbegin",
+            `
+            <div class="screen">
+                <p>Contenu indisponible.</p>
+            </div>
+            `
+        );
+
+        return;
+
+    }
+
+    const chooseStore = (obj) => {
+
+        if (!obj) return "#";
+
+        const ua = navigator.userAgent;
+
+        if (/Android/i.test(ua))
+            return obj.store_android ?? obj.url ?? "#";
+
+        if (/iPad|iPhone|iPod/.test(ua))
+            return obj.store_ios ?? obj.url ?? "#";
+
+        return obj.url ??
+               obj.store_android ??
+               obj.store_ios ??
+               "#";
+
+    };
+
+    let html = `<div class="screen">`;
+
+    for (const section of page.sections ?? []) {
+
+        html += `
+<section class="info-section">
+
+<h3>
+
+${escapeHtml(section.heading)}
+
+</h3>
+`;
+
+        /* ---------- Liste ---------- */
+
+        if (section.items?.length) {
+
+            html += "<ul>";
+
+            section.items.forEach((item,index)=>{
+
+                const link = section.links?.[index];
+
+                if (!link) {
+
+                    html += `<li>${escapeHtml(item)}</li>`;
+
+                    return;
+
+                }
+
+                html += `
+<li>
+
+${escapeHtml(item)}
+
+:
+
+<a
+href="${chooseStore(link)}"
+target="_blank"
+rel="noopener"
+class="info-link">
+
+${escapeHtml(link.label)}
+
+</a>
+
+</li>
+`;
+
+            });
+
+            html += "</ul>";
+
+        }
+
+        /* ---------- Texte ---------- */
+
+        if (section.text?.length) {
+
+            section.text.forEach((t)=>{
+
+                if (typeof t === "string") {
+
+                    html += `
+<p class="info-text">
+
+${escapeHtml(t)}
+
+</p>
+`;
+
+                    return;
+
+                }
+
+                html += `
+<p class="info-text">
+
+<a
+href="${chooseStore(t)}"
+target="_blank"
+rel="noopener"
+class="app-link">
+
+${escapeHtml(t.label)}
+
+</a>
+
+</p>
+`;
+
+            });
+
+        }
+
+        /* ---------- Liens ---------- */
+
+        if (section.links && !section.items) {
+
+            section.links.forEach((l)=>{
+
+                html += `
+<p>
+
+<a
+href="${chooseStore(l)}"
+target="_blank"
+rel="noopener"
+class="info-link">
+
+${escapeHtml(l.label)}
+
+</a>
+
+</p>
+`;
+
+            });
+
+        }
+
+        if (section.footer) {
+
+            html += `
+<p class="info-footer">
+
+${escapeHtml(section.footer)}
+
+</p>
+`;
+
+        }
+
+        html += `
+</section>
+`;
+
+    }
+
+    html += `
+</div>
+`;
+
+    screenRoot.replaceChildren();
+
+    screenRoot.insertAdjacentHTML(
+        "afterbegin",
+        html
+    );
+
+}
+
