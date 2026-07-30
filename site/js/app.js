@@ -1271,6 +1271,114 @@ function openMaps(lat, lng) {
 
 }
 
+function renderAccueil(prenom, nom) {
+  const rando = prochaineRando;
+
+  let dateText = "Aucune date disponible";
+  let lieuText = "Lieu inconnu";
+  let randoTitle = "Prochaine randonnée";
+
+  if (rando && typeof rando === 'object') {
+    dateText = rando.date || "Date inconnue";
+    lieuText = (rando.lieu && rando.lieu.commune) ? rando.lieu.commune : "Lieu inconnu";
+
+    // Vérifier si la date est aujourd'hui
+    if (isToday(rando.date)) {
+      randoTitle = "Rando du jour";
+    }
+  }
+
+  screenRoot.innerHTML = `
+    <div class="screen">
+      <div class="card-list">
+        <div class="home-card" id="btn-carte">
+          <span class="home-card__title">Bonjour ${escapeHtml(prenom)} !</span>
+          <div id="qr-small" style="display: inline-block; margin-left: 10px;"></div>
+        </div>
+
+        <div class="home-card" id="btn-rando">
+          <span class="home-card__title">${escapeHtml(randoTitle)}</span>
+          <span class="home-card__preview">
+            ${escapeHtml(dateText)}<br>
+            <small>${escapeHtml(lieuText)}</small>
+          </span>
+        </div>
+
+        <div class="home-card" id="btn-info-avant">
+          <span class="home-card__title">Avant le départ</span>
+        </div>
+
+        <div class="home-card" id="btn-info-accident">
+          <span class="home-card__title">En cas d'accident</span>
+        </div>
+
+        <div class="home-card" id="btn-info-tarifs">
+          <span class="home-card__title">Tout sur les tarifs</span>
+        </div>
+
+        <div class="home-card home-card--clickable" onclick="window.open('https://randoslorraine.org', '_blank')">
+          <span class="home-card__title">Lien internet</span>
+        </div>
+      </div>
+    </div>
+  `;
+
+  renderQr($("#qr-small"), qrData(prenom, nom), 60);
+
+  // Écouteurs pour les boutons
+  $("#btn-carte").addEventListener("click", () => {
+    navigate("carte", { prenom, nom, title: "Ma carte", showBack: true });
+  });
+
+  $("#btn-rando").addEventListener("click", () => {
+    navigate("rando", {
+      rando: prochaineRando,
+      title: "Prochaine randonnée",
+      showBack: true,
+      onBack: () => {
+        const user = getUser();
+        navigate("accueil", { prenom: user.prenom, nom: user.nom });
+      }
+    });
+  });
+
+  $("#btn-info-avant").addEventListener("click", () => {
+    navigate("info", {
+      infoKey: "avant-depart",
+      title: "Avant le départ",
+      showBack: true,
+      onBack: () => {
+        const user = getUser();
+        navigate("accueil", { prenom: user.prenom, nom: user.nom });
+      }
+    });
+  });
+
+  $("#btn-info-accident").addEventListener("click", () => {
+    navigate("info", {
+      infoKey: "accident",
+      title: "En cas d'accident",
+      showBack: true,
+      onBack: () => {
+        const user = getUser();
+        navigate("accueil", { prenom: user.prenom, nom: user.nom });
+      }
+    });
+  });
+
+  $("#btn-info-tarifs").addEventListener("click", () => {
+    navigate("info", {
+      infoKey: "tarifs",
+      title: "Tout sur les tarifs",
+      showBack: true,
+      onBack: () => {
+        const user = getUser();
+        navigate("accueil", { prenom: user.prenom, nom: user.nom });
+      }
+    });
+  });
+}
+
 /* ============================================================
  * Debug
  * ============================================================ */
