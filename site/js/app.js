@@ -389,136 +389,6 @@ function openAppOrStore(scheme, androidUrl, iosUrl) {
 }
 
 /* ============================================================
- * Chargement des données
- * ============================================================
- */
-
-async function checkUserAndStart() {
-
-    console.log("checkUserAndStart()");
-
-    try{
-
-        const [info,rando]=await Promise.all([
-
-            fetch("./data/info.json")
-            .then(r=>{
-
-                if(!r.ok)
-                    throw new Error(r.status);
-
-                return r.json();
-
-            }),
-
-            fetchRandoDetails()
-
-        ]);
-
-        infoContent=info;
-
-        prochaineRando=rando;
-
-    }
-
-    catch(err){
-
-        console.error(err);
-
-    }
-
-    currentUser=getUser();
-
-    if(
-        !currentUser?.prenom ||
-        !currentUser?.nom ||
-        !currentUser?.dateInscription
-    ){
-
-        return{
-
-            screen:"inscription",
-
-            options:{
-
-                title:"Inscription"
-
-            }
-
-        };
-
-    }
-
-    if(
-        needsCotisation(
-            currentUser.dateInscription
-        )
-    ){
-
-        return{
-
-            screen:"cotisation",
-
-            options:{
-
-                prenom:currentUser.prenom,
-
-                nom:currentUser.nom,
-
-                dateInscription:
-                    currentUser.dateInscription,
-
-                title:"Cotisation"
-
-            }
-
-        };
-
-    }
-
-    return{
-
-        screen:"accueil",
-
-        options:{
-
-            prenom:currentUser.prenom,
-
-            nom:currentUser.nom,
-
-            title:"Rando's Lorraine"
-
-        }
-
-    };
-
-}
-
-/* ============================================================
- * Initialisation
- * ============================================================
- */
-
-async function init(){
-
-    console.log("Initialisation");
-
-    const start=await checkUserAndStart();
-
-    await new Promise(resolve=>setTimeout(resolve,500));
-
-    splashEl.classList.add("hidden");
-
-    navigate(
-        start.screen,
-        start.options
-    );
-
-}
-
-init();
-
-/* ============================================================
  * Affichage de la randonnée
  * ============================================================ */
 
@@ -1421,3 +1291,133 @@ window.appDebug = {
 console.log(
     "✅ app.js chargé correctement."
 );
+
+/* ============================================================
+ * Chargement des données
+ * ============================================================
+ */
+
+async function checkUserAndStart() {
+
+    console.log("checkUserAndStart()");
+
+    try{
+
+        const [info,rando]=await Promise.all([
+
+            fetch("./data/info.json")
+            .then(r=>{
+
+                if(!r.ok)
+                    throw new Error(r.status);
+
+                return r.json();
+
+            }),
+
+            fetchRandoDetails()
+
+        ]);
+
+        infoContent=info;
+
+        prochaineRando=rando;
+
+    }
+
+    catch(err){
+
+        console.error(err);
+
+    }
+
+    currentUser=getUser();
+
+    if(
+        !currentUser?.prenom ||
+        !currentUser?.nom ||
+        !currentUser?.dateInscription
+    ){
+
+        return{
+
+            screen:"inscription",
+
+            options:{
+
+                title:"Inscription"
+
+            }
+
+        };
+
+    }
+
+    if(
+        needsCotisation(
+            currentUser.dateInscription
+        )
+    ){
+
+        return{
+
+            screen:"cotisation",
+
+            options:{
+
+                prenom:currentUser.prenom,
+
+                nom:currentUser.nom,
+
+                dateInscription:
+                    currentUser.dateInscription,
+
+                title:"Cotisation"
+
+            }
+
+        };
+
+    }
+
+    return{
+
+        screen:"accueil",
+
+        options:{
+
+            prenom:currentUser.prenom,
+
+            nom:currentUser.nom,
+
+            title:"Rando's Lorraine"
+
+        }
+
+    };
+
+}
+
+/* ============================================================
+ * Initialisation
+ * ============================================================
+ */
+
+async function init(){
+
+    console.log("Initialisation");
+
+    const start=await checkUserAndStart();
+
+    await new Promise(resolve=>setTimeout(resolve,500));
+
+    splashEl.classList.add("hidden");
+
+    navigate(
+        start.screen,
+        start.options
+    );
+
+}
+
+init();
