@@ -1505,6 +1505,179 @@ async function checkUserAndStart() {
     };
 
 }
+function renderInscription() {
+  screenRoot.innerHTML = `
+    <div class="screen">
+      <p class="alert alert--danger">
+        Tu dois être à jour de ta cotisation pour pouvoir utiliser cette application.
+      </p>
+      <form id="form-inscription" class="form">
+        <div class="field">
+          <label for="prenom">Prénom</label>
+          <input id="prenom" required autocomplete="given-name">
+        </div>
+        <div class="field">
+          <label for="nom">Nom</label>
+          <input id="nom" required autocomplete="family-name">
+        </div>
+        <div class="field">
+          <label for="email">Adresse de messagerie électronique</label>
+          <input id="email" type="email" required autocomplete="email" placeholder="ex: votre@email.com">
+        </div>
+        <div class="field">
+          <label for="telephone">Numéro de téléphone (format international)</label>
+          <input id="telephone" type="tel" required autocomplete="tel" placeholder="ex: +33612345678">
+        </div>
+        <div class="btn-row">
+          <button type="button" class="btn btn--ghost" id="btn-quit">Quitter l'application</button>
+          <button type="submit" class="btn btn--primary">Valider mon inscription</button>
+        </div>
+      </form>
+    </div>
+  `;
+
+  $("#btn-quit").addEventListener("click", () => {
+    alert("Fermez l'onglet pour quitter.");
+  });
+
+  $("#form-inscription").addEventListener("submit", (e) => {
+    e.preventDefault();
+    console.log("Formulaire d'inscription soumis");
+
+    const prenom = formatName($("#prenom").value);
+    const nom = formatName($("#nom").value);
+    const email = $("#email").value.trim();
+    const telephone = $("#telephone").value.trim();
+    const dateInscription = new Date().toISOString();
+
+    // Validation du format du téléphone (optionnel)
+    if (telephone && !/^\+\d{10,15}$/.test(telephone)) {
+      alert("Le numéro de téléphone doit être au format international (ex: +33612345678).");
+      return;
+    }
+
+    // Validation du format de l'email (optionnel)
+    if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      alert("L'adresse e-mail n'est pas valide.");
+      return;
+    }
+
+    console.log(`Prénom: ${prenom}, Nom: ${nom}, Email: ${email}, Téléphone: ${telephone}, Date: ${dateInscription}`);
+
+    const success = saveUser({ prenom, nom, email, telephone, dateInscription });
+    if (!success) {
+      console.error("Échec de la sauvegarde de l'utilisateur.");
+      alert("Une erreur est survenue. Veuillez réessayer.");
+      return;
+    }
+
+    console.log("Navigation vers l'accueil...");
+    navigate("accueil", { prenom, nom });
+  });
+}
+
+function renderCotisation(prenom, nom, dateInscription) {
+  const currentYear = new Date().getFullYear();
+  screenRoot.innerHTML = `
+    <div class="screen">
+      <div class="cotisation-box">
+        <p>Je déclare sur l'honneur que ma cotisation est à jour pour l'année ${currentYear}.</p>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn--primary" id="btn-cotisation-ok">Je confirme</button>
+      </div>
+    </div>
+  `;
+
+  $("#btn-cotisation-ok").addEventListener("click", () => {
+    const user = getUser();
+    saveUser({
+      ...user,
+      cotisationAnnee: currentYear,
+      tarif: 0
+    });
+    navigate("accueil", { prenom, nom });
+  });
+}
+
+function renderCarte(prenom, nom) {
+  const user = getUser();
+  const email = user?.email || "";
+  const telephone = user?.telephone || "";
+
+  screenRoot.innerHTML = `
+    <div class="screen screen--center">
+      <div id="qr-large"></div>
+      <p class="carte-name">${escapeHtml(prenom)} ${escapeHtml(nom)}</p>
+      <button class="btn btn--secondary" id="btn-corriger">Corriger</button>
+    </div>
+  `;
+
+  renderQr($("#qr-large"), qrData(prenom, nom), 260);
+
+  $("#btn-corriger").addEventListener("click", () => {
+    navigate("correction", {
+      prenom,
+      nom,
+      email,
+      telephone,
+      title: "Corriger",
+      showBack: true,
+      onBack: () => navigate("accueil", { prenom, nom }),
+    });
+  });
+}
+
+function renderCorrection(prenom, nom, email = "", telephone = "") {
+  screenRoot.innerHTML = `
+    <div class="screen">
+      <form id="form-correction" class="form">
+        <div class="field">
+          <label for="prenom">Prénom</label>
+          <input id="prenom" value="${escapeHtml(prenom)}" required>
+        </div>
+        <div class="field">
+          <label for="nom">Nom</label>
+          <input id="nom" value="${escapeHtml(nom)}" required>
+        </div>
+        <div class="field">
+          <label for="email">Adresse e-mail</label>
+          <input id="email" type="email" value="${escapeHtml(email)}" required>
+        </div>
+        <div class="field">
+          <label for="telephone">Numéro de téléphone (format international)</label>
+          <input id="telephone" type="tel" value="${escapeHtml(telephone)}" required placeholder="+33612345678">
+        </div>
+        <button class="btn btn--primary btn--block">Valider</button>
+      </form>
+    </div>
+  `;
+
+  $("#form-correction").addEventListener("submit", (e) => {
+    e.preventDefault();
+    const newPrenom = formatName($("#prenom").value);
+    const newNom = formatName($("#nom").value);
+    const newEmail = $("#email").value.trim();
+    const newTelephone = $("#telephone").value.trim();
+    const user = getUser();
+
+    saveUser({
+      prenom: newPrenom,
+      nom: newNom,
+      email: newEmail,
+      telephone: newTelephone,
+      dateInscription: user?.dateInscription ?? new Date().toISOString(),
+    });
+
+    navigate("carte", {
+      prenom: newPrenom,
+      nom: newNom,
+      title: "Ma carte",
+      showBack: true,
+      onBack: () => navigate("accueil", { prenom: newPrenom, nom: newNom }),
+    });
+  });
+}
 
 /* ============================================================
  * Initialisation
