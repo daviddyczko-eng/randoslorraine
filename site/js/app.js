@@ -100,6 +100,9 @@ let backHandler = null;
 function escapeHtml(value) {
 
     return String(value ?? "")
+        .replace(/&#039;/g, "'")
+        .replace(/&#39;/g, "'")
+        .replace(/&apos;/g, "'")
         .replace(/&/g,"&amp;")
         .replace(/</g,"&lt;")
         .replace(/>/g,"&gt;")
