@@ -480,7 +480,7 @@ function renderRandoDetails(r = null) {
         const pilotes =
             (rando.pilotes ?? "")
                 .replace(/&amp;/g, "&")
-                .replace(/^Proposé par\s*/i, "")
+                .replace(/^Proposée par\s*/i, "")
                 .replace(/&/g, ",")
                 .split(",")
                 .map(p => p.trim())
