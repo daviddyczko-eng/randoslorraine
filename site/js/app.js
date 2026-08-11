@@ -480,7 +480,7 @@ function renderRandoDetails(r = null) {
         const pilotes =
             (rando.pilotes ?? "")
                 .replace(/&amp;/g, "&")
-                .replace(/^Proposée par\s*/i, "")
+                .replace(/^Proposé par\s*/i, "")
                 .replace(/&/g, ",")
                 .split(",")
                 .map(p => p.trim())
@@ -622,7 +622,7 @@ title="Ouvrir dans Google Maps">
             const label =
                 index===0
                 ? (pilotes[0]
-                    ? `Proposé par ${escapeHtml(pilotes[0])}`
+                    ? `Proposée par ${escapeHtml(pilotes[0])}`
                     : "Contact")
                 : (pilotes[index]
                     ? `& ${escapeHtml(pilotes[index])}`
