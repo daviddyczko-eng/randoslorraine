@@ -5,7 +5,7 @@
       {
         "heading": "Nous invitons la, le ou les pilotes à se renseigner sur l'état de son groupe en posant les questions suivantes.",
         "items": [
-          "Êtes-vous bien équipés ?",
+          "Êtes-vous bien équipé·e·s ?",
           "Vos chaussures sont-elles adaptées ?",
           "Avez-vous suffisamment d’eau ?",
           "Avez-vous assez à manger ?",
@@ -75,7 +75,7 @@
         "heading": "Informer :",
         "items": [
           "Localisation précise (point GPS, chemin, repère)",
-          "Nombre de blessé.e.s",
+          "Nombre de blessé·e·s",
           "État de la victime (consciente, respiration, saignement)",
           "Nature de l'accident (chute, malaise, entorse, etc.)"
         ]
@@ -118,13 +118,13 @@
       {
         "heading": "2 €",
         "items": [
-          "Pour votre toute première randonnée avec Rando's Lorraine ou si vous êtes adhérent.e chez Alsarando"
+          "Pour votre toute première randonnée avec Rando's Lorraine ou si vous êtes adhérent·e chez Alsarando"
         ]
       },
       {
         "heading": "6 €",
         "items": [
-          "Vous ne souhaitez pas être adhérent.e mais vous voulez participer occasionnellement."
+          "Vous ne souhaitez pas être adhérent·e mais vous voulez participer occasionnellement."
         ]
       },
       {
