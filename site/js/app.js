@@ -667,7 +667,7 @@ title="Téléphoner">
 class="btn btn--primary"
 id="btn-covoiturage-propose">
 
-Je propose un covoiturage
+Je propose un covoiturage.
 
 </button>
 
@@ -675,7 +675,7 @@ Je propose un covoiturage
 class="btn btn--primary"
 id="btn-covoiturage-recherche">
 
-Je recherche un covoiturage
+Je recherche un covoiturage.
 
 </button>
 
@@ -1624,7 +1624,7 @@ function renderCarte(prenom, nom) {
       nom,
       email,
       telephone,
-      title: "Corriger",
+      title: "Corriger mes données",
       showBack: true,
       onBack: () => navigate("accueil", { prenom, nom }),
     });
