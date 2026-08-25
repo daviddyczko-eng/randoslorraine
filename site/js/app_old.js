@@ -1421,6 +1421,12 @@ function renderAccueil(prenom, nom) {
           </span>
         </div>
 
+        <div class="home-card" id="btn-participants">
+          <span class="home-card__title">
+            Liste des participant·e·s
+          </span>
+        </div>
+
         <div class="home-card" id="btn-info-avant">
           <span class="home-card__title">Avant le départ</span>
         </div>
@@ -1459,6 +1465,20 @@ function renderAccueil(prenom, nom) {
     });
   });
 
+  $("#btn-participants").addEventListener("click", () => {
+    navigate("participants", {
+      title: "Liste des participant·e·s",
+      showBack: true,
+      onBack: () => {
+        const user = getUser();
+        navigate("accueil", {
+          prenom: user.prenom,
+          nom: user.nom
+        });
+      }
+    });
+  });
+    
   $("#btn-info-avant").addEventListener("click", () => {
     navigate("info", {
       infoKey: "avant-depart",
@@ -1807,7 +1827,7 @@ async function init(){
 
     const start=await checkUserAndStart();
 
-    await new Promise(resolve=>setTimeout(resolve,500));
+    await new Promise(resolve=>setTimeout(resolve,200));
 
     splashEl.classList.add("hidden");
 
