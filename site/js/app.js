@@ -1732,24 +1732,62 @@ function renderParticipants() {
      * ------------------------------------------------------------
      */
 
-    let pilote1 = "";
-    let pilote2 = "";
+let pilote1 = "";
+let pilote2 = "";
 
-    if (randoDuJour && rando?.pilotes) {
+/*
+ * ------------------------------------------------------------
+ * Récupération de l'utilisateur de l'application
+ * ------------------------------------------------------------
+ */
 
-        const pilotesText =
-            String(rando.pilotes)
-                .replace(/&amp;/g, "&")
-                .replace(/^Proposé par\s*/i, "")
-                .replace(/&/g, ",")
-                .split(",")
-                .map(p => p.trim())
-                .filter(Boolean);
+const user = getUser();
 
-        pilote1 = pilotesText[0] ?? "";
-        pilote2 = pilotesText[1] ?? "";
+const userName =
+    user?.prenom && user?.nom
+        ? `${user.prenom} ${user.nom}`
+        : "";
 
-    }
+
+/*
+ * ------------------------------------------------------------
+ * Si la randonnée du JSON est celle d'aujourd'hui :
+ *
+ * Pilote    = premier pilote du JSON
+ * Copilote  = deuxième pilote du JSON
+ *
+ * Sinon :
+ *
+ * Pilote    = utilisateur de l'application
+ * Copilote  = vide
+ * ------------------------------------------------------------
+ */
+
+if (randoDuJour && rando?.pilotes) {
+
+    const pilotesText =
+        String(rando.pilotes)
+            .replace(/&amp;/g, "&")
+            .replace(/^Proposé par\s*/i, "")
+            .replace(/&/g, ",")
+            .split(",")
+            .map(p => p.trim())
+            .filter(Boolean);
+
+    pilote1 = pilotesText[0] ?? "";
+    pilote2 = pilotesText[1] ?? "";
+
+} else {
+
+    pilote1 = userName;
+    pilote2 = "";
+
+}
+
+
+console.log("Utilisateur :", userName);
+console.log("Pilote :", pilote1);
+console.log("Copilote :", pilote2);
 
 
     console.log("Date :", dateAujourdHui);
