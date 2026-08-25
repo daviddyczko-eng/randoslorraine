@@ -1465,6 +1465,20 @@ function renderAccueil(prenom, nom) {
     });
   });
 
+  $("#btn-participants").addEventListener("click", () => {
+    navigate("participants", {
+      title: "Liste des participant·e·s",
+      showBack: true,
+      onBack: () => {
+        const user = getUser();
+        navigate("accueil", {
+          prenom: user.prenom,
+          nom: user.nom
+        });
+      }
+    });
+  });
+    
   $("#btn-info-avant").addEventListener("click", () => {
     navigate("info", {
       infoKey: "avant-depart",
