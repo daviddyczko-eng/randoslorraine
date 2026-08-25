@@ -1421,6 +1421,12 @@ function renderAccueil(prenom, nom) {
           </span>
         </div>
 
+        <div class="home-card" id="btn-participants">
+          <span class="home-card__title">
+            Liste des participant·e·s
+          </span>
+        </div>
+
         <div class="home-card" id="btn-info-avant">
           <span class="home-card__title">Avant le départ</span>
         </div>
