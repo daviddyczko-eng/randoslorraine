@@ -378,6 +378,9 @@ function navigate(screen, options = {}) {
         case "rando":
             return renderRandoDetails(options.rando ?? prochaineRando);
 
+        case "participants":
+            return renderParticipants();
+
         case "info":
             return renderInfoPage(options.infoKey);
 
