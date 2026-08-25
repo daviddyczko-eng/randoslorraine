@@ -97,6 +97,49 @@ let listeParticipants = [];
 let listeParticipantsRando = null;
 
 /* ============================================================
+ * Liste des participant·e·s
+ * ============================================================
+ */
+
+/*
+ * Statuts disponibles dans la liste déroulante.
+ * L'ordre est volontairement celui demandé.
+ */
+const PARTICIPANT_STATUSES = [
+    "Pilote",
+    "Copilote",
+    "Adhérent·e",
+    "Invité·e 2 €",
+    "Alsarando 2 €",
+    "Adhésion 24 €",
+    "Demi-tarif 12 €"
+];
+
+/*
+ * Liste des participant·e·s de la randonnée en cours.
+ *
+ * Chaque participant sera enregistré sous la forme :
+ *
+ * {
+ *     prenom: "Jean",
+ *     nom: "Dupont",
+ *     statut: "Adhérent·e"
+ * }
+ */
+let participants = [];
+
+/*
+ * Informations de la randonnée utilisées
+ * par la liste des participant·e·s.
+ */
+let participantsRando = {
+    date: "",
+    lieu: "",
+    pilote: "",
+    copilote: ""
+};
+
+/* ============================================================
  * Utilitaires
  * ============================================================
  */
