@@ -1388,6 +1388,229 @@ function openMaps(lat, lng) {
 
 }
 
+/* ==========================================================
+   Liste des participant·e·s
+   Gestion des données
+   ========================================================== */
+
+const PARTICIPANT_STATUSES = [
+  "Pilote",
+  "Copilote",
+  "Adhérent·e",
+  "Invité·e 2 €",
+  "Alsarando 2 €",
+  "Adhésion 24 €",
+  "Demi-tarif 12 €"
+];
+
+
+/* ----------------------------------------------------------
+   Clé de sauvegarde locale
+   ---------------------------------------------------------- */
+
+function getParticipantsStorageKey() {
+
+  const rando = app.prochaineRando;
+
+  if (!rando?.date) {
+    return "rando-participants";
+  }
+
+  return "rando-participants-" +
+    rando.date
+      .replace(/\//g, "-")
+      .replace(/\s/g, "-");
+
+}
+
+
+/* ----------------------------------------------------------
+   Charger la liste
+   ---------------------------------------------------------- */
+
+function loadParticipants() {
+
+  const key = getParticipantsStorageKey();
+
+  try {
+
+    const saved = localStorage.getItem(key);
+
+    if (saved) {
+
+      const data = JSON.parse(saved);
+
+      if (Array.isArray(data)) {
+        app.participants = data;
+      }
+
+    }
+
+  } catch (error) {
+
+    console.error(
+      "Erreur lors du chargement de la liste :",
+      error
+    );
+
+    app.participants = [];
+
+  }
+
+}
+
+
+/* ----------------------------------------------------------
+   Sauvegarder la liste
+   ---------------------------------------------------------- */
+
+function saveParticipants() {
+
+  const key = getParticipantsStorageKey();
+
+  try {
+
+    localStorage.setItem(
+      key,
+      JSON.stringify(app.participants)
+    );
+
+    console.log(
+      "Liste des participant·e·s sauvegardée."
+    );
+
+  } catch (error) {
+
+    console.error(
+      "Erreur lors de la sauvegarde de la liste :",
+      error
+    );
+
+  }
+
+}
+
+
+/* ----------------------------------------------------------
+   Ajouter un participant
+   ---------------------------------------------------------- */
+
+function addParticipant(prenom, nom, statut) {
+
+  prenom = prenom.trim();
+  nom = nom.trim();
+  statut = statut.trim();
+
+  if (!prenom || !nom || !statut) {
+
+    alert(
+      "Veuillez renseigner le prénom, le nom et le statut."
+    );
+
+    return false;
+  }
+
+
+  /* ----------------------------------------------
+     Contrôle des doublons
+     ---------------------------------------------- */
+
+  const participantKey =
+    `${prenom} ${nom}`
+      .trim()
+      .toLocaleLowerCase();
+
+
+  const duplicate = app.participants.some(
+    participant =>
+      `${participant.prenom} ${participant.nom}`
+        .trim()
+        .toLocaleLowerCase() === participantKey
+  );
+
+
+  if (duplicate) {
+
+    alert(
+      "Ce·tte participant·e est déjà présent·e dans la liste."
+    );
+
+    return false;
+  }
+
+
+  /* ----------------------------------------------
+     Ajout
+     ---------------------------------------------- */
+
+  app.participants.push({
+
+    prenom,
+    nom,
+    statut
+
+  });
+
+
+  saveParticipants();
+
+  return true;
+
+}
+
+
+/* ----------------------------------------------------------
+   Supprimer un participant
+   ---------------------------------------------------------- */
+
+function removeParticipant(index) {
+
+  if (
+    index < 0 ||
+    index >= app.participants.length
+  ) {
+    return;
+  }
+
+
+  app.participants.splice(index, 1);
+
+  saveParticipants();
+
+  renderParticipantsPage();
+
+}
+
+
+/* ----------------------------------------------------------
+   Trier les participant·e·s
+   ---------------------------------------------------------- */
+
+function getSortedParticipants() {
+
+  return [...app.participants].sort(
+    (a, b) => {
+
+      const nameA =
+        `${a.prenom} ${a.nom}`.toLocaleLowerCase();
+
+      const nameB =
+        `${b.prenom} ${b.nom}`.toLocaleLowerCase();
+
+      return nameA.localeCompare(
+        nameB,
+        "fr"
+      );
+
+    }
+  );
+
+}
+
+/* ----------------------------------------------------------
+   Fonction Accueil
+   ---------------------------------------------------------- */
+
 function renderAccueil(prenom, nom) {
   const rando = prochaineRando;
 
