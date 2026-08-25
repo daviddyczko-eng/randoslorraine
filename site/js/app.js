@@ -1645,6 +1645,532 @@ async function checkUserAndStart() {
     };
 
 }
+
+/* ============================================================
+ * Liste des participant·e·s
+ * ============================================================
+ */
+
+function renderParticipants() {
+
+    console.log("Affichage de la liste des participant·e·s");
+
+    const rando = prochaineRando;
+
+    /*
+     * ------------------------------------------------------------
+     * Informations récupérées depuis le JSON de la randonnée
+     * ------------------------------------------------------------
+     */
+
+    const date = rando?.date ?? "Date inconnue";
+
+    const lieu =
+        rando?.lieu?.commune ??
+        "Lieu inconnu";
+
+    /*
+     * Le champ pilotes contient par exemple :
+     *
+     * "Proposé par Pascal Massonie & David Dyczko"
+     *
+     * On récupère les différents pilotes.
+     */
+
+    let pilotes = [];
+
+    if (rando?.pilotes) {
+
+        const pilotesText = String(rando.pilotes)
+            .replace(/&amp;/g, "&")
+            .replace(/^Proposé par\s*/i, "")
+            .replace(/&/g, ",")
+            .split(",")
+            .map(p => p.trim())
+            .filter(Boolean);
+
+        pilotes = pilotesText;
+    }
+
+    const pilote1 = pilotes[0] ?? "";
+    const pilote2 = pilotes[1] ?? "";
+
+
+    /*
+     * ------------------------------------------------------------
+     * Affichage
+     * ------------------------------------------------------------
+     */
+
+    screenRoot.innerHTML = `
+
+        <div class="screen">
+
+            <div class="detail-list">
+
+                <!-- DATE -->
+
+                <div class="detail-row">
+
+                    <span class="detail-row__label">
+                        Date
+                    </span>
+
+                    <span class="detail-row__value">
+                        ${escapeHtml(date)}
+                    </span>
+
+                </div>
+
+
+                <!-- LIEU -->
+
+                <div class="detail-row">
+
+                    <span class="detail-row__label">
+                        Lieu
+                    </span>
+
+                    <span class="detail-row__value">
+                        ${escapeHtml(lieu)}
+
+                        <button
+                            type="button"
+                            class="info-button"
+                            id="btn-modifier-lieu"
+                            title="Modifier le lieu">
+                            ✎
+                        </button>
+
+                    </span>
+
+                </div>
+
+
+                <!-- PILOTE -->
+
+                <div class="detail-row">
+
+                    <span class="detail-row__label">
+                        Pilote
+                    </span>
+
+                    <span class="detail-row__value">
+                        ${escapeHtml(pilote1)}
+                    </span>
+
+                </div>
+
+
+                ${
+                    pilote2
+                    ?
+                    `
+                    <!-- COPILOTE -->
+
+                    <div class="detail-row">
+
+                        <span class="detail-row__label">
+                            Copilote
+                        </span>
+
+                        <span class="detail-row__value">
+                            ${escapeHtml(pilote2)}
+                        </span>
+
+                    </div>
+                    `
+                    :
+                    ""
+                }
+
+            </div>
+
+
+            <!-- ==================================================
+                 FORMULAIRE D'AJOUT
+                 ================================================== -->
+
+            <div class="participant-form">
+
+
+                <!-- PRENOM -->
+
+                <div class="detail-row">
+
+                    <span class="detail-row__label">
+                        Prénom
+                    </span>
+
+                    <span class="detail-row__value participant-input-wrapper">
+
+                        <input
+                            type="text"
+                            id="participant-prenom"
+                            class="participant-input"
+                            autocomplete="given-name"
+                            placeholder="Prénom"
+                        >
+
+                        <button
+                            type="button"
+                            class="info-button"
+                            id="btn-scan-qrcode"
+                            title="Scanner le QR code d'un·e adhérent·e">
+                            ▣
+                        </button>
+
+                    </span>
+
+                </div>
+
+
+                <!-- NOM -->
+
+                <div class="detail-row">
+
+                    <span class="detail-row__label">
+                        Nom
+                    </span>
+
+                    <span class="detail-row__value">
+
+                        <input
+                            type="text"
+                            id="participant-nom"
+                            class="participant-input"
+                            autocomplete="family-name"
+                            placeholder="Nom"
+                        >
+
+                    </span>
+
+                </div>
+
+
+                <!-- STATUT -->
+
+                <div class="detail-row">
+
+                    <span class="detail-row__label">
+                        Statut
+                    </span>
+
+                    <span class="detail-row__value">
+
+                        <select
+                            id="participant-statut"
+                            class="participant-input">
+
+                            <option value="">
+                                Choisir…
+                            </option>
+
+                            <option value="Pilote">
+                                Pilote
+                            </option>
+
+                            <option value="Copilote">
+                                Copilote
+                            </option>
+
+                            <option value="Adhérent·e">
+                                Adhérent·e
+                            </option>
+
+                            <option value="Invité·e 2 €">
+                                Invité·e 2 €
+                            </option>
+
+                            <option value="Alsarando 2 €">
+                                Alsarando 2 €
+                            </option>
+
+                            <option value="Adhésion 24 €">
+                                Adhésion 24 €
+                            </option>
+
+                            <option value="Demi-tarif 12 €">
+                                Demi-tarif 12 €
+                            </option>
+
+                        </select>
+
+                    </span>
+
+                </div>
+
+
+                <!-- BOUTON AJOUTER -->
+
+                <div class="btn-row">
+
+                    <button
+                        type="button"
+                        class="btn btn--primary"
+                        id="btn-ajouter-participant">
+
+                        Ajouter
+
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- ==================================================
+                 LISTE DES PARTICIPANTS
+                 ================================================== -->
+
+            <div
+                id="participants-list"
+                class="participants-list">
+
+                <!-- La liste sera remplie dynamiquement -->
+
+            </div>
+
+
+            <!-- ==================================================
+                 TOTAL
+                 ================================================== -->
+
+            <div
+                id="participants-totaux"
+                class="participants-totaux">
+
+                <p>
+                    Nombre total de participant·e·s :
+                    <strong id="participants-count">0</strong>
+                </p>
+
+                <p>
+                    Somme perçue :
+                    <strong id="participants-total">0 €</strong>
+                </p>
+
+            </div>
+
+
+            <!-- ==================================================
+                 BOUTONS FINAUX
+                 ================================================== -->
+
+            <div class="btn-row">
+
+                <button
+                    type="button"
+                    class="btn btn--primary"
+                    id="btn-commentaire-participants">
+
+                    Ajouter un commentaire
+
+                </button>
+
+                <button
+                    type="button"
+                    class="btn btn--primary"
+                    id="btn-transmettre-participants">
+
+                    Transmettre la liste
+
+                </button>
+
+            </div>
+
+        </div>
+    `;
+
+
+    /*
+     * ------------------------------------------------------------
+     * Bouton Modifier le lieu
+     * ------------------------------------------------------------
+     */
+
+    const btnLieu = $("#btn-modifier-lieu");
+
+    if (btnLieu) {
+
+        btnLieu.addEventListener("click", () => {
+
+            const nouveauLieu = prompt(
+                "Modifier le lieu de la randonnée :",
+                lieu
+            );
+
+            if (nouveauLieu !== null && nouveauLieu.trim() !== "") {
+
+                console.log(
+                    "Nouveau lieu :",
+                    nouveauLieu.trim()
+                );
+
+                /*
+                 * Pour l'instant, on modifie uniquement
+                 * l'affichage local.
+                 *
+                 * La sauvegarde sera ajoutée dans une
+                 * prochaine étape.
+                 */
+
+                const valeurLieu =
+                    nouveauLieu.trim();
+
+                btnLieu
+                    .closest(".detail-row")
+                    .querySelector(".detail-row__value")
+                    .childNodes[0]
+                    .textContent = valeurLieu + " ";
+
+            }
+
+        });
+
+    }
+
+
+    /*
+     * ------------------------------------------------------------
+     * Bouton QR Code
+     * ------------------------------------------------------------
+     */
+
+    const btnScan = $("#btn-scan-qrcode");
+
+    if (btnScan) {
+
+        btnScan.addEventListener("click", () => {
+
+            alert(
+                "Lecture du QR code : fonctionnalité à venir."
+            );
+
+        });
+
+    }
+
+
+    /*
+     * ------------------------------------------------------------
+     * Bouton Ajouter
+     * ------------------------------------------------------------
+     */
+
+    const btnAjouter =
+        $("#btn-ajouter-participant");
+
+    if (btnAjouter) {
+
+        btnAjouter.addEventListener("click", () => {
+
+            const prenom =
+                $("#participant-prenom")?.value.trim() ?? "";
+
+            const nom =
+                $("#participant-nom")?.value.trim() ?? "";
+
+            const statut =
+                $("#participant-statut")?.value ?? "";
+
+
+            if (!prenom || !nom) {
+
+                alert(
+                    "Veuillez renseigner le prénom et le nom."
+                );
+
+                return;
+            }
+
+
+            if (!statut) {
+
+                alert(
+                    "Veuillez sélectionner un statut."
+                );
+
+                return;
+            }
+
+
+            console.log(
+                "Participant à ajouter :",
+                {
+                    prenom,
+                    nom,
+                    statut
+                }
+            );
+
+
+            /*
+             * Pour l'instant, simple affichage.
+             *
+             * Le tableau permanent des participants
+             * sera ajouté à l'étape suivante.
+             */
+
+            alert(
+                `${prenom} ${nom} ajouté(e) — ${statut}`
+            );
+
+
+            $("#participant-prenom").value = "";
+            $("#participant-nom").value = "";
+            $("#participant-statut").value = "";
+
+        });
+
+    }
+
+
+    /*
+     * ------------------------------------------------------------
+     * Bouton commentaire
+     * ------------------------------------------------------------
+     */
+
+    const btnCommentaire =
+        $("#btn-commentaire-participants");
+
+    if (btnCommentaire) {
+
+        btnCommentaire.addEventListener("click", () => {
+
+            alert(
+                "Ajout d'un commentaire : fonctionnalité à venir."
+            );
+
+        });
+
+    }
+
+
+    /*
+     * ------------------------------------------------------------
+     * Bouton transmettre
+     * ------------------------------------------------------------
+     */
+
+    const btnTransmettre =
+        $("#btn-transmettre-participants");
+
+    if (btnTransmettre) {
+
+        btnTransmettre.addEventListener("click", () => {
+
+            alert(
+                "Transmission de la liste : fonctionnalité à venir."
+            );
+
+        });
+
+    }
+
+}
+
 function renderInscription() {
   screenRoot.innerHTML = `
     <div class="screen">
