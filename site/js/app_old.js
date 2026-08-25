@@ -92,6 +92,53 @@ let infoContent = null;
 
 let backHandler = null;
 
+let listeParticipants = [];
+
+let listeParticipantsRando = null;
+
+/* ============================================================
+ * Liste des participant·e·s
+ * ============================================================
+ */
+
+/*
+ * Statuts disponibles dans la liste déroulante.
+ * L'ordre est volontairement celui demandé.
+ */
+const PARTICIPANT_STATUSES = [
+    "Pilote",
+    "Copilote",
+    "Adhérent·e",
+    "Invité·e 2 €",
+    "Alsarando 2 €",
+    "Adhésion 24 €",
+    "Demi-tarif 12 €"
+];
+
+/*
+ * Liste des participant·e·s de la randonnée en cours.
+ *
+ * Chaque participant sera enregistré sous la forme :
+ *
+ * {
+ *     prenom: "Jean",
+ *     nom: "Dupont",
+ *     statut: "Adhérent·e"
+ * }
+ */
+let participants = [];
+
+/*
+ * Informations de la randonnée utilisées
+ * par la liste des participant·e·s.
+ */
+let participantsRando = {
+    date: "",
+    lieu: "",
+    pilote: "",
+    copilote: ""
+};
+
 /* ============================================================
  * Utilitaires
  * ============================================================
@@ -1155,50 +1202,118 @@ function initCovoiturageModals() {
 
 /**
  * Retourne vrai si la date correspond à aujourd'hui.
- * Accepte :
- *   "15/07/2026"
- *   "2026-07-15"
+ *
+ * Formats acceptés :
+ *   "Dimanche 30 août 2026"
+ *   "Samedi 15 août 2026"
+ *   "15/08/2026"
+ *   "2026-08-15"
  *   Date(...)
  */
 function isToday(dateValue) {
 
-    if (!dateValue) return false;
+    if (!dateValue) {
+        return false;
+    }
 
-    let d;
+    let d = null;
 
+    /* ============================================================
+     * Cas 1 : objet Date
+     * ============================================================ */
     if (dateValue instanceof Date) {
 
         d = dateValue;
-
     }
+
+    /* ============================================================
+     * Cas 2 : chaîne de caractères
+     * ============================================================ */
     else if (typeof dateValue === "string") {
 
-        if (dateValue.includes("/")) {
+        const value = dateValue.trim();
 
-            const p = dateValue.split("/");
+        /* --------------------------------------------------------
+         * Format français :
+         * "Dimanche 30 août 2026"
+         * -------------------------------------------------------- */
+        const frenchMatch = value.match(
+            /^(?:lundi|mardi|mercredi|jeudi|vendredi|samedi|dimanche)\s+(\d{1,2})\s+([a-zàâäéèêëîïôöùûüÿç]+)\s+(\d{4})$/i
+        );
+
+        if (frenchMatch) {
+
+            const jour = Number(frenchMatch[1]);
+            const moisNom = frenchMatch[2].toLowerCase();
+            const annee = Number(frenchMatch[3]);
+
+            const mois = {
+                janvier: 0,
+                février: 1,
+                fevrier: 1,
+                mars: 2,
+                avril: 3,
+                mai: 4,
+                juin: 5,
+                juillet: 6,
+                août: 7,
+                aout: 7,
+                septembre: 8,
+                octobre: 9,
+                novembre: 10,
+                décembre: 11,
+                decembre: 11
+            };
+
+            if (Object.prototype.hasOwnProperty.call(mois, moisNom)) {
+
+                d = new Date(
+                    annee,
+                    mois[moisNom],
+                    jour
+                );
+            }
+        }
+
+        /* --------------------------------------------------------
+         * Format "DD/MM/YYYY"
+         * -------------------------------------------------------- */
+        else if (/^\d{1,2}\/\d{1,2}\/\d{4}$/.test(value)) {
+
+            const p = value.split("/");
 
             d = new Date(
                 Number(p[2]),
                 Number(p[1]) - 1,
                 Number(p[0])
             );
-
-        }
-        else {
-
-            d = new Date(dateValue);
-
         }
 
+        /* --------------------------------------------------------
+         * Format ISO "YYYY-MM-DD"
+         * -------------------------------------------------------- */
+        else if (/^\d{4}-\d{2}-\d{2}$/.test(value)) {
+
+            const p = value.split("-");
+
+            d = new Date(
+                Number(p[0]),
+                Number(p[1]) - 1,
+                Number(p[2])
+            );
+        }
     }
-    else {
 
+    /* ============================================================
+     * Date invalide
+     * ============================================================ */
+    if (!d || isNaN(d.getTime())) {
         return false;
-
     }
 
-    if (isNaN(d.getTime()))
-        return false;
+    /* ============================================================
+     * Comparaison avec aujourd'hui
+     * ============================================================ */
 
     const today = new Date();
 
@@ -1207,7 +1322,6 @@ function isToday(dateValue) {
         d.getMonth() === today.getMonth() &&
         d.getFullYear() === today.getFullYear()
     );
-
 }
 
 /* ============================================================
