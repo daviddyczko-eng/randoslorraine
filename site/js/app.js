@@ -1607,6 +1607,517 @@ function getSortedParticipants() {
 
 }
 
+/* ==========================================================
+   Page Liste des participant·e·s
+   ========================================================== */
+
+function renderParticipantsPage() {
+
+  loadParticipants();
+
+  const info = getRandoParticipantsInfo();
+
+  app.participantsLieu =
+    app.participantsLieu ??
+    info.lieu;
+
+
+  const participants =
+    getSortedParticipants();
+
+
+  let total = participants.length;
+
+
+  let somme = 0;
+
+  participants.forEach(participant => {
+
+    switch (participant.statut) {
+
+      case "Invité·e 2 €":
+      case "Alsarando 2 €":
+        somme += 2;
+        break;
+
+      case "Adhésion 24 €":
+        somme += 24;
+        break;
+
+      case "Demi-tarif 12 €":
+        somme += 12;
+        break;
+
+    }
+
+  });
+
+
+  let html = `
+
+    <div class="screen">
+
+      <div class="detail-list">
+
+        <div class="detail-row">
+
+          <span class="detail-row__label">
+            Date
+          </span>
+
+          <span class="detail-row__value">
+            ${escapeHtml(info.date)}
+          </span>
+
+        </div>
+
+
+        <div class="detail-row">
+
+          <span class="detail-row__label">
+            Lieu
+          </span>
+
+          <span class="detail-row__value">
+
+            ${escapeHtml(
+              app.participantsLieu || ""
+            )}
+
+            <button
+              class="info-button"
+              id="btn-modifier-lieu"
+              title="Modifier le lieu">
+              ✎
+            </button>
+
+          </span>
+
+        </div>
+
+
+        <div class="detail-row">
+
+          <span class="detail-row__label">
+            Pilote
+          </span>
+
+          <span class="detail-row__value">
+            ${escapeHtml(info.pilote)}
+          </span>
+
+        </div>
+  `;
+
+
+  if (info.copilote) {
+
+    html += `
+
+        <div class="detail-row">
+
+          <span class="detail-row__label">
+            Copilote
+          </span>
+
+          <span class="detail-row__value">
+            ${escapeHtml(info.copilote)}
+          </span>
+
+        </div>
+
+    `;
+
+  }
+
+
+  html += `
+
+      </div>
+
+
+      <!-- ==========================================
+           Formulaire
+           ========================================== -->
+
+      <form
+        id="form-participant"
+        class="form">
+
+        <div class="field">
+
+          <label for="participant-prenom">
+            Prénom
+          </label>
+
+          <div class="participant-name-row">
+
+            <input
+              id="participant-prenom"
+              type="text"
+              autocomplete="given-name"
+              required>
+
+            <button
+              type="button"
+              id="btn-participant-qr"
+              class="qr-button"
+              title="Scanner le QR code">
+              ▣
+            </button>
+
+          </div>
+
+        </div>
+
+
+        <div class="field">
+
+          <label for="participant-nom">
+            Nom
+          </label>
+
+          <input
+            id="participant-nom"
+            type="text"
+            autocomplete="family-name"
+            required>
+
+        </div>
+
+
+        <div class="field">
+
+          <label for="participant-statut">
+            Statut
+          </label>
+
+          <select
+            id="participant-statut"
+            required>
+
+            ${PARTICIPANT_STATUSES.map(
+              statut => `
+                <option value="${escapeHtml(statut)}">
+                  ${escapeHtml(statut)}
+                </option>
+              `
+            ).join("")}
+
+          </select>
+
+        </div>
+
+
+        <div class="btn-row">
+
+          <button
+            type="submit"
+            class="btn btn--primary">
+
+            Ajouter
+
+          </button>
+
+        </div>
+
+      </form>
+
+
+      <!-- ==========================================
+           Liste des participant·e·s
+           ========================================== -->
+
+      <div
+        id="participants-list"
+        class="detail-list">
+
+  `;
+
+
+  participants.forEach(
+    (participant, index) => {
+
+      html += `
+
+        <div class="detail-row">
+
+          <span class="detail-row__label">
+
+            ${escapeHtml(
+              `${participant.prenom} ${participant.nom}`
+            )}
+
+          </span>
+
+          <span class="detail-row__value">
+
+            ${escapeHtml(
+              participant.statut
+            )}
+
+            <button
+              type="button"
+              class="info-button btn-delete-participant"
+              data-index="${index}"
+              title="Supprimer ce·tte participant·e">
+              ✕
+            </button>
+
+          </span>
+
+        </div>
+
+      `;
+
+    }
+  );
+
+
+  html += `
+
+      </div>
+
+
+      <!-- ==========================================
+           Totaux
+           ========================================== -->
+
+      <div class="detail-list">
+
+        <div class="detail-row">
+
+          <span class="detail-row__label">
+            Nombre total de participant·e·s
+          </span>
+
+          <span class="detail-row__value">
+            ${total}
+          </span>
+
+        </div>
+
+
+        <div class="detail-row">
+
+          <span class="detail-row__label">
+            Somme perçue
+          </span>
+
+          <span class="detail-row__value">
+            ${somme} €
+          </span>
+
+        </div>
+
+      </div>
+
+
+      <!-- ==========================================
+           Actions
+           ========================================== -->
+
+      <div class="btn-row">
+
+        <button
+          type="button"
+          class="btn btn--secondary"
+          id="btn-commentaire-participants">
+
+          Ajouter un commentaire
+
+        </button>
+
+
+        <button
+          type="button"
+          class="btn btn--primary"
+          id="btn-transmettre-participants">
+
+          Transmettre la liste
+
+        </button>
+
+      </div>
+
+
+      <div class="btn-row">
+
+        <button
+          type="button"
+          class="btn btn--secondary"
+          id="btn-export-csv">
+
+          Enregistrer la liste CSV
+
+        </button>
+
+      </div>
+
+
+    </div>
+
+  `;
+
+
+  setScreen(html);
+
+
+  /* ========================================================
+     Ajouter
+     ======================================================== */
+
+  $("#form-participant").onsubmit = (event) => {
+
+    event.preventDefault();
+
+
+    const prenom =
+      $("#participant-prenom").value;
+
+    const nom =
+      $("#participant-nom").value;
+
+    const statut =
+      $("#participant-statut").value;
+
+
+    if (
+      addParticipant(
+        prenom,
+        nom,
+        statut
+      )
+    ) {
+
+      renderParticipantsPage();
+
+    }
+
+  };
+
+
+  /* ========================================================
+     Modifier le lieu
+     ======================================================== */
+
+  $("#btn-modifier-lieu").onclick = () => {
+
+    const nouveauLieu =
+      prompt(
+        "Modifier le lieu :",
+        app.participantsLieu || ""
+      );
+
+
+    if (
+      nouveauLieu !== null &&
+      nouveauLieu.trim() !== ""
+    ) {
+
+      app.participantsLieu =
+        nouveauLieu.trim();
+
+      renderParticipantsPage();
+
+    }
+
+  };
+
+
+  /* ========================================================
+     Supprimer
+     ======================================================== */
+
+  document
+    .querySelectorAll(
+      ".btn-delete-participant"
+    )
+    .forEach(button => {
+
+      button.onclick = () => {
+
+        const index =
+          Number(
+            button.dataset.index
+          );
+
+        removeParticipant(index);
+
+      };
+
+    });
+
+
+  /* ========================================================
+     QR code
+     ======================================================== */
+
+  $("#btn-participant-qr").onclick = () => {
+
+    alert(
+      "La lecture du QR code sera ajoutée dans le prochain bloc."
+    );
+
+  };
+
+
+  /* ========================================================
+     Commentaire
+     ======================================================== */
+
+  $("#btn-commentaire-participants").onclick =
+    () => {
+
+      const commentaire =
+        prompt(
+          "Ajouter un commentaire :"
+        );
+
+
+      if (
+        commentaire !== null &&
+        commentaire.trim() !== ""
+      ) {
+
+        localStorage.setItem(
+          getParticipantsStorageKey() +
+          "-commentaire",
+          commentaire.trim()
+        );
+
+      }
+
+    };
+
+
+  /* ========================================================
+     Transmettre
+     ======================================================== */
+
+  $("#btn-transmettre-participants").onclick =
+    () => {
+
+      alert(
+        "La transmission par SMS sera ajoutée dans le prochain bloc."
+      );
+
+    };
+
+
+  /* ========================================================
+     Export CSV
+     ======================================================== */
+
+  $("#btn-export-csv").onclick =
+    () => {
+
+      exportParticipantsCSV();
+
+    };
+
+}
+
 /* ----------------------------------------------------------
    Fonction Accueil
    ---------------------------------------------------------- */
