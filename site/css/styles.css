@@ -564,3 +564,71 @@ svg path {
     box-shadow: 0 0 40px rgba(99, 182, 50, 0.15);
   }
 }
+
+/* ============================================================
+ * Liste des participant·e·s
+ * ============================================================ */
+
+/* Espacement vertical entre les champs */
+.participant-form .detail-row {
+    margin-bottom: 14px;
+}
+
+/* Espacement entre Date / Lieu / Pilote / Copilote */
+.screen > .detail-row {
+    margin-bottom: 14px;
+}
+
+/* Champs blancs */
+.participant-input {
+    width: 100%;
+    min-height: 44px;
+
+    padding: 8px 12px;
+
+    box-sizing: border-box;
+
+    font-size: 17px;
+    line-height: 1.3;
+
+    border: 1px solid #ccc;
+    border-radius: 8px;
+
+    background-color: #fff;
+}
+
+/* Champ sélectionné */
+.participant-input:focus {
+    outline: none;
+    border-color: #3d7820;
+    box-shadow: 0 0 0 2px rgba(61, 120, 32, 0.15);
+}
+
+/* Liste déroulante */
+select.participant-input {
+    min-height: 44px;
+    font-size: 17px;
+    background-color: #fff;
+}
+
+/* Zone contenant champ + icône */
+.participant-input-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Le champ prend toute la place disponible */
+.participant-input-wrapper .participant-input {
+    flex: 1;
+}
+
+/* Icônes à droite des champs */
+.participant-input-wrapper .info-button {
+    flex: 0 0 auto;
+}
+
+/* Bouton modifier le lieu */
+#btn-modifier-lieu {
+    margin-left: 8px;
+}
