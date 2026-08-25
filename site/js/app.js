@@ -1659,41 +1659,103 @@ function renderParticipants() {
 
     /*
      * ------------------------------------------------------------
-     * Informations récupérées depuis le JSON de la randonnée
+     * Date du jour au format :
+     *
+     * "Dimanche 25 août 2026"
      * ------------------------------------------------------------
      */
 
-    const date = rando?.date ?? "Date inconnue";
+    const today = new Date();
 
-    const lieu =
-        rando?.lieu?.commune ??
-        "Lieu inconnu";
+    let dateAujourdHui =
+        new Intl.DateTimeFormat("fr-FR", {
+            weekday: "long",
+            day: "2-digit",
+            month: "long",
+            year: "numeric"
+        }).format(today);
 
     /*
-     * Le champ pilotes contient par exemple :
+     * Première lettre en majuscule
+     */
+    dateAujourdHui =
+        dateAujourdHui.charAt(0).toUpperCase() +
+        dateAujourdHui.slice(1);
+
+
+    /*
+     * ------------------------------------------------------------
+     * Vérification :
      *
-     * "Proposé par Pascal Massonie & David Dyczko"
-     *
-     * On récupère les différents pilotes.
+     * Est-ce que la randonnée du JSON correspond à aujourd'hui ?
+     * ------------------------------------------------------------
      */
 
-    let pilotes = [];
+    const randoDuJour =
+        rando &&
+        typeof rando === "object" &&
+        isToday(rando.date);
 
-    if (rando?.pilotes) {
 
-        const pilotesText = String(rando.pilotes)
-            .replace(/&amp;/g, "&")
-            .replace(/^Proposé par\s*/i, "")
-            .replace(/&/g, ",")
-            .split(",")
-            .map(p => p.trim())
-            .filter(Boolean);
+    console.log(
+        "Randonnée du jour :",
+        randoDuJour
+    );
 
-        pilotes = pilotesText;
+
+    /*
+     * ------------------------------------------------------------
+     * Lieu
+     *
+     * Seulement prérempli si la randonnée du JSON
+     * correspond à aujourd'hui.
+     * ------------------------------------------------------------
+     */
+
+    let lieuInitial = "";
+
+    if (randoDuJour) {
+
+        lieuInitial =
+            rando?.lieu?.commune ??
+            "";
+
     }
 
-    const pilote1 = pilotes[0] ?? "";
-    const pilote2 = pilotes[1] ?? "";
+
+    /*
+     * ------------------------------------------------------------
+     * Pilotes
+     *
+     * Seulement préremplis si la randonnée du JSON
+     * correspond à aujourd'hui.
+     * ------------------------------------------------------------
+     */
+
+    let pilote1 = "";
+    let pilote2 = "";
+
+    if (randoDuJour && rando?.pilotes) {
+
+        const pilotesText =
+            String(rando.pilotes)
+                .replace(/&amp;/g, "&")
+                .replace(/^Proposé par\s*/i, "")
+                .replace(/&/g, ",")
+                .split(",")
+                .map(p => p.trim())
+                .filter(Boolean);
+
+        pilote1 = pilotesText[0] ?? "";
+        pilote2 = pilotesText[1] ?? "";
+
+    }
+
+
+    console.log("Date :", dateAujourdHui);
+    console.log("Lieu :", lieuInitial);
+    console.log("Pilote :", pilote1);
+    console.log("Copilote :", pilote2);
 
 
     /*
@@ -1706,89 +1768,117 @@ function renderParticipants() {
 
         <div class="screen">
 
-            <div class="detail-list">
 
-                <!-- DATE -->
+            <!-- ==================================================
+                 DATE
+                 ================================================== -->
 
-                <div class="detail-row">
+            <div class="detail-row">
 
-                    <span class="detail-row__label">
-                        Date
-                    </span>
+                <span class="detail-row__label">
+                    Date
+                </span>
 
-                    <span class="detail-row__value">
-                        ${escapeHtml(date)}
-                    </span>
+                <span class="detail-row__value">
 
-                </div>
+                    <input
+                        type="text"
+                        id="participants-date"
+                        class="participant-input"
+                        value="${escapeHtml(dateAujourdHui)}"
+                        autocomplete="off"
+                    >
 
-
-                <!-- LIEU -->
-
-                <div class="detail-row">
-
-                    <span class="detail-row__label">
-                        Lieu
-                    </span>
-
-                    <span class="detail-row__value">
-                        ${escapeHtml(lieu)}
-
-                        <button
-                            type="button"
-                            class="info-button"
-                            id="btn-modifier-lieu"
-                            title="Modifier le lieu">
-                            ✎
-                        </button>
-
-                    </span>
-
-                </div>
-
-
-                <!-- PILOTE -->
-
-                <div class="detail-row">
-
-                    <span class="detail-row__label">
-                        Pilote
-                    </span>
-
-                    <span class="detail-row__value">
-                        ${escapeHtml(pilote1)}
-                    </span>
-
-                </div>
-
-
-                ${
-                    pilote2
-                    ?
-                    `
-                    <!-- COPILOTE -->
-
-                    <div class="detail-row">
-
-                        <span class="detail-row__label">
-                            Copilote
-                        </span>
-
-                        <span class="detail-row__value">
-                            ${escapeHtml(pilote2)}
-                        </span>
-
-                    </div>
-                    `
-                    :
-                    ""
-                }
+                </span>
 
             </div>
 
 
             <!-- ==================================================
-                 FORMULAIRE D'AJOUT
+                 LIEU
+                 ================================================== -->
+
+            <div class="detail-row">
+
+                <span class="detail-row__label">
+                    Lieu
+                </span>
+
+                <span class="detail-row__value">
+
+                    <input
+                        type="text"
+                        id="participants-lieu"
+                        class="participant-input"
+                        value="${escapeHtml(lieuInitial)}"
+                        placeholder="Lieu"
+                    >
+
+                    <button
+                        type="button"
+                        class="info-button"
+                        id="btn-modifier-lieu"
+                        title="Modifier le lieu">
+                        ✎
+                    </button>
+
+                </span>
+
+            </div>
+
+
+            <!-- ==================================================
+                 PILOTE
+                 ================================================== -->
+
+            <div class="detail-row">
+
+                <span class="detail-row__label">
+                    Pilote
+                </span>
+
+                <span class="detail-row__value">
+
+                    <input
+                        type="text"
+                        id="participants-pilote"
+                        class="participant-input"
+                        value="${escapeHtml(pilote1)}"
+                        placeholder="Pilote"
+                    >
+
+                </span>
+
+            </div>
+
+
+            <!-- ==================================================
+                 COPILOTE
+                 ================================================== -->
+
+            <div class="detail-row">
+
+                <span class="detail-row__label">
+                    Copilote
+                </span>
+
+                <span class="detail-row__value">
+
+                    <input
+                        type="text"
+                        id="participants-copilote"
+                        class="participant-input"
+                        value="${escapeHtml(pilote2)}"
+                        placeholder="Copilote"
+                    >
+
+                </span>
+
+            </div>
+
+
+            <!-- ==================================================
+                 FORMULAIRE PARTICIPANT
                  ================================================== -->
 
             <div class="participant-form">
@@ -1901,7 +1991,7 @@ function renderParticipants() {
                 </div>
 
 
-                <!-- BOUTON AJOUTER -->
+                <!-- AJOUTER -->
 
                 <div class="btn-row">
 
@@ -1920,20 +2010,17 @@ function renderParticipants() {
 
 
             <!-- ==================================================
-                 LISTE DES PARTICIPANTS
+                 LISTE
                  ================================================== -->
 
             <div
                 id="participants-list"
                 class="participants-list">
-
-                <!-- La liste sera remplie dynamiquement -->
-
             </div>
 
 
             <!-- ==================================================
-                 TOTAL
+                 TOTAUX
                  ================================================== -->
 
             <div
@@ -1954,7 +2041,7 @@ function renderParticipants() {
 
 
             <!-- ==================================================
-                 BOUTONS FINAUX
+                 BOUTONS
                  ================================================== -->
 
             <div class="btn-row">
@@ -1967,6 +2054,7 @@ function renderParticipants() {
                     Ajouter un commentaire
 
                 </button>
+
 
                 <button
                     type="button"
@@ -1985,59 +2073,12 @@ function renderParticipants() {
 
     /*
      * ------------------------------------------------------------
-     * Bouton Modifier le lieu
+     * QR CODE
      * ------------------------------------------------------------
      */
 
-    const btnLieu = $("#btn-modifier-lieu");
-
-    if (btnLieu) {
-
-        btnLieu.addEventListener("click", () => {
-
-            const nouveauLieu = prompt(
-                "Modifier le lieu de la randonnée :",
-                lieu
-            );
-
-            if (nouveauLieu !== null && nouveauLieu.trim() !== "") {
-
-                console.log(
-                    "Nouveau lieu :",
-                    nouveauLieu.trim()
-                );
-
-                /*
-                 * Pour l'instant, on modifie uniquement
-                 * l'affichage local.
-                 *
-                 * La sauvegarde sera ajoutée dans une
-                 * prochaine étape.
-                 */
-
-                const valeurLieu =
-                    nouveauLieu.trim();
-
-                btnLieu
-                    .closest(".detail-row")
-                    .querySelector(".detail-row__value")
-                    .childNodes[0]
-                    .textContent = valeurLieu + " ";
-
-            }
-
-        });
-
-    }
-
-
-    /*
-     * ------------------------------------------------------------
-     * Bouton QR Code
-     * ------------------------------------------------------------
-     */
-
-    const btnScan = $("#btn-scan-qrcode");
+    const btnScan =
+        $("#btn-scan-qrcode");
 
     if (btnScan) {
 
@@ -2054,7 +2095,7 @@ function renderParticipants() {
 
     /*
      * ------------------------------------------------------------
-     * Bouton Ajouter
+     * BOUTON AJOUTER
      * ------------------------------------------------------------
      */
 
@@ -2105,13 +2146,6 @@ function renderParticipants() {
             );
 
 
-            /*
-             * Pour l'instant, simple affichage.
-             *
-             * Le tableau permanent des participants
-             * sera ajouté à l'étape suivante.
-             */
-
             alert(
                 `${prenom} ${nom} ajouté(e) — ${statut}`
             );
@@ -2128,7 +2162,7 @@ function renderParticipants() {
 
     /*
      * ------------------------------------------------------------
-     * Bouton commentaire
+     * BOUTON COMMENTAIRE
      * ------------------------------------------------------------
      */
 
@@ -2150,7 +2184,7 @@ function renderParticipants() {
 
     /*
      * ------------------------------------------------------------
-     * Bouton transmettre
+     * BOUTON TRANSMETTRE
      * ------------------------------------------------------------
      */
 
@@ -2170,7 +2204,6 @@ function renderParticipants() {
     }
 
 }
-
 function renderInscription() {
   screenRoot.innerHTML = `
     <div class="screen">
