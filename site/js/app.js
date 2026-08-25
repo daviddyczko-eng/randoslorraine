@@ -92,6 +92,10 @@ let infoContent = null;
 
 let backHandler = null;
 
+let listeParticipants = [];
+
+let listeParticipantsRando = null;
+
 /* ============================================================
  * Utilitaires
  * ============================================================
