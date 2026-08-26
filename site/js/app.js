@@ -2185,7 +2185,6 @@ $("#btn-scan-pilote").addEventListener("click", () => {
 
 });
 
-
 /* ============================================================
  * QR code Copilote
  * ============================================================ */
@@ -2195,7 +2194,16 @@ $("#btn-scan-copilote").addEventListener("click", () => {
     ouvrirScannerQr("copilote");
 
 });
+ 
+/* ============================================================
+ * Suppression du Pilote
+ * ============================================================ */
 
+$("#btn-supprimer-pilote").addEventListener("click", () => {
+
+    $("#participants-pilote").value = "";
+
+});
 
 /* ============================================================
  * Suppression du Copilote
