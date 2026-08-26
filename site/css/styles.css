@@ -632,3 +632,114 @@ select.participant-input {
 #btn-modifier-lieu {
     margin-left: 8px;
 }
+
+/* ============================================================
+ * Bloc d'ajout d'un·e participant·e
+ * ============================================================ */
+
+.participant-add-box {
+    margin-top: 18px;
+    margin-bottom: 20px;
+
+    padding: 18px;
+
+    border: 2px solid #3d7820;
+    border-radius: 12px;
+
+    background-color: #f7faf5;
+}
+
+
+/* Chaque champ à l'intérieur du cadre */
+
+.participant-field {
+    margin-bottom: 14px;
+}
+
+
+/* Labels */
+
+.participant-field label {
+    display: block;
+
+    margin-bottom: 6px;
+
+    font-size: 17px;
+    font-weight: 600;
+}
+
+
+/* Champs */
+
+.participant-add-box .participant-input {
+    width: 100%;
+    min-height: 46px;
+
+    padding: 9px 12px;
+
+    box-sizing: border-box;
+
+    font-size: 17px;
+    line-height: 1.3;
+
+    border: 1px solid #bdbdbd;
+    border-radius: 8px;
+
+    background-color: #ffffff;
+}
+
+
+/* Focus */
+
+.participant-add-box .participant-input:focus {
+    outline: none;
+
+    border-color: #3d7820;
+
+    box-shadow:
+        0 0 0 2px rgba(61, 120, 32, 0.15);
+}
+
+
+/* Prénom + QR */
+
+.participant-add-box .participant-input-wrapper {
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+}
+
+
+.participant-add-box
+.participant-input-wrapper
+.participant-input {
+    flex: 1;
+}
+
+
+/* Bouton QR */
+
+.qr-scan-button {
+    flex: 0 0 46px;
+
+    width: 46px;
+    height: 46px;
+
+    border: 1px solid #3d7820;
+    border-radius: 8px;
+
+    background-color: #ffffff;
+
+    color: #3d7820;
+
+    font-size: 25px;
+
+    cursor: pointer;
+}
+
+
+.qr-scan-button:active {
+    transform: scale(0.96);
+}
