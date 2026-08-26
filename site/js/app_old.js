@@ -378,6 +378,9 @@ function navigate(screen, options = {}) {
         case "rando":
             return renderRandoDetails(options.rando ?? prochaineRando);
 
+        case "participants":
+            return renderParticipants();
+
         case "info":
             return renderInfoPage(options.infoKey);
 
@@ -1642,6 +1645,600 @@ async function checkUserAndStart() {
     };
 
 }
+
+/* ============================================================
+ * Liste des participant·e·s
+ * ============================================================
+ */
+
+function renderParticipants() {
+
+    console.log("Affichage de la liste des participant·e·s");
+
+    const rando = prochaineRando;
+
+    /*
+     * ------------------------------------------------------------
+     * Date du jour au format :
+     *
+     * "Dimanche 25 août 2026"
+     * ------------------------------------------------------------
+     */
+
+    const today = new Date();
+
+    let dateAujourdHui =
+        new Intl.DateTimeFormat("fr-FR", {
+            weekday: "long",
+            day: "2-digit",
+            month: "long",
+            year: "numeric"
+        }).format(today);
+
+    /*
+     * Première lettre en majuscule
+     */
+    dateAujourdHui =
+        dateAujourdHui.charAt(0).toUpperCase() +
+        dateAujourdHui.slice(1);
+
+
+    /*
+     * ------------------------------------------------------------
+     * Vérification :
+     *
+     * Est-ce que la randonnée du JSON correspond à aujourd'hui ?
+     * ------------------------------------------------------------
+     */
+
+    const randoDuJour =
+        rando &&
+        typeof rando === "object" &&
+        isToday(rando.date);
+
+
+    console.log(
+        "Randonnée du jour :",
+        randoDuJour
+    );
+
+
+    /*
+     * ------------------------------------------------------------
+     * Lieu
+     *
+     * Seulement prérempli si la randonnée du JSON
+     * correspond à aujourd'hui.
+     * ------------------------------------------------------------
+     */
+
+    let lieuInitial = "";
+
+    if (randoDuJour) {
+
+        lieuInitial =
+            rando?.lieu?.commune ??
+            "";
+
+    }
+
+
+    /*
+     * ------------------------------------------------------------
+     * Pilotes
+     *
+     * Seulement préremplis si la randonnée du JSON
+     * correspond à aujourd'hui.
+     * ------------------------------------------------------------
+     */
+
+let pilote1 = "";
+let pilote2 = "";
+
+/*
+ * ------------------------------------------------------------
+ * Récupération de l'utilisateur de l'application
+ * ------------------------------------------------------------
+ */
+
+const user = getUser();
+
+const userName =
+    user?.prenom && user?.nom
+        ? `${user.prenom} ${user.nom}`
+        : "";
+
+
+/*
+ * ------------------------------------------------------------
+ * Si la randonnée du JSON est celle d'aujourd'hui :
+ *
+ * Pilote    = premier pilote du JSON
+ * Copilote  = deuxième pilote du JSON
+ *
+ * Sinon :
+ *
+ * Pilote    = utilisateur de l'application
+ * Copilote  = vide
+ * ------------------------------------------------------------
+ */
+
+if (randoDuJour && rando?.pilotes) {
+
+    const pilotesText =
+        String(rando.pilotes)
+            .replace(/&amp;/g, "&")
+            .replace(/^Proposé par\s*/i, "")
+            .replace(/&/g, ",")
+            .split(",")
+            .map(p => p.trim())
+            .filter(Boolean);
+
+    pilote1 = pilotesText[0] ?? "";
+    pilote2 = pilotesText[1] ?? "";
+
+} else {
+
+    pilote1 = userName;
+    pilote2 = "";
+
+}
+
+
+console.log("Utilisateur :", userName);
+console.log("Pilote :", pilote1);
+console.log("Copilote :", pilote2);
+
+
+    console.log("Date :", dateAujourdHui);
+    console.log("Lieu :", lieuInitial);
+    console.log("Pilote :", pilote1);
+    console.log("Copilote :", pilote2);
+
+
+    /*
+     * ------------------------------------------------------------
+     * Affichage
+     * ------------------------------------------------------------
+     */
+
+    screenRoot.innerHTML = `
+
+        <div class="screen">
+
+
+            <!-- ==================================================
+                 DATE
+                 ================================================== -->
+
+            <div class="detail-row">
+
+                <span class="detail-row__label">
+                    Date
+                </span>
+
+                <span class="detail-row__value">
+
+                    <input
+                        type="text"
+                        id="participants-date"
+                        class="participant-input"
+                        value="${escapeHtml(dateAujourdHui)}"
+                        autocomplete="off"
+                    >
+
+                </span>
+
+            </div>
+
+
+            <!-- ==================================================
+                 LIEU
+                 ================================================== -->
+
+<div class="detail-row">
+
+    <span class="detail-row__label">
+        Lieu
+    </span>
+
+    <span class="detail-row__value participant-input-wrapper">
+
+        <input
+            type="text"
+            id="participants-lieu"
+            class="participant-input"
+            value="${escapeHtml(lieuInitial)}"
+            placeholder="Lieu"
+        >
+
+        <button
+            type="button"
+            class="info-button"
+            id="btn-modifier-lieu"
+            title="Modifier le lieu">
+            ✎
+        </button>
+
+    </span>
+
+</div>
+
+
+            <!-- ==================================================
+                 PILOTE
+                 ================================================== -->
+
+<div class="detail-row">
+
+    <span class="detail-row__label">
+        Pilote
+    </span>
+
+    <span class="detail-row__value participant-input-wrapper">
+
+        <input
+            type="text"
+            id="participants-pilote"
+            class="participant-input"
+            value="${escapeHtml(pilote1)}"
+            placeholder="Prénom Nom"
+            autocomplete="off"
+        >
+
+        <button
+            type="button"
+            class="qr-scan-button"
+            id="btn-scan-pilote"
+            title="Scanner le QR code du pilote">
+            ▣
+        </button>
+
+    </span>
+
+</div>
+
+            <!-- ==================================================
+                 COPILOTE
+                 ================================================== -->
+
+<div class="detail-row">
+
+    <span class="detail-row__label">
+        Copilote
+    </span>
+
+    <span class="detail-row__value participant-input-wrapper">
+
+        <input
+            type="text"
+            id="participants-copilote"
+            class="participant-input"
+            value="${escapeHtml(pilote2)}"
+            placeholder="Prénom Nom"
+            autocomplete="off"
+        >
+
+        <button
+            type="button"
+            class="qr-scan-button"
+            id="btn-scan-copilote"
+            title="Scanner le QR code du copilote">
+            ▣
+        </button>
+
+        <button
+            type="button"
+            class="participant-delete-button"
+            id="btn-supprimer-copilote"
+            title="Supprimer le copilote">
+            ✕
+        </button>
+
+    </span>
+
+</div>
+
+            <!-- ==================================================
+                 FORMULAIRE PARTICIPANT
+                 ================================================== -->
+
+<div class="participant-add-box">
+
+    <div class="participant-field">
+        <label for="participant-prenom">Prénom</label>
+
+        <div class="participant-input-wrapper">
+
+            <input
+                type="text"
+                id="participant-prenom"
+                class="participant-input"
+                placeholder="Prénom"
+                autocomplete="given-name"
+            >
+
+            <button
+                type="button"
+                class="qr-scan-button"
+                id="btn-scan-qr"
+                title="Scanner le QR code">
+                ▣
+            </button>
+
+        </div>
+    </div>
+
+
+    <div class="participant-field">
+        <label for="participant-nom">Nom</label>
+
+        <input
+            type="text"
+            id="participant-nom"
+            class="participant-input"
+            placeholder="Nom"
+            autocomplete="family-name"
+        >
+    </div>
+
+
+    <div class="participant-field">
+        <label for="participant-statut">Statut</label>
+
+        <select
+            id="participant-statut"
+            class="participant-input">
+
+            <option value="">Choisir un statut</option>
+            <option value="Pilote">Pilote</option>
+            <option value="Copilote">Copilote</option>
+            <option value="Adhérent·e">Adhérent·e</option>
+            <option value="Invité·e 2 €">Invité·e 2 €</option>
+            <option value="Alsarando 2 €">Alsarando 2 €</option>
+            <option value="Adhésion 24 €">Adhésion 24 €</option>
+            <option value="Demi-tarif 12 €">Demi-tarif 12 €</option>
+
+        </select>
+    </div>
+
+
+    <button
+        type="button"
+        class="btn btn--primary btn--block"
+        id="btn-ajouter-participant">
+        Ajouter
+    </button>
+
+</div>
+
+
+            <!-- ==================================================
+                 LISTE
+                 ================================================== -->
+
+            <div
+                id="participants-list"
+                class="participants-list">
+            </div>
+
+
+            <!-- ==================================================
+                 TOTAUX
+                 ================================================== -->
+
+            <div
+                id="participants-totaux"
+                class="participants-totaux">
+
+                <p>
+                    Nombre total de participant·e·s :
+                    <strong id="participants-count">0</strong>
+                </p>
+
+                <p>
+                    Somme perçue :
+                    <strong id="participants-total">0 €</strong>
+                </p>
+
+            </div>
+
+
+            <!-- ==================================================
+                 BOUTONS
+                 ================================================== -->
+
+            <div class="btn-row">
+
+                <button
+                    type="button"
+                    class="btn btn--primary"
+                    id="btn-commentaire-participants">
+
+                    Ajouter un commentaire
+
+                </button>
+
+
+                <button
+                    type="button"
+                    class="btn btn--primary"
+                    id="btn-transmettre-participants">
+
+                    Transmettre la liste
+
+                </button>
+
+            </div>
+
+        </div>
+    `;
+
+
+    /*
+     * ------------------------------------------------------------
+     * QR CODE
+     * ------------------------------------------------------------
+     */
+
+    const btnScan =
+        $("#btn-scan-qrcode");
+
+    if (btnScan) {
+
+        btnScan.addEventListener("click", () => {
+
+            alert(
+                "Lecture du QR code : fonctionnalité à venir."
+            );
+
+        });
+
+    }
+    
+/* ============================================================
+ * QR code Pilote
+ * ============================================================ */
+
+$("#btn-scan-pilote").addEventListener("click", () => {
+
+    ouvrirScannerQr("pilote");
+
+});
+
+
+/* ============================================================
+ * QR code Copilote
+ * ============================================================ */
+
+$("#btn-scan-copilote").addEventListener("click", () => {
+
+    ouvrirScannerQr("copilote");
+
+});
+
+
+/* ============================================================
+ * Suppression du Copilote
+ * ============================================================ */
+
+$("#btn-supprimer-copilote").addEventListener("click", () => {
+
+    $("#participants-copilote").value = "";
+
+});
+    
+    /*
+     * ------------------------------------------------------------
+     * BOUTON AJOUTER
+     * ------------------------------------------------------------
+     */
+
+    const btnAjouter =
+        $("#btn-ajouter-participant");
+
+    if (btnAjouter) {
+
+        btnAjouter.addEventListener("click", () => {
+
+            const prenom =
+                $("#participant-prenom")?.value.trim() ?? "";
+
+            const nom =
+                $("#participant-nom")?.value.trim() ?? "";
+
+            const statut =
+                $("#participant-statut")?.value ?? "";
+
+
+            if (!prenom || !nom) {
+
+                alert(
+                    "Veuillez renseigner le prénom et le nom."
+                );
+
+                return;
+            }
+
+
+            if (!statut) {
+
+                alert(
+                    "Veuillez sélectionner un statut."
+                );
+
+                return;
+            }
+
+
+            console.log(
+                "Participant à ajouter :",
+                {
+                    prenom,
+                    nom,
+                    statut
+                }
+            );
+
+
+            alert(
+                `${prenom} ${nom} ajouté(e) — ${statut}`
+            );
+
+
+            $("#participant-prenom").value = "";
+            $("#participant-nom").value = "";
+            $("#participant-statut").value = "";
+
+        });
+
+    }
+
+
+    /*
+     * ------------------------------------------------------------
+     * BOUTON COMMENTAIRE
+     * ------------------------------------------------------------
+     */
+
+    const btnCommentaire =
+        $("#btn-commentaire-participants");
+
+    if (btnCommentaire) {
+
+        btnCommentaire.addEventListener("click", () => {
+
+            alert(
+                "Ajout d'un commentaire : fonctionnalité à venir."
+            );
+
+        });
+
+    }
+
+
+    /*
+     * ------------------------------------------------------------
+     * BOUTON TRANSMETTRE
+     * ------------------------------------------------------------
+     */
+
+    const btnTransmettre =
+        $("#btn-transmettre-participants");
+
+    if (btnTransmettre) {
+
+        btnTransmettre.addEventListener("click", () => {
+
+            alert(
+                "Transmission de la liste : fonctionnalité à venir."
+            );
+
+        });
+
+    }
+}
+
 function renderInscription() {
   screenRoot.innerHTML = `
     <div class="screen">
