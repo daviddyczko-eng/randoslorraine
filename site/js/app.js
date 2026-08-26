@@ -1919,132 +1919,74 @@ console.log("Copilote :", pilote2);
                  FORMULAIRE PARTICIPANT
                  ================================================== -->
 
-            <div class="participant-form">
+<div class="participant-add-box">
+
+    <div class="participant-field">
+        <label for="participant-prenom">Prénom</label>
+
+        <div class="participant-input-wrapper">
+
+            <input
+                type="text"
+                id="participant-prenom"
+                class="participant-input"
+                placeholder="Prénom"
+                autocomplete="given-name"
+            >
+
+            <button
+                type="button"
+                class="qr-scan-button"
+                id="btn-scan-qr"
+                title="Scanner le QR code">
+                ▣
+            </button>
+
+        </div>
+    </div>
 
 
-                <!-- PRENOM -->
+    <div class="participant-field">
+        <label for="participant-nom">Nom</label>
 
-                <div class="detail-row">
-
-                    <span class="detail-row__label">
-                        Prénom
-                    </span>
-
-                    <span class="detail-row__value participant-input-wrapper">
-
-                        <input
-                            type="text"
-                            id="participant-prenom"
-                            class="participant-input"
-                            autocomplete="given-name"
-                            placeholder="Prénom"
-                        >
-
-                        <button
-                            type="button"
-                            class="info-button"
-                            id="btn-scan-qrcode"
-                            title="Scanner le QR code d'un·e adhérent·e">
-                            ▣
-                        </button>
-
-                    </span>
-
-                </div>
+        <input
+            type="text"
+            id="participant-nom"
+            class="participant-input"
+            placeholder="Nom"
+            autocomplete="family-name"
+        >
+    </div>
 
 
-                <!-- NOM -->
+    <div class="participant-field">
+        <label for="participant-statut">Statut</label>
 
-                <div class="detail-row">
+        <select
+            id="participant-statut"
+            class="participant-input">
 
-                    <span class="detail-row__label">
-                        Nom
-                    </span>
+            <option value="">Choisir un statut</option>
+            <option value="Pilote">Pilote</option>
+            <option value="Copilote">Copilote</option>
+            <option value="Adhérent·e">Adhérent·e</option>
+            <option value="Invité·e 2 €">Invité·e 2 €</option>
+            <option value="Alsarando 2 €">Alsarando 2 €</option>
+            <option value="Adhésion 24 €">Adhésion 24 €</option>
+            <option value="Demi-tarif 12 €">Demi-tarif 12 €</option>
 
-                    <span class="detail-row__value">
-
-                        <input
-                            type="text"
-                            id="participant-nom"
-                            class="participant-input"
-                            autocomplete="family-name"
-                            placeholder="Nom"
-                        >
-
-                    </span>
-
-                </div>
+        </select>
+    </div>
 
 
-                <!-- STATUT -->
+    <button
+        type="button"
+        class="btn btn--primary btn--block"
+        id="btn-ajouter-participant">
+        Ajouter
+    </button>
 
-                <div class="detail-row">
-
-                    <span class="detail-row__label">
-                        Statut
-                    </span>
-
-                    <span class="detail-row__value">
-
-                        <select
-                            id="participant-statut"
-                            class="participant-input">
-
-                            <option value="">
-                                Choisir…
-                            </option>
-
-                            <option value="Pilote">
-                                Pilote
-                            </option>
-
-                            <option value="Copilote">
-                                Copilote
-                            </option>
-
-                            <option value="Adhérent·e">
-                                Adhérent·e
-                            </option>
-
-                            <option value="Invité·e 2 €">
-                                Invité·e 2 €
-                            </option>
-
-                            <option value="Alsarando 2 €">
-                                Alsarando 2 €
-                            </option>
-
-                            <option value="Adhésion 24 €">
-                                Adhésion 24 €
-                            </option>
-
-                            <option value="Demi-tarif 12 €">
-                                Demi-tarif 12 €
-                            </option>
-
-                        </select>
-
-                    </span>
-
-                </div>
-
-
-                <!-- AJOUTER -->
-
-                <div class="btn-row">
-
-                    <button
-                        type="button"
-                        class="btn btn--primary"
-                        id="btn-ajouter-participant">
-
-                        Ajouter
-
-                    </button>
-
-                </div>
-
-            </div>
+</div>
 
 
             <!-- ==================================================
