@@ -848,7 +848,7 @@ select.participant-input {
 #btn-ajouter-participant,
 #btn-commentaire-participants,
 #btn-transmettre-participants {
-    min-height: 44px;
-    height: 44px;
+    min-height: 40px;
+    height: 40px;
     box-sizing: border-box;
 }
