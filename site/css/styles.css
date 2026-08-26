@@ -588,7 +588,7 @@ svg path {
 
     box-sizing: border-box;
 
-    font-size: 17px;
+    font-size: 15px;
     line-height: 1.3;
 
     border: 1px solid #ccc;
@@ -607,7 +607,7 @@ svg path {
 /* Liste déroulante */
 select.participant-input {
     min-height: 44px;
-    font-size: 17px;
+    font-size: 15px;
     background-color: #fff;
 }
 
@@ -664,7 +664,7 @@ select.participant-input {
 
     margin-bottom: 6px;
 
-    font-size: 17px;
+    font-size: 15px;
     font-weight: 600;
 }
 
@@ -679,7 +679,7 @@ select.participant-input {
 
     box-sizing: border-box;
 
-    font-size: 17px;
+    font-size: 15px;
     line-height: 1.3;
 
     border: 1px solid #bdbdbd;
