@@ -1811,25 +1811,33 @@ console.log("Copilote :", pilote2);
                  DATE
                  ================================================== -->
 
-            <div class="detail-row">
+<div class="detail-row">
 
-                <span class="detail-row__label">
-                    Date
-                </span>
+    <span class="detail-row__label">
+        Date
+    </span>
 
-                <span class="detail-row__value">
+    <span class="detail-row__value participant-input-wrapper">
 
-                    <input
-                        type="text"
-                        id="participants-date"
-                        class="participant-input"
-                        value="${escapeHtml(dateAujourdHui)}"
-                        autocomplete="off"
-                    >
+        <input
+            type="text"
+            id="participants-date"
+            class="participant-input"
+            value="${escapeHtml(dateParticipants)}"
+            readonly
+        >
 
-                </span>
+        <button
+            type="button"
+            class="calendar-button"
+            id="btn-calendrier"
+            title="Choisir une date">
+            📅
+        </button>
 
-            </div>
+    </span>
+
+</div>
 
 
             <!-- ==================================================
