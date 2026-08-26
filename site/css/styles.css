@@ -743,3 +743,39 @@ select.participant-input {
 .qr-scan-button:active {
     transform: scale(0.96);
 }
+
+/* ============================================================
+ * Pilote / Copilote
+ * ============================================================ */
+
+.participant-delete-button {
+    flex: 0 0 46px;
+
+    width: 46px;
+    height: 46px;
+
+    border: 1px solid #c62828;
+    border-radius: 8px;
+
+    background-color: #ffffff;
+
+    color: #c62828;
+
+    font-size: 22px;
+    font-weight: bold;
+
+    cursor: pointer;
+}
+
+.participant-delete-button:active {
+    transform: scale(0.96);
+}
+
+
+/* Champ Pilote / Copilote */
+
+#participants-pilote,
+#participants-copilote {
+    cursor: default;
+    background-color: #ffffff;
+}
