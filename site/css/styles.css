@@ -837,6 +837,7 @@ select.participant-input {
     .participant-add-button {
         padding-left: 12px;
         padding-right: 12px;
+        height : 40px;
     }
 
 }
