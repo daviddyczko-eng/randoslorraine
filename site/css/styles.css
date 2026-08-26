@@ -779,3 +779,29 @@ select.participant-input {
     cursor: default;
     background-color: #ffffff;
 }
+
+/* ============================================================
+ * Bouton calendrier
+ * ============================================================ */
+
+.calendar-button {
+    flex: 0 0 46px;
+
+    width: 46px;
+    height: 46px;
+
+    border: 1px solid #3d7820;
+    border-radius: 8px;
+
+    background-color: #ffffff;
+
+    color: #3d7820;
+
+    font-size: 23px;
+
+    cursor: pointer;
+}
+
+.calendar-button:active {
+    transform: scale(0.96);
+}
