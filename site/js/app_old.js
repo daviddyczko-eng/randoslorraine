@@ -1983,10 +1983,16 @@ console.log("Copilote :", pilote2);
 
 <div class="participant-add-box">
 
-    <div class="participant-field">
-        <label for="participant-prenom">Prénom</label>
+    <!-- ==================================================
+         LIGNE 1 : PRÉNOM / NOM
+         ================================================== -->
 
-        <div class="participant-input-wrapper">
+    <div class="participant-add-row">
+
+        <div class="participant-field participant-field--half">
+            <label for="participant-prenom">
+                Prénom
+            </label>
 
             <input
                 type="text"
@@ -1995,61 +2001,96 @@ console.log("Copilote :", pilote2);
                 placeholder="Prénom"
                 autocomplete="given-name"
             >
-
-            <button
-                type="button"
-                class="qr-scan-button"
-                id="btn-scan-qr"
-                title="Scanner le QR code">
-                ▣
-            </button>
-
         </div>
+
+
+        <div class="participant-field participant-field--half">
+            <label for="participant-nom">
+                Nom
+            </label>
+
+            <input
+                type="text"
+                id="participant-nom"
+                class="participant-input"
+                placeholder="Nom"
+                autocomplete="family-name"
+            >
+        </div>
+
     </div>
 
 
-    <div class="participant-field">
-        <label for="participant-nom">Nom</label>
+    <!-- ==================================================
+         LIGNE 2 : STATUT / AJOUTER / QR
+         ================================================== -->
 
-        <input
-            type="text"
-            id="participant-nom"
-            class="participant-input"
-            placeholder="Nom"
-            autocomplete="family-name"
-        >
+    <div class="participant-add-row participant-add-row--bottom">
+
+        <div class="participant-field participant-field--status">
+            <label for="participant-statut">
+                Statut
+            </label>
+
+            <select
+                id="participant-statut"
+                class="participant-input">
+
+                <option value="">
+                    Choisir un statut
+                </option>
+
+                <option value="Pilote">
+                    Pilote
+                </option>
+
+                <option value="Copilote">
+                    Copilote
+                </option>
+
+                <option value="Adhérent·e">
+                    Adhérent·e
+                </option>
+
+                <option value="Invité·e 2 €">
+                    Invité·e 2 €
+                </option>
+
+                <option value="Alsarando 2 €">
+                    Alsarando 2 €
+                </option>
+
+                <option value="Adhésion 24 €">
+                    Adhésion 24 €
+                </option>
+
+                <option value="Demi-tarif 12 €">
+                    Demi-tarif 12 €
+                </option>
+
+            </select>
+        </div>
+
+
+        <button
+            type="button"
+            class="btn btn--primary participant-add-button"
+            id="btn-ajouter-participant">
+            Ajouter
+        </button>
+
+
+        <button
+            type="button"
+            class="qr-scan-button participant-add-qr"
+            id="btn-scan-qr"
+            title="Scanner le QR code de l'adhérent·e">
+            ▣
+        </button>
+
     </div>
-
-
-    <div class="participant-field">
-        <label for="participant-statut">Statut</label>
-
-        <select
-            id="participant-statut"
-            class="participant-input">
-
-            <option value="">Choisir un statut</option>
-            <option value="Pilote">Pilote</option>
-            <option value="Copilote">Copilote</option>
-            <option value="Adhérent·e">Adhérent·e</option>
-            <option value="Invité·e 2 €">Invité·e 2 €</option>
-            <option value="Alsarando 2 €">Alsarando 2 €</option>
-            <option value="Adhésion 24 €">Adhésion 24 €</option>
-            <option value="Demi-tarif 12 €">Demi-tarif 12 €</option>
-
-        </select>
-    </div>
-
-
-    <button
-        type="button"
-        class="btn btn--primary btn--block"
-        id="btn-ajouter-participant">
-        Ajouter
-    </button>
 
 </div>
-
 
             <!-- ==================================================
                  LISTE
@@ -2144,7 +2185,6 @@ $("#btn-scan-pilote").addEventListener("click", () => {
 
 });
 
-
 /* ============================================================
  * QR code Copilote
  * ============================================================ */
@@ -2154,7 +2194,16 @@ $("#btn-scan-copilote").addEventListener("click", () => {
     ouvrirScannerQr("copilote");
 
 });
+ 
+/* ============================================================
+ * Suppression du Pilote
+ * ============================================================ */
 
+$("#btn-supprimer-pilote").addEventListener("click", () => {
+
+    $("#participants-pilote").value = "";
+
+});
 
 /* ============================================================
  * Suppression du Copilote
