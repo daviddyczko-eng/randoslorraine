@@ -1453,7 +1453,7 @@ function renderAccueil(prenom, nom) {
 
   // Écouteurs pour les boutons
   $("#btn-carte").addEventListener("click", () => {
-    navigate("carte", { prenom, nom, title: "Ma carte", showBack: true });
+    navigate("carte", { prenom, nom, title: "Ma carte Rando's Lorraine", showBack: true });
   });
 
   $("#btn-rando").addEventListener("click", () => {
@@ -1654,6 +1654,39 @@ async function checkUserAndStart() {
 function renderParticipants() {
 
     console.log("Affichage de la liste des participant·e·s");
+    
+    const maintenant = new Date();
+    
+        const jours = [
+        "Dimanche",
+        "Lundi",
+        "Mardi",
+        "Mercredi",
+        "Jeudi",
+        "Vendredi",
+        "Samedi"
+    ];
+
+    const mois = [
+        "janvier",
+        "février",
+        "mars",
+        "avril",
+        "mai",
+        "juin",
+        "juillet",
+        "août",
+        "septembre",
+        "octobre",
+        "novembre",
+        "décembre"
+    ];
+
+    const dateParticipants =
+        `${jours[maintenant.getDay()]} ` +
+        `${String(maintenant.getDate()).padStart(2, "0")} ` +
+        `${mois[maintenant.getMonth()]} ` +
+        `${maintenant.getFullYear()}`;
 
     const rando = prochaineRando;
 
@@ -1838,7 +1871,6 @@ console.log("Copilote :", pilote2);
     </span>
 
 </div>
-
 
             <!-- ==================================================
                  LIEU
@@ -2414,7 +2446,7 @@ function renderCorrection(prenom, nom, email = "", telephone = "") {
     navigate("carte", {
       prenom: newPrenom,
       nom: newNom,
-      title: "Ma carte",
+      title: "Ma carte Rando's Lorraine",
       showBack: true,
       onBack: () => navigate("accueil", { prenom: newPrenom, nom: newNom }),
     });
