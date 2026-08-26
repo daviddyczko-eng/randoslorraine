@@ -1654,7 +1654,9 @@ async function checkUserAndStart() {
 function renderParticipants() {
 
     console.log("Affichage de la liste des participant·e·s");
-
+    
+    const maintenant = new Date();
+    
         const jours = [
         "Dimanche",
         "Lundi",
