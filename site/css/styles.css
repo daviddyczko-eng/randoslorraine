@@ -679,6 +679,7 @@ select.participant-input {
 .participant-add-box
 .participant-input-wrapper
 .participant-input {
+      font-size: 15px;
     flex: 1;
 }
 
