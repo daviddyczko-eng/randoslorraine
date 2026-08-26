@@ -1877,7 +1877,6 @@ console.log("Copilote :", pilote2);
                  ================================================== -->
 
 <div class="detail-row">
-
     <span class="detail-row__label">
         Lieu
     </span>
@@ -1892,16 +1891,7 @@ console.log("Copilote :", pilote2);
             placeholder="Lieu"
         >
 
-        <button
-            type="button"
-            class="info-button"
-            id="btn-modifier-lieu"
-            title="Modifier le lieu">
-            ✎
-        </button>
-
     </span>
-
 </div>
 
 
@@ -1926,13 +1916,21 @@ console.log("Copilote :", pilote2);
             autocomplete="off"
         >
 
-        <button
-            type="button"
-            class="qr-scan-button"
-            id="btn-scan-pilote"
-            title="Scanner le QR code du pilote">
-            ▣
-        </button>
+<button
+    type="button"
+    class="participant-delete-button"
+    id="btn-supprimer-pilote"
+    title="Supprimer le pilote">
+    ✕
+</button>
+
+<button
+    type="button"
+    class="qr-scan-button"
+    id="btn-scan-pilote"
+    title="Scanner le QR code du pilote">
+    ▣
+</button>
 
     </span>
 
@@ -1959,21 +1957,21 @@ console.log("Copilote :", pilote2);
             autocomplete="off"
         >
 
-        <button
-            type="button"
-            class="qr-scan-button"
-            id="btn-scan-copilote"
-            title="Scanner le QR code du copilote">
-            ▣
-        </button>
+<button
+    type="button"
+    class="participant-delete-button"
+    id="btn-supprimer-copilote"
+    title="Supprimer le copilote">
+    ✕
+</button>
 
-        <button
-            type="button"
-            class="participant-delete-button"
-            id="btn-supprimer-copilote"
-            title="Supprimer le copilote">
-            ✕
-        </button>
+<button
+    type="button"
+    class="qr-scan-button"
+    id="btn-scan-copilote"
+    title="Scanner le QR code du copilote">
+    ▣
+</button>
 
     </span>
 
