@@ -903,3 +903,35 @@ select.participant-input {
     min-height: 40px;
     box-sizing: border-box;
 }
+/* ============================================================
+ * Alignement vertical des champs de la page Participants
+ * ============================================================ */
+
+.detail-row {
+    display: grid;
+    grid-template-columns: 66px minmax(0, 1fr);
+    column-gap: 18px;
+    align-items: center;
+}
+
+/* Largeur fixe de la colonne des libellés */
+.detail-row__label {
+    width: 66px;
+    min-width: 66px;
+}
+
+/* La zone contenant le champ blanc et les boutons */
+.detail-row__value.participant-input-wrapper {
+    min-width: 0;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Les champs blancs occupent tout l'espace disponible */
+.participant-input-wrapper .participant-input {
+    flex: 1;
+    min-width: 0;
+    box-sizing: border-box;
+}
