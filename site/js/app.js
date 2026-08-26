@@ -1869,51 +1869,73 @@ console.log("Copilote :", pilote2);
                  PILOTE
                  ================================================== -->
 
-            <div class="detail-row">
+<div class="detail-row">
 
-                <span class="detail-row__label">
-                    Pilote
-                </span>
+    <span class="detail-row__label">
+        Pilote
+    </span>
 
-                <span class="detail-row__value">
+    <span class="detail-row__value participant-input-wrapper">
 
-                    <input
-                        type="text"
-                        id="participants-pilote"
-                        class="participant-input"
-                        value="${escapeHtml(pilote1)}"
-                        placeholder="Pilote"
-                    >
+        <input
+            type="text"
+            id="participants-pilote"
+            class="participant-input"
+            value="${escapeHtml(pilote1)}"
+            readonly
+        >
 
-                </span>
+        <button
+            type="button"
+            class="qr-scan-button"
+            id="btn-scan-pilote"
+            title="Scanner le QR code du pilote">
+            ▣
+        </button>
 
-            </div>
+    </span>
 
+</div>
 
             <!-- ==================================================
                  COPILOTE
                  ================================================== -->
 
-            <div class="detail-row">
+<div class="detail-row">
 
-                <span class="detail-row__label">
-                    Copilote
-                </span>
+    <span class="detail-row__label">
+        Copilote
+    </span>
 
-                <span class="detail-row__value">
+    <span class="detail-row__value participant-input-wrapper">
 
-                    <input
-                        type="text"
-                        id="participants-copilote"
-                        class="participant-input"
-                        value="${escapeHtml(pilote2)}"
-                        placeholder="Copilote"
-                    >
+        <input
+            type="text"
+            id="participants-copilote"
+            class="participant-input"
+            value="${escapeHtml(pilote2)}"
+            readonly
+        >
 
-                </span>
+        <button
+            type="button"
+            class="qr-scan-button"
+            id="btn-scan-copilote"
+            title="Scanner le QR code du copilote">
+            ▣
+        </button>
 
-            </div>
+        <button
+            type="button"
+            class="participant-delete-button"
+            id="btn-supprimer-copilote"
+            title="Supprimer le copilote">
+            ✕
+        </button>
 
+    </span>
+
+</div>
 
             <!-- ==================================================
                  FORMULAIRE PARTICIPANT
