@@ -2446,7 +2446,7 @@ function renderCorrection(prenom, nom, email = "", telephone = "") {
     navigate("carte", {
       prenom: newPrenom,
       nom: newNom,
-      title: "Ma carte",
+      title: "Ma carte Rando's Lorraine",
       showBack: true,
       onBack: () => navigate("accueil", { prenom: newPrenom, nom: newNom }),
     });
