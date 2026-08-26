@@ -1655,6 +1655,37 @@ function renderParticipants() {
 
     console.log("Affichage de la liste des participant·e·s");
 
+        const jours = [
+        "Dimanche",
+        "Lundi",
+        "Mardi",
+        "Mercredi",
+        "Jeudi",
+        "Vendredi",
+        "Samedi"
+    ];
+
+    const mois = [
+        "janvier",
+        "février",
+        "mars",
+        "avril",
+        "mai",
+        "juin",
+        "juillet",
+        "août",
+        "septembre",
+        "octobre",
+        "novembre",
+        "décembre"
+    ];
+
+    const dateParticipants =
+        `${jours[maintenant.getDay()]} ` +
+        `${String(maintenant.getDate()).padStart(2, "0")} ` +
+        `${mois[maintenant.getMonth()]} ` +
+        `${maintenant.getFullYear()}`;
+
     const rando = prochaineRando;
 
     /*
