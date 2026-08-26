@@ -579,7 +579,7 @@ svg path {
 /* Champs blancs */
 .participant-input {
     width: 100%;
-    min-height: 44px;
+    min-height: 40px;
 
     padding: 8px 12px;
 
@@ -637,7 +637,7 @@ select.participant-input {
 
 .participant-add-box .participant-input {
     width: 100%;
-    min-height: 46px;
+    min-height: 40px;
 
     padding: 9px 12px;
 
@@ -699,8 +699,8 @@ select.participant-input {
 .calendar-button {
     flex: 0 0 46px;
 
-    width: 42px;
-    height: 42px;
+    width: 40px;
+    height: 40px;
 
     border: 1px solid var(--brand-darker);
     border-radius: 8px;
@@ -786,8 +786,8 @@ select.participant-input {
 .participant-delete-button,
 .qr-scan-button {
     flex: 0 0 auto;
-    width: 42px;
-    height: 42px;
+    width: 40px;
+    height: 40px;
     padding: 0;
     display: inline-flex;
     align-items: center;
