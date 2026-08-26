@@ -1882,7 +1882,8 @@ console.log("Copilote :", pilote2);
             id="participants-pilote"
             class="participant-input"
             value="${escapeHtml(pilote1)}"
-            readonly
+            placeholder="Prénom Nom"
+            autocomplete="off"
         >
 
         <button
@@ -1914,7 +1915,8 @@ console.log("Copilote :", pilote2);
             id="participants-copilote"
             class="participant-input"
             value="${escapeHtml(pilote2)}"
-            readonly
+            placeholder="Prénom Nom"
+            autocomplete="off"
         >
 
         <button
