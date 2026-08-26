@@ -837,7 +837,18 @@ select.participant-input {
     .participant-add-button {
         padding-left: 12px;
         padding-right: 12px;
-        height : 40px;
     }
 
+}
+
+/* ============================================================
+ * Harmonisation des boutons - Liste des participant·e·s
+ * ============================================================ */
+
+#btn-ajouter-participant,
+#btn-commentaire-participants,
+#btn-transmettre-participants {
+    min-height: 44px;
+    height: 44px;
+    box-sizing: border-box;
 }
