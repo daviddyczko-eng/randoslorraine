@@ -842,13 +842,63 @@ select.participant-input {
 }
 
 /* ============================================================
- * Harmonisation des boutons - Liste des participant·e·s
+ * LISTE DES PARTICIPANT·E·S
+ * Harmonisation de la présentation
  * ============================================================ */
+
+/* ------------------------------------------------------------
+ * Hauteur uniforme des boutons
+ * ------------------------------------------------------------ */
 
 #btn-ajouter-participant,
 #btn-commentaire-participants,
 #btn-transmettre-participants {
     min-height: 40px;
     height: 40px;
+    box-sizing: border-box;
+}
+
+
+/* ------------------------------------------------------------
+ * Alignement des lignes Date / Lieu / Pilote / Copilote
+ * ------------------------------------------------------------ */
+
+.participant-form .detail-row {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+
+/* ------------------------------------------------------------
+ * Conteneur champ + boutons
+ * ------------------------------------------------------------ */
+
+.participant-input-wrapper {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    gap: 8px;
+    box-sizing: border-box;
+}
+
+
+/* ------------------------------------------------------------
+ * Champs blancs
+ * ------------------------------------------------------------ */
+
+.participant-input-wrapper .participant-input {
+    flex: 1 1 auto;
+    width: 0;
+    min-width: 0;
+    box-sizing: border-box;
+}
+
+
+/* ------------------------------------------------------------
+ * Hauteur et largeur uniformes des champs
+ * ------------------------------------------------------------ */
+
+.participant-input {
+    min-height: 40px;
     box-sizing: border-box;
 }
