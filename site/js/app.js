@@ -1453,7 +1453,7 @@ function renderAccueil(prenom, nom) {
 
   // Écouteurs pour les boutons
   $("#btn-carte").addEventListener("click", () => {
-    navigate("carte", { prenom, nom, title: "Ma carte", showBack: true });
+    navigate("carte", { prenom, nom, title: "Ma carte Rando's Lorraine", showBack: true });
   });
 
   $("#btn-rando").addEventListener("click", () => {
