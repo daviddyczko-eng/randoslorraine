@@ -580,6 +580,7 @@ svg path {
 .participant-input {
     width: 100%;
     min-height: 40px;
+    height: 40px;
 
     padding: 8px 12px;
 
@@ -638,6 +639,7 @@ select.participant-input {
 .participant-add-box .participant-input {
     width: 100%;
     min-height: 40px;
+    height: 40px;
 
     padding: 9px 12px;
 
