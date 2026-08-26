@@ -1865,7 +1865,7 @@ console.log("Copilote :", pilote2);
             class="calendar-button"
             id="btn-calendrier"
             title="Choisir une date">
-            📅
+            ✐
         </button>
 
     </span>
