@@ -805,3 +805,102 @@ select.participant-input {
 .calendar-button:active {
     transform: scale(0.96);
 }
+/* ============================================================
+ * Formulaire d'ajout d'un participant
+ * ============================================================ */
+
+.participant-add-box {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-top: 12px;
+    padding: 16px;
+    border-radius: 12px;
+    background: #e8f2df;
+}
+
+.participant-add-row {
+    display: flex;
+    align-items: flex-end;
+    gap: 12px;
+    width: 100%;
+}
+
+.participant-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.participant-field--half {
+    flex: 1;
+    min-width: 0;
+}
+
+.participant-field--status {
+    flex: 1;
+    min-width: 0;
+}
+
+.participant-add-button {
+    flex: 0 0 auto;
+    white-space: nowrap;
+}
+
+.participant-add-qr {
+    flex: 0 0 auto;
+}
+
+
+/* ============================================================
+ * Boutons Pilote / Copilote
+ * ============================================================ */
+
+.participant-input-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.participant-input-wrapper .participant-input {
+    flex: 1;
+    min-width: 0;
+}
+
+
+/* ============================================================
+ * Boutons supprimer / QR
+ * ============================================================ */
+
+.participant-delete-button,
+.qr-scan-button {
+    flex: 0 0 auto;
+    width: 42px;
+    height: 42px;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+/* ============================================================
+ * Responsive
+ * ============================================================ */
+
+@media (max-width: 500px) {
+
+    .participant-add-row {
+        gap: 8px;
+    }
+
+    .participant-add-box {
+        padding: 12px;
+    }
+
+    .participant-add-button {
+        padding-left: 12px;
+        padding-right: 12px;
+    }
+
+}
