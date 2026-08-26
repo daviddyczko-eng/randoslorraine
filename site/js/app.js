@@ -1653,38 +1653,6 @@ async function checkUserAndStart() {
 
 function renderParticipants() {
 
-    /* ============================================================
- * QR code Pilote
- * ============================================================ */
-
-$("#btn-scan-pilote").addEventListener("click", () => {
-
-    ouvrirScannerQr("pilote");
-
-});
-
-
-/* ============================================================
- * QR code Copilote
- * ============================================================ */
-
-$("#btn-scan-copilote").addEventListener("click", () => {
-
-    ouvrirScannerQr("copilote");
-
-});
-
-
-/* ============================================================
- * Suppression du Copilote
- * ============================================================ */
-
-$("#btn-supprimer-copilote").addEventListener("click", () => {
-
-    $("#participants-copilote").value = "";
-
-});
-    
     console.log("Affichage de la liste des participant·e·s");
 
     const rando = prochaineRando;
@@ -2125,8 +2093,39 @@ console.log("Copilote :", pilote2);
         });
 
     }
+    
+/* ============================================================
+ * QR code Pilote
+ * ============================================================ */
+
+$("#btn-scan-pilote").addEventListener("click", () => {
+
+    ouvrirScannerQr("pilote");
+
+});
 
 
+/* ============================================================
+ * QR code Copilote
+ * ============================================================ */
+
+$("#btn-scan-copilote").addEventListener("click", () => {
+
+    ouvrirScannerQr("copilote");
+
+});
+
+
+/* ============================================================
+ * Suppression du Copilote
+ * ============================================================ */
+
+$("#btn-supprimer-copilote").addEventListener("click", () => {
+
+    $("#participants-copilote").value = "";
+
+});
+    
     /*
      * ------------------------------------------------------------
      * BOUTON AJOUTER
@@ -2236,8 +2235,8 @@ console.log("Copilote :", pilote2);
         });
 
     }
-
 }
+
 function renderInscription() {
   screenRoot.innerHTML = `
     <div class="screen">
