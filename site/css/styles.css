@@ -699,8 +699,8 @@ select.participant-input {
 .calendar-button {
     flex: 0 0 46px;
 
-    width: 46px;
-    height: 46px;
+    width: 42px;
+    height: 42px;
 
     border: 1px solid var(--brand-darker);
     border-radius: 8px;
