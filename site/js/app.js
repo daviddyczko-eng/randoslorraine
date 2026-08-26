@@ -1836,33 +1836,33 @@ console.log("Copilote :", pilote2);
                  LIEU
                  ================================================== -->
 
-            <div class="detail-row">
+<div class="detail-row">
 
-                <span class="detail-row__label">
-                    Lieu
-                </span>
+    <span class="detail-row__label">
+        Lieu
+    </span>
 
-                <span class="detail-row__value">
+    <span class="detail-row__value participant-input-wrapper">
 
-                    <input
-                        type="text"
-                        id="participants-lieu"
-                        class="participant-input"
-                        value="${escapeHtml(lieuInitial)}"
-                        placeholder="Lieu"
-                    >
+        <input
+            type="text"
+            id="participants-lieu"
+            class="participant-input"
+            value="${escapeHtml(lieuInitial)}"
+            placeholder="Lieu"
+        >
 
-                    <button
-                        type="button"
-                        class="info-button"
-                        id="btn-modifier-lieu"
-                        title="Modifier le lieu">
-                        ✎
-                    </button>
+        <button
+            type="button"
+            class="info-button"
+            id="btn-modifier-lieu"
+            title="Modifier le lieu">
+            ✎
+        </button>
 
-                </span>
+    </span>
 
-            </div>
+</div>
 
 
             <!-- ==================================================
