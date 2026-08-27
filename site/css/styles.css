@@ -337,9 +337,10 @@ svg path {
 }
 
 .detail-row {
-  display: flex;
-  justify-content: space-between;
-  gap: 12px;
+  display: grid;
+  grid-template-columns: 66px minmax(0, 1fr);
+  column-gap: 18px;
+  align-items: center;
   padding: 12px 14px;
   background: var(--brand-bg);
   border-radius: var(--radius);
@@ -347,6 +348,8 @@ svg path {
 }
 
 .detail-row__label {
+  width: 66px;
+  min-width: 66px;
   font-weight: 600;
   color: var(--brand-darker);
 }
@@ -354,6 +357,14 @@ svg path {
 .detail-row__value {
   color: var(--text-muted);
   text-align: right;
+}
+
+.detail-row__value.participant-input-wrapper {
+  min-width: 0;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
 .info-button {
@@ -569,6 +580,8 @@ svg path {
 /* Espacement vertical entre les champs */
 .participant-form .detail-row {
     margin-bottom: 14px;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 /* Espacement entre Date / Lieu / Pilote / Copilote */
@@ -679,7 +692,7 @@ select.participant-input {
 .participant-add-box
 .participant-input-wrapper
 .participant-input {
-      font-size: 15px;
+    font-size: 15px;
     flex: 1;
 }
 
@@ -768,18 +781,29 @@ select.participant-input {
 }
 
 /* ============================================================
- * Boutons Pilote / Copilote
+ * Boutons Pilote / Copilote — conteneur champ + boutons
  * ============================================================ */
+
+#btn-ajouter-participant,
+#btn-commentaire-participants,
+#btn-transmettre-participants {
+    min-height: 40px;
+    height: 40px;
+    box-sizing: border-box;
+}
 
 .participant-input-wrapper {
     display: flex;
     align-items: center;
+    width: 100%;
     gap: 8px;
+    box-sizing: border-box;
 }
 
 .participant-input-wrapper .participant-input {
     flex: 1;
     min-width: 0;
+    box-sizing: border-box;
 }
 
 /* ============================================================
@@ -843,100 +867,6 @@ select.participant-input {
 }
 
 /* ============================================================
- * LISTE DES PARTICIPANT·E·S
- * Harmonisation de la présentation
- * ============================================================ */
-
-/* ------------------------------------------------------------
- * Hauteur uniforme des boutons
- * ------------------------------------------------------------ */
-
-#btn-ajouter-participant,
-#btn-commentaire-participants,
-#btn-transmettre-participants {
-    min-height: 40px;
-    height: 40px;
-    box-sizing: border-box;
-}
-
-
-/* ------------------------------------------------------------
- * Alignement des lignes Date / Lieu / Pilote / Copilote
- * ------------------------------------------------------------ */
-
-.participant-form .detail-row {
-    width: 100%;
-    box-sizing: border-box;
-}
-
-
-/* ------------------------------------------------------------
- * Conteneur champ + boutons
- * ------------------------------------------------------------ */
-
-.participant-input-wrapper {
-    display: flex;
-    align-items: center;
-    width: 100%;
-    gap: 8px;
-    box-sizing: border-box;
-}
-
-
-/* ------------------------------------------------------------
- * Champs blancs
- * ------------------------------------------------------------ */
-
-.participant-input-wrapper .participant-input {
-    flex: 1 1 auto;
-    width: 0;
-    min-width: 0;
-    box-sizing: border-box;
-}
-
-
-/* ------------------------------------------------------------
- * Hauteur et largeur uniformes des champs
- * ------------------------------------------------------------ */
-
-.participant-input {
-    min-height: 40px;
-    box-sizing: border-box;
-}
-/* ============================================================
- * Alignement vertical des champs de la page Participants
- * ============================================================ */
-
-.detail-row {
-    display: grid;
-    grid-template-columns: 66px minmax(0, 1fr);
-    column-gap: 18px;
-    align-items: center;
-}
-
-/* Largeur fixe de la colonne des libellés */
-.detail-row__label {
-    width: 66px;
-    min-width: 66px;
-}
-
-/* La zone contenant le champ blanc et les boutons */
-.detail-row__value.participant-input-wrapper {
-    min-width: 0;
-    width: 100%;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-/* Les champs blancs occupent tout l'espace disponible */
-.participant-input-wrapper .participant-input {
-    flex: 1;
-    min-width: 0;
-    box-sizing: border-box;
-}
-
-/* ============================================================
  * Calendrier des participants
  * ============================================================ */
 
@@ -955,7 +885,6 @@ select.participant-input {
     z-index: 9999;
 }
 
-
 .calendar-modal {
     width: 100%;
     max-width: 430px;
@@ -964,14 +893,13 @@ select.participant-input {
 
     box-sizing: border-box;
 
-    background: #ffffff;
+    background: var(--surface);
 
     border-radius: 14px;
 
     box-shadow:
         0 8px 30px rgba(0, 0, 0, 0.25);
 }
-
 
 .calendar-title {
     margin-bottom: 22px;
@@ -982,7 +910,6 @@ select.participant-input {
     font-weight: 700;
 }
 
-
 .calendar-wheels {
     display: grid;
 
@@ -991,7 +918,6 @@ select.participant-input {
 
     gap: 10px;
 }
-
 
 .calendar-wheel label {
     display: block;
@@ -1003,7 +929,6 @@ select.participant-input {
     font-size: 15px;
     font-weight: 600;
 }
-
 
 .calendar-wheel select {
     width: 100%;
@@ -1018,13 +943,12 @@ select.participant-input {
 
     text-align: center;
 
-    border: 1px solid #ccc;
+    border: 1px solid var(--border);
 
     border-radius: 8px;
 
     background: #fff;
 }
-
 
 .calendar-selected-date {
     margin-top: 20px;
@@ -1036,11 +960,10 @@ select.participant-input {
     font-size: 17px;
     font-weight: 600;
 
-    background: #f7faf5;
+    background: var(--brand-bg);
 
     border-radius: 8px;
 }
-
 
 .calendar-buttons {
     display: flex;
