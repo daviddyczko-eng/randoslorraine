@@ -90,6 +90,7 @@ svg path {
 }
 
 .app-bar__back.hidden {
+  display: grid !important;
   visibility: hidden;
   pointer-events: none;
 }
