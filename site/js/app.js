@@ -1739,22 +1739,35 @@ function renderParticipantsWarning() {
     // Bouton "J'ai compris."
     // ------------------------------------------------------------
 
-    button.addEventListener("click", () => {
+button.addEventListener("click", () => {
 
-        if (checkbox.checked) {
+    if (checkbox.checked) {
 
-            participantsWarningDisabled = true;
+        participantsWarningDisabled = true;
 
-            localStorage.setItem(
-                "participantsWarningDisabled",
-                "true"
-            );
+        localStorage.setItem(
+            "participantsWarningDisabled",
+            "true"
+        );
+
+    }
+
+    navigate("participants", {
+        title: "Liste des participant·e·s",
+        showBack: true,
+        onBack: () => {
+
+            const user = getUser();
+
+            navigate("accueil", {
+                prenom: user.prenom,
+                nom: user.nom
+            });
 
         }
-
-        navigate("participants");
-
     });
+
+});
 
 }
 
