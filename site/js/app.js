@@ -92,6 +92,9 @@ let infoContent = null;
 
 let backHandler = null;
 
+let participantsWarningDisabled =
+    localStorage.getItem("participantsWarningDisabled") === "true";
+
 let listeParticipants = [];
 
 let listeParticipantsRando = null;
