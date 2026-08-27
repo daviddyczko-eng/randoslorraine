@@ -1690,10 +1690,10 @@ function renderParticipantsWarning() {
 
             <div class="alert alert--danger">
 
-                <h2>Important</h2>
+                <h2>Attention</h2>
 
                 <p>
-                    Attention, la liste des participant.e.s est sous la
+                    La liste des participant·e·s est sous la
                     responsabilité de la ou du pilote. Il est donc préférable
                     que ce soit cette personne qui l'établisse.
                     Si vous la faites, n'oubliez pas de l'en informer.
