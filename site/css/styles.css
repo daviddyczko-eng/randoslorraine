@@ -416,8 +416,8 @@ svg path {
   display: block;
   text-align: center;
   margin: 6px 0;
-  font-weight: 600;
-  color: var(--brand-darker);
+  font-weight: bold;
+  color: var(--brand);
 }
 
 .info-text a:hover {
