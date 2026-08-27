@@ -990,17 +990,7 @@ select.participant-input {
 
     display: grid;
 
-    /*
-     * Trois zones :
-     *
-     * 1fr  : nom
-     * auto : statut
-     * 1fr  : bouton supprimer
-     *
-     * Le statut est ainsi réellement centré.
-     */
-
-    grid-template-columns: 1fr auto 1fr;
+    grid-template-columns: 1fr 140px 40px;
 
     align-items: center;
 
@@ -1036,11 +1026,9 @@ select.participant-input {
 
     grid-column: 2;
 
-    justify-self: center;
-
-    text-align: center;
-
-    white-space: nowrap;
+    text-align: left;
+  
+    padding-left: 10px;
 
 }
 
