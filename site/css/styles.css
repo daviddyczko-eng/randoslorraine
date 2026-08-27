@@ -982,3 +982,88 @@ select.participant-input {
 
     margin-top: 20px;
 }
+/* ============================================================
+ * Liste des participant·e·s
+ * ============================================================ */
+
+.participant-list-row {
+
+    display: grid;
+
+    /*
+     * Trois zones :
+     *
+     * 1fr  : nom
+     * auto : statut
+     * 1fr  : bouton supprimer
+     *
+     * Le statut est ainsi réellement centré.
+     */
+
+    grid-template-columns: 1fr auto 1fr;
+
+    align-items: center;
+
+    width: 100%;
+
+    min-height: 44px;
+
+    border-bottom: 1px solid #ddd;
+
+}
+
+
+/* ------------------------------------------------------------
+ * Nom
+ * ------------------------------------------------------------ */
+
+.participant-list-name {
+
+    grid-column: 1;
+
+    justify-self: start;
+
+    text-align: left;
+
+}
+
+
+/* ------------------------------------------------------------
+ * Statut
+ * ------------------------------------------------------------ */
+
+.participant-list-status {
+
+    grid-column: 2;
+
+    justify-self: center;
+
+    text-align: center;
+
+    white-space: nowrap;
+
+}
+
+
+/* ------------------------------------------------------------
+ * Bouton supprimer
+ * ------------------------------------------------------------ */
+
+.participant-delete-button {
+
+    grid-column: 3;
+
+    justify-self: end;
+
+    width: 34px;
+    height: 34px;
+
+    border: none;
+
+    background: transparent;
+
+    cursor: pointer;
+
+    font-size: 18px;
+
+}
