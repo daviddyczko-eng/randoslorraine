@@ -397,7 +397,7 @@ svg path {
 }
 
 .info-section a {
-  color: var(--brand-dark);
+  color: var(--brand);
   font-weight: 600;
 }
 
@@ -421,7 +421,7 @@ svg path {
 }
 
 .info-link {
-  color: var(--brand-dark);
+  color: var(--brand);
   font-weight: 600;
   text-decoration: none;
 }
