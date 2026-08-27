@@ -409,7 +409,7 @@ svg path {
 
 .info-section a {
   color: var(--brand);
-  font-weight: 600;
+  font-weight: bold;
 }
 
 .info-text a {
@@ -433,7 +433,7 @@ svg path {
 
 .info-link {
   color: var(--brand);
-  font-weight: 600;
+  font-weight: bold;
   text-decoration: none;
 }
 
