@@ -1772,6 +1772,568 @@ button.addEventListener("click", () => {
 }
 
 /* ============================================================
+ * Calendrier des participants
+ * ============================================================ */
+
+function ouvrirCalendrierParticipants(dateActuelle, onValidate) {
+
+    const moisNoms = [
+        "janvier",
+        "février",
+        "mars",
+        "avril",
+        "mai",
+        "juin",
+        "juillet",
+        "août",
+        "septembre",
+        "octobre",
+        "novembre",
+        "décembre"
+    ];
+
+    const joursNoms = [
+        "Dimanche",
+        "Lundi",
+        "Mardi",
+        "Mercredi",
+        "Jeudi",
+        "Vendredi",
+        "Samedi"
+    ];
+
+    const aujourdHui = new Date();
+    aujourdHui.setHours(0, 0, 0, 0);
+
+    /*
+     * Premier jour du mois précédent
+     */
+    const dateMinimum = new Date(
+        aujourdHui.getFullYear(),
+        aujourdHui.getMonth() - 1,
+        1
+    );
+
+    /*
+     * Conversion de la date actuelle
+     */
+    let dateSelectionnee = new Date(dateActuelle);
+
+    if (isNaN(dateSelectionnee.getTime())) {
+        dateSelectionnee = new Date(aujourdHui);
+    }
+
+    dateSelectionnee.setHours(0, 0, 0, 0);
+
+    /*
+     * Sécurité : la date initiale doit rester dans les limites
+     */
+    if (dateSelectionnee < dateMinimum) {
+        dateSelectionnee = new Date(dateMinimum);
+    }
+
+    if (dateSelectionnee > aujourdHui) {
+        dateSelectionnee = new Date(aujourdHui);
+    }
+
+    /*
+     * ------------------------------------------------------------
+     * Création de la fenêtre
+     * ------------------------------------------------------------
+     */
+
+    const overlay = document.createElement("div");
+
+    overlay.className = "calendar-overlay";
+
+    overlay.innerHTML = `
+
+        <div class="calendar-modal">
+
+            <div class="calendar-title">
+                Choisir une date
+            </div>
+
+            <div class="calendar-wheels">
+
+                <div class="calendar-wheel">
+                    <label for="calendar-day">
+                        Jour
+                    </label>
+
+                    <select id="calendar-day">
+                    </select>
+                </div>
+
+
+                <div class="calendar-wheel">
+                    <label for="calendar-month">
+                        Mois
+                    </label>
+
+                    <select id="calendar-month">
+                    </select>
+                </div>
+
+
+                <div class="calendar-wheel">
+                    <label for="calendar-year">
+                        Année
+                    </label>
+
+                    <select id="calendar-year">
+                    </select>
+                </div>
+
+            </div>
+
+            <div
+                class="calendar-selected-date"
+                id="calendar-selected-date">
+            </div>
+
+            <div class="calendar-buttons">
+
+                <button
+                    type="button"
+                    class="btn btn--ghost"
+                    id="calendar-cancel">
+                    Annuler
+                </button>
+
+                <button
+                    type="button"
+                    class="btn btn--primary"
+                    id="calendar-ok">
+                    Valider
+                </button>
+
+            </div>
+
+        </div>
+    `;
+
+    document.body.appendChild(overlay);
+
+
+    const daySelect = overlay.querySelector("#calendar-day");
+    const monthSelect = overlay.querySelector("#calendar-month");
+    const yearSelect = overlay.querySelector("#calendar-year");
+    const selectedDateText =
+        overlay.querySelector("#calendar-selected-date");
+
+
+    /*
+     * ------------------------------------------------------------
+     * Années disponibles
+     * ------------------------------------------------------------
+     */
+
+    const anneeMinimum = dateMinimum.getFullYear();
+    const anneeMaximum = aujourdHui.getFullYear();
+
+    for (
+        let annee = anneeMinimum;
+        annee <= anneeMaximum;
+        annee++
+    ) {
+
+        const option = document.createElement("option");
+
+        option.value = annee;
+        option.textContent = annee;
+
+        yearSelect.appendChild(option);
+    }
+
+    /*
+     * ------------------------------------------------------------
+     * Mois disponibles
+     *
+     * Tous les mois compris entre la limite minimale
+     * et aujourd'hui.
+     * ------------------------------------------------------------
+     */
+
+    function moisAutorises(annee) {
+
+        const resultat = [];
+
+        for (let mois = 0; mois < 12; mois++) {
+
+            const premierJour =
+                new Date(annee, mois, 1);
+
+            const dernierJour =
+                new Date(annee, mois + 1, 0);
+
+            if (
+                dernierJour >= dateMinimum &&
+                premierJour <= aujourdHui
+            ) {
+                resultat.push(mois);
+            }
+        }
+
+        return resultat;
+    }
+
+
+    /*
+     * ------------------------------------------------------------
+     * Nombre de jours dans le mois
+     * ------------------------------------------------------------
+     */
+
+    function nombreJoursDansMois(annee, mois) {
+
+        return new Date(
+            annee,
+            mois + 1,
+            0
+        ).getDate();
+    }
+
+
+    /*
+     * ------------------------------------------------------------
+     * Mise à jour des molettes
+     * ------------------------------------------------------------
+     */
+
+    function actualiserMolettes() {
+
+        const annee = parseInt(
+            yearSelect.value,
+            10
+        );
+
+        const moisDisponibles =
+            moisAutorises(annee);
+
+
+        /*
+         * Mise à jour des mois
+         */
+
+        const moisActuel =
+            parseInt(monthSelect.value, 10);
+
+        monthSelect.innerHTML = "";
+
+        moisDisponibles.forEach(mois => {
+
+            const option =
+                document.createElement("option");
+
+            option.value = mois;
+
+            option.textContent =
+                moisNoms[mois];
+
+            monthSelect.appendChild(option);
+        });
+
+
+        /*
+         * Conserver le mois précédent
+         * s'il reste disponible.
+         */
+
+        if (moisDisponibles.includes(moisActuel)) {
+
+            monthSelect.value =
+                moisActuel;
+
+        } else {
+
+            /*
+             * Sinon prendre le premier mois disponible.
+             */
+
+            monthSelect.value =
+                moisDisponibles[0];
+        }
+
+
+        const mois =
+            parseInt(monthSelect.value, 10);
+
+
+        /*
+         * Mise à jour des jours
+         */
+
+        const ancienJour =
+            parseInt(daySelect.value, 10) ||
+            dateSelectionnee.getDate();
+
+        const nombreJours =
+            nombreJoursDansMois(
+                annee,
+                mois
+            );
+
+
+        let jourMinimum = 1;
+        let jourMaximum = nombreJours;
+
+
+        /*
+         * Respect de la date minimum
+         */
+
+        if (
+            annee === dateMinimum.getFullYear() &&
+            mois === dateMinimum.getMonth()
+        ) {
+
+            jourMinimum =
+                dateMinimum.getDate();
+        }
+
+
+        /*
+         * Respect de la date maximum
+         */
+
+        if (
+            annee === aujourdHui.getFullYear() &&
+            mois === aujourdHui.getMonth()
+        ) {
+
+            jourMaximum =
+                aujourdHui.getDate();
+        }
+
+
+        daySelect.innerHTML = "";
+
+        for (
+            let jour = jourMinimum;
+            jour <= jourMaximum;
+            jour++
+        ) {
+
+            const option =
+                document.createElement("option");
+
+            option.value = jour;
+
+            option.textContent =
+                String(jour).padStart(2, "0");
+
+            daySelect.appendChild(option);
+        }
+
+
+        /*
+         * Conserver le jour si possible
+         */
+
+        if (
+            ancienJour >= jourMinimum &&
+            ancienJour <= jourMaximum
+        ) {
+
+            daySelect.value =
+                ancienJour;
+
+        } else if (ancienJour < jourMinimum) {
+
+            daySelect.value =
+                jourMinimum;
+
+        } else {
+
+            daySelect.value =
+                jourMaximum;
+        }
+
+
+        afficherDateSelectionnee();
+    }
+
+
+    /*
+     * ------------------------------------------------------------
+     * Affichage de la date sélectionnée
+     * ------------------------------------------------------------
+     */
+
+    function afficherDateSelectionnee() {
+
+        const jour =
+            parseInt(daySelect.value, 10);
+
+        const mois =
+            parseInt(monthSelect.value, 10);
+
+        const annee =
+            parseInt(yearSelect.value, 10);
+
+
+        const date =
+            new Date(
+                annee,
+                mois,
+                jour
+            );
+
+
+        const texte =
+            new Intl.DateTimeFormat(
+                "fr-FR",
+                {
+                    weekday: "long",
+                    day: "2-digit",
+                    month: "long",
+                    year: "numeric"
+                }
+            ).format(date);
+
+
+        selectedDateText.textContent =
+            texte.charAt(0).toUpperCase() +
+            texte.slice(1);
+    }
+
+
+    /*
+     * ------------------------------------------------------------
+     * Initialisation
+     * ------------------------------------------------------------
+     */
+
+    yearSelect.value =
+        dateSelectionnee.getFullYear();
+
+    actualiserMolettes();
+
+    monthSelect.value =
+        dateSelectionnee.getMonth();
+
+    actualiserMolettes();
+
+    daySelect.value =
+        dateSelectionnee.getDate();
+
+    afficherDateSelectionnee();
+
+
+    /*
+     * ------------------------------------------------------------
+     * Événements
+     * ------------------------------------------------------------
+     */
+
+    yearSelect.addEventListener(
+        "change",
+        actualiserMolettes
+    );
+
+    monthSelect.addEventListener(
+        "change",
+        actualiserMolettes
+    );
+
+    daySelect.addEventListener(
+        "change",
+        afficherDateSelectionnee
+    );
+
+
+    /*
+     * Annuler
+     */
+
+    overlay.querySelector(
+        "#calendar-cancel"
+    ).addEventListener("click", () => {
+
+        overlay.remove();
+
+    });
+
+
+    /*
+     * Valider
+     */
+
+    overlay.querySelector(
+        "#calendar-ok"
+    ).addEventListener("click", () => {
+
+        const jour =
+            parseInt(daySelect.value, 10);
+
+        const mois =
+            parseInt(monthSelect.value, 10);
+
+        const annee =
+            parseInt(yearSelect.value, 10);
+
+
+        const dateFinale =
+            new Date(
+                annee,
+                mois,
+                jour
+            );
+
+        dateFinale.setHours(0, 0, 0, 0);
+
+
+        /*
+         * Sécurité supplémentaire
+         */
+
+        if (
+            dateFinale < dateMinimum ||
+            dateFinale > aujourdHui
+        ) {
+
+            alert(
+                "La date sélectionnée n'est pas autorisée."
+            );
+
+            return;
+        }
+
+
+        /*
+         * Retour à renderParticipants()
+         */
+
+        if (typeof onValidate === "function") {
+
+            onValidate(dateFinale);
+
+        }
+
+        overlay.remove();
+
+    });
+
+
+    /*
+     * Cliquer en dehors de la fenêtre
+     * ferme le calendrier.
+     */
+
+    overlay.addEventListener("click", event => {
+
+        if (event.target === overlay) {
+
+            overlay.remove();
+
+        }
+
+    });
+
+}
+
+/* ============================================================
  * Liste des participant·e·s
  * ============================================================
  */
@@ -2278,6 +2840,78 @@ console.log("Copilote :", pilote2);
         </div>
     `;
 
+$("#btn-calendrier").addEventListener("click", () => {
+
+    const champDate =
+        $("#participants-date");
+
+    /*
+     * La date affichée est du type :
+     *
+     * "Jeudi 27 août 2026"
+     *
+     * On utilise ici la date de la liste,
+     * qui est initialement aujourd'hui.
+     */
+
+    const dateActuelle =
+        new Date();
+
+    ouvrirCalendrierParticipants(
+        dateActuelle,
+        (nouvelleDate) => {
+
+            const jours = [
+                "Dimanche",
+                "Lundi",
+                "Mardi",
+                "Mercredi",
+                "Jeudi",
+                "Vendredi",
+                "Samedi"
+            ];
+
+            const mois = [
+                "janvier",
+                "février",
+                "mars",
+                "avril",
+                "mai",
+                "juin",
+                "juillet",
+                "août",
+                "septembre",
+                "octobre",
+                "novembre",
+                "décembre"
+            ];
+
+            const texteDate =
+                `${jours[nouvelleDate.getDay()]} ` +
+                `${String(nouvelleDate.getDate()).padStart(2, "0")} ` +
+                `${mois[nouvelleDate.getMonth()]} ` +
+                `${nouvelleDate.getFullYear()}`;
+
+
+            champDate.value =
+                texteDate;
+
+
+            /*
+             * Si la date change, on pourra ici
+             * déclencher ultérieurement le changement
+             * de lieu/pilote/copilote.
+             */
+
+            console.log(
+                "Nouvelle date sélectionnée :",
+                texteDate
+            );
+
+        }
+    );
+
+});
 
     /*
      * ------------------------------------------------------------
