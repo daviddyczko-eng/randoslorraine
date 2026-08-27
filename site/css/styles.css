@@ -90,7 +90,6 @@ svg path {
 }
 
 .app-bar__back.hidden {
-  display: grid !important;
   visibility: hidden;
   pointer-events: none;
 }
@@ -100,6 +99,14 @@ svg path {
   font-size: 1.1rem;
   font-weight: 700;
   flex: 1;
+}
+
+.app-bar__icon {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
 }
 
 .app-bar__icon svg {
