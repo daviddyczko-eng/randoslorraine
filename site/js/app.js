@@ -3189,7 +3189,7 @@ function renderCarte(prenom, nom) {
     <div class="screen screen--center">
       <div id="qr-large"></div>
       <p class="carte-name">${escapeHtml(prenom)} ${escapeHtml(nom)}</p>
-      <button class="btn btn--secondary" id="btn-corriger">Corriger</button>
+      <button class="btn btn--primary" id="btn-corriger">Corriger</button>
     </div>
   `;
 
