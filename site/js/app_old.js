@@ -3406,125 +3406,131 @@ function renderParticipants() {
 
     function afficherListeParticipants() {
 
-        const liste =
-            $("#participants-list");
+    const liste =
+        $("#participants-list");
 
-        if (!liste) return;
-
-
-        trierParticipants();
+    if (!liste) return;
 
 
-        if (!participants.length) {
-
-            liste.innerHTML = "";
-
-            actualiserTotaux();
-
-            return;
-
-        }
+    trierParticipants();
 
 
-        liste.innerHTML =
-            participants
-                .map(
-                    (participant, index) => `
+    if (!participants.length) {
 
-                        <div
-                            class="participant-list-row"
-                            data-index="${index}">
-
-                            <span class="participant-list-name">
-
-                                ${escapeHtml(
-                                    participant.prenom
-                                )}
-                                ${escapeHtml(
-                                    participant.nom
-                                )}
-
-                            </span>
-
-                            <span class="participant-list-status">
-
-                                ${escapeHtml(
-                                    participant.statut
-                                )}
-
-                            </span>
-
-                            <button
-                                type="button"
-                                class="participant-delete-button"
-                                data-delete-index="${index}"
-                                title="Supprimer">
-
-                                ✕
-
-                            </button>
-
-                        </div>
-
-                    `
-                )
-                .join("");
-
-
-        /*
-         * Boutons de suppression
-         */
-
-        liste
-            .querySelectorAll(
-                "[data-delete-index]"
-            )
-            .forEach(button => {
-
-                button.addEventListener(
-                    "click",
-                    () => {
-
-                        const index =
-                            Number(
-                                button.dataset.deleteIndex
-                            );
-
-
-                        if (
-                            participants[index]?.statut ===
-                            "Pilote"
-                        ) {
-
-                            alert(
-                                "Il doit obligatoirement y avoir un pilote."
-                            );
-
-                            return;
-
-                        }
-
-
-                        participants.splice(
-                            index,
-                            1
-                        );
-
-
-                        enregistrerParticipants();
-
-                        afficherListeParticipants();
-
-                    }
-                );
-
-            });
-
+        liste.innerHTML = "";
 
         actualiserTotaux();
 
+        return;
+
     }
 
+
+    liste.innerHTML =
+        participants
+            .map(
+                (participant, index) => `
+
+                    <div
+                        class="participant-list-row"
+                        data-index="${index}">
+
+                        <span class="participant-list-name">
+
+                            ${escapeHtml(
+                                participant.prenom
+                            )}
+                            ${escapeHtml(
+                                participant.nom
+                            )}
+
+                        </span>
+
+                        <span class="participant-list-status">
+
+                            ${escapeHtml(
+                                participant.statut
+                            )}
+
+                        </span>
+
+                        <button
+                            type="button"
+                            class="participant-delete-button"
+                            data-delete-index="${index}"
+                            title="Supprimer">
+
+                            ✕
+
+                        </button>
+
+                    </div>
+
+                `
+            )
+            .join("");
+
+
+    /*
+     * ------------------------------------------------------------
+     * Boutons de suppression
+     * ------------------------------------------------------------
+     */
+
+    liste
+        .querySelectorAll(
+            "[data-delete-index]"
+        )
+        .forEach(button => {
+
+            button.addEventListener(
+                "click",
+                () => {
+
+                    const index =
+                        Number(
+                            button.dataset.deleteIndex
+                        );
+
+
+                    /*
+                     * Le pilote ne peut pas être supprimé
+                     * s'il est le seul pilote.
+                     */
+
+                    if (
+                        participants[index]?.statut ===
+                        "Pilote"
+                    ) {
+
+                        alert(
+                            "Il doit obligatoirement y avoir un pilote."
+                        );
+
+                        return;
+
+                    }
+
+
+                    participants.splice(
+                        index,
+                        1
+                    );
+
+
+                    enregistrerParticipants();
+
+                    afficherListeParticipants();
+
+                }
+            );
+
+        });
+
+
+    actualiserTotaux();
+
+}
 
     /*
      * ============================================================
