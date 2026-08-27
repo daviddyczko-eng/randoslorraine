@@ -4558,9 +4558,7 @@ function renderParticipants() {
             "click",
             () => {
 
-                alert(
-                    "Ajout d'un commentaire : fonctionnalité à venir."
-                );
+                ouvrirFenetreCommentaire();
 
             }
         );
