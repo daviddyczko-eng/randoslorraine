@@ -4720,7 +4720,11 @@ function renderParticipants() {
      */
 
     afficherListeParticipants();
+/*
+ * Afficher le commentaire mémorisé
+ */
 
+afficherCommentaire();
 }
 
 function renderInscription() {
