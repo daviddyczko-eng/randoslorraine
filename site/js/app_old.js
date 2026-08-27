@@ -92,6 +92,9 @@ let infoContent = null;
 
 let backHandler = null;
 
+let participantsWarningDisabled =
+    localStorage.getItem("participantsWarningDisabled") === "true";
+
 let listeParticipants = [];
 
 let listeParticipantsRando = null;
@@ -378,6 +381,10 @@ function navigate(screen, options = {}) {
         case "rando":
             return renderRandoDetails(options.rando ?? prochaineRando);
 
+        case "participants-warning":
+    renderParticipantsWarning();
+    break;
+            
         case "participants":
             return renderParticipants();
 
@@ -1468,7 +1475,12 @@ function renderAccueil(prenom, nom) {
     });
   });
 
-  $("#btn-participants").addEventListener("click", () => {
+$("#btn-participants").addEventListener("click", () => {
+
+  // Si l'utilisateur a déjà demandé à ne plus afficher
+  // l'avertissement, ouvrir directement la liste.
+  if (participantsWarningDisabled) {
+
     navigate("participants", {
       title: "Liste des participant·e·s",
       showBack: true,
@@ -1480,7 +1492,25 @@ function renderAccueil(prenom, nom) {
         });
       }
     });
-  });
+
+  } else {
+
+    // Première utilisation : afficher l'avertissement.
+    navigate("participants-warning", {
+      title: "Important",
+      showBack: true,
+      onBack: () => {
+        const user = getUser();
+        navigate("accueil", {
+          prenom: user.prenom,
+          nom: user.nom
+        });
+      }
+    });
+
+  }
+
+});
     
   $("#btn-info-avant").addEventListener("click", () => {
     navigate("info", {
@@ -1643,6 +1673,101 @@ async function checkUserAndStart() {
         }
 
     };
+
+}
+
+/* ============================================================
+ * Page d'avertissement - Liste des participant·e·s
+ * ============================================================ */
+
+function renderParticipantsWarning() {
+
+    appBarTitle.textContent = "Important";
+
+    screenRoot.innerHTML = `
+
+        <div class="screen">
+
+            <div class="alert alert--danger">
+
+                <h2>Attention</h2>
+
+                <p>
+                    La liste des participant·e·s est sous la
+                    responsabilité de la ou du pilote. Il est donc préférable
+                    que ce soit cette personne qui l'établisse.
+                    Si vous la faites, n'oubliez pas de l'en informer.
+                    Merci
+                </p>
+
+            </div>
+
+            <div class="warning-option">
+
+                <label class="checkbox-label">
+
+                    <input
+                        type="checkbox"
+                        id="participants-warning-checkbox"
+                    >
+
+                    <span>Ne plus afficher</span>
+
+                </label>
+
+            </div>
+
+            <div class="btn-row">
+
+                <button
+                    type="button"
+                    class="btn btn--primary"
+                    id="btn-participants-warning-ok">
+                    J'ai compris.
+                </button>
+
+            </div>
+
+        </div>
+    `;
+
+    const checkbox = $("#participants-warning-checkbox");
+
+    const button = $("#btn-participants-warning-ok");
+
+    // ------------------------------------------------------------
+    // Bouton "J'ai compris."
+    // ------------------------------------------------------------
+
+button.addEventListener("click", () => {
+
+    if (checkbox.checked) {
+
+        participantsWarningDisabled = true;
+
+        localStorage.setItem(
+            "participantsWarningDisabled",
+            "true"
+        );
+
+    }
+
+    navigate("participants", {
+        title: "Liste des participant·e·s",
+        showBack: true,
+        onBack: () => {
+
+            const user = getUser();
+
+            navigate("accueil", {
+                prenom: user.prenom,
+                nom: user.nom
+            });
+
+        }
+    });
+
+});
 
 }
 
@@ -1865,7 +1990,7 @@ console.log("Copilote :", pilote2);
             class="calendar-button"
             id="btn-calendrier"
             title="Choisir une date">
-            📅
+            ✐
         </button>
 
     </span>
