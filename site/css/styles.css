@@ -935,3 +935,119 @@ select.participant-input {
     min-width: 0;
     box-sizing: border-box;
 }
+
+/* ============================================================
+ * Calendrier des participants
+ * ============================================================ */
+
+.calendar-overlay {
+    position: fixed;
+    inset: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 20px;
+
+    background: rgba(0, 0, 0, 0.45);
+
+    z-index: 9999;
+}
+
+
+.calendar-modal {
+    width: 100%;
+    max-width: 430px;
+
+    padding: 22px;
+
+    box-sizing: border-box;
+
+    background: #ffffff;
+
+    border-radius: 14px;
+
+    box-shadow:
+        0 8px 30px rgba(0, 0, 0, 0.25);
+}
+
+
+.calendar-title {
+    margin-bottom: 22px;
+
+    text-align: center;
+
+    font-size: 20px;
+    font-weight: 700;
+}
+
+
+.calendar-wheels {
+    display: grid;
+
+    grid-template-columns:
+        1fr 1.5fr 1fr;
+
+    gap: 10px;
+}
+
+
+.calendar-wheel label {
+    display: block;
+
+    margin-bottom: 6px;
+
+    text-align: center;
+
+    font-size: 15px;
+    font-weight: 600;
+}
+
+
+.calendar-wheel select {
+    width: 100%;
+
+    min-height: 48px;
+
+    padding: 8px;
+
+    box-sizing: border-box;
+
+    font-size: 17px;
+
+    text-align: center;
+
+    border: 1px solid #ccc;
+
+    border-radius: 8px;
+
+    background: #fff;
+}
+
+
+.calendar-selected-date {
+    margin-top: 20px;
+
+    padding: 10px;
+
+    text-align: center;
+
+    font-size: 17px;
+    font-weight: 600;
+
+    background: #f7faf5;
+
+    border-radius: 8px;
+}
+
+
+.calendar-buttons {
+    display: flex;
+
+    justify-content: flex-end;
+
+    gap: 10px;
+
+    margin-top: 20px;
+}
