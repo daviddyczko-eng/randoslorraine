@@ -99,6 +99,9 @@ let listeParticipants = [];
 
 let listeParticipantsRando = null;
 
+let commentaire =
+    localStorage.getItem("participantsCommentaire") || "";
+
 /* ============================================================
  * Liste des participant·e·s
  * ============================================================
