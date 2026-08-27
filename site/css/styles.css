@@ -1055,3 +1055,111 @@ select.participant-input {
     font-size: 18px;
 
 }
+/* ============================================================
+ * Fenêtre commentaire
+ * ============================================================ */
+
+.commentaire-overlay {
+
+    position: fixed;
+
+    inset: 0;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    background: rgba(0, 0, 0, 0.45);
+
+    z-index: 1000;
+
+}
+
+
+.commentaire-modal {
+
+    width: min(90%, 500px);
+
+    background: white;
+
+    border-radius: 12px;
+
+    padding: 20px;
+
+    box-sizing: border-box;
+
+}
+
+
+.commentaire-title {
+
+    font-size: 1.3rem;
+
+    font-weight: bold;
+
+    margin-bottom: 15px;
+
+}
+
+
+.commentaire-input {
+
+    width: 100%;
+
+    min-height: 140px;
+
+    box-sizing: border-box;
+
+    padding: 10px;
+
+    font-family: inherit;
+
+    font-size: 1rem;
+
+    resize: vertical;
+
+    border: 1px solid #ccc;
+
+    border-radius: 6px;
+
+}
+
+
+.participants-commentaire {
+
+    margin-top: 10px;
+
+}
+
+
+.participants-commentaire-box {
+
+    margin-top: 10px;
+
+    padding: 10px;
+
+    border-radius: 6px;
+
+    background: #f5f5f5;
+
+}
+
+
+.participants-commentaire-box strong {
+
+    display: block;
+
+    margin-bottom: 5px;
+
+}
+
+
+.participants-commentaire-box p {
+
+    margin: 0;
+
+    white-space: pre-wrap;
+
+}
