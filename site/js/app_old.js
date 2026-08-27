@@ -99,6 +99,9 @@ let listeParticipants = [];
 
 let listeParticipantsRando = null;
 
+let commentaire =
+    localStorage.getItem("participantsCommentaire") || "";
+
 /* ============================================================
  * Liste des participant·e·s
  * ============================================================
@@ -2771,7 +2774,209 @@ function formaterDateParticipant(date) {
     );
 
 }
+/* ============================================================
+ * Gestion du commentaire
+ * ============================================================
+ */
 
+function ouvrirFenetreCommentaire() {
+
+    /*
+     * Création de la fenêtre
+     */
+
+    const overlay =
+        document.createElement("div");
+
+    overlay.className =
+        "commentaire-overlay";
+
+    overlay.innerHTML = `
+
+        <div
+            class="commentaire-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="commentaire-title">
+
+            <div
+                class="commentaire-title"
+                id="commentaire-title">
+
+                Commentaire
+
+            </div>
+
+
+            <textarea
+                id="commentaire-input"
+                class="commentaire-input"
+                placeholder="Saisissez votre commentaire..."
+                rows="6"
+            >${escapeHtml(commentaire)}</textarea>
+
+
+            <div class="calendar-buttons">
+
+                <button
+                    type="button"
+                    class="btn btn--ghost"
+                    id="commentaire-cancel">
+
+                    Annuler
+
+                </button>
+
+
+                <button
+                    type="button"
+                    class="btn btn--primary"
+                    id="commentaire-ok">
+
+                    Valider le commentaire
+
+                </button>
+
+            </div>
+
+        </div>
+    `;
+
+    document.body.appendChild(overlay);
+
+
+    const input =
+        overlay.querySelector(
+            "#commentaire-input"
+        );
+
+
+    /*
+     * Donner automatiquement le focus
+     */
+
+    input.focus();
+
+
+    /*
+     * ------------------------------------------------------------
+     * Annuler
+     * ------------------------------------------------------------
+     */
+
+    overlay
+        .querySelector("#commentaire-cancel")
+        .addEventListener("click", () => {
+
+            overlay.remove();
+
+        });
+
+
+    /*
+     * ------------------------------------------------------------
+     * Valider le commentaire
+     * ------------------------------------------------------------
+     */
+
+    overlay
+        .querySelector("#commentaire-ok")
+        .addEventListener("click", () => {
+
+            commentaire =
+                input.value.trim();
+
+
+            /*
+             * Mémorisation dans le téléphone
+             */
+
+            localStorage.setItem(
+                "participantsCommentaire",
+                commentaire
+            );
+
+
+            /*
+             * Fermer la fenêtre
+             */
+
+            overlay.remove();
+
+
+            /*
+             * Actualiser l'affichage
+             */
+
+            afficherCommentaire();
+
+        });
+
+
+    /*
+     * ------------------------------------------------------------
+     * Cliquer en dehors de la fenêtre
+     * ------------------------------------------------------------
+     */
+
+    overlay.addEventListener(
+        "click",
+        event => {
+
+            if (event.target === overlay) {
+
+                overlay.remove();
+
+            }
+
+        }
+    );
+
+}
+
+
+/* ============================================================
+ * Affichage du commentaire
+ * ============================================================
+ */
+
+function afficherCommentaire() {
+
+    const conteneur =
+        $("#participants-commentaire");
+
+    if (!conteneur) return;
+
+
+    if (!commentaire) {
+
+        conteneur.innerHTML = "";
+
+        conteneur.classList.add("hidden");
+
+        return;
+
+    }
+
+
+    conteneur.classList.remove("hidden");
+
+
+    conteneur.innerHTML = `
+
+        <div class="participants-commentaire-box">
+
+            <strong>Commentaire :</strong>
+
+            <p>
+                ${escapeHtml(commentaire)}
+            </p>
+
+        </div>
+
+    `;
+
+}
 
 /*
  * ============================================================
@@ -4353,9 +4558,7 @@ function renderParticipants() {
             "click",
             () => {
 
-                alert(
-                    "Ajout d'un commentaire : fonctionnalité à venir."
-                );
+                ouvrirFenetreCommentaire();
 
             }
         );
@@ -4517,7 +4720,11 @@ function renderParticipants() {
      */
 
     afficherListeParticipants();
+/*
+ * Afficher le commentaire mémorisé
+ */
 
+afficherCommentaire();
 }
 
 function renderInscription() {
