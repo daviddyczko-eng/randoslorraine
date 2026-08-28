@@ -76,6 +76,256 @@ const appBarBack = $("#btn-back");
 const appBarIcon = $("#app-bar-icon");
 
 /* ============================================================
+ * Réinitialisation de l'application
+ * ============================================================
+ */
+
+function afficherConfirmationReinitialisation() {
+
+    /*
+     * Création de la fenêtre
+     */
+
+    const overlay =
+        document.createElement("div");
+
+    overlay.className =
+        "reset-overlay";
+
+    overlay.innerHTML = `
+
+        <div class="reset-modal">
+
+            <div class="reset-modal__title">
+                Réinitialiser l'application
+            </div>
+
+            <div class="reset-modal__message">
+
+                Voulez-vous effacer toutes vos données
+                personnelles de l'application ?
+
+            </div>
+
+            <div class="reset-modal__buttons">
+
+                <button
+                    type="button"
+                    class="btn btn--cancel"
+                    id="reset-non">
+
+                    Non
+
+                </button>
+
+                <button
+                    type="button"
+                    class="btn btn--primary"
+                    id="reset-oui">
+
+                    Oui
+
+                </button>
+
+            </div>
+
+        </div>
+
+    `;
+
+
+    document.body.appendChild(overlay);
+
+
+    /*
+     * ------------------------------------------------------------
+     * Bouton NON
+     * ------------------------------------------------------------
+     */
+
+    overlay
+        .querySelector("#reset-non")
+        .addEventListener("click", () => {
+
+            overlay.remove();
+
+        });
+
+
+    /*
+     * ------------------------------------------------------------
+     * Bouton OUI
+     * ------------------------------------------------------------
+     */
+
+    overlay
+        .querySelector("#reset-oui")
+        .addEventListener("click", () => {
+
+            reinitialiserApplication();
+
+            overlay.remove();
+
+        });
+
+
+    /*
+     * Cliquer en dehors de la fenêtre
+     */
+
+    overlay.addEventListener("click", event => {
+
+        if (event.target === overlay) {
+
+            overlay.remove();
+
+        }
+
+    });
+
+}
+
+
+/* ============================================================
+ * Suppression de toutes les données personnelles
+ * ============================================================
+ */
+
+function reinitialiserApplication() {
+
+    console.log(
+        "Réinitialisation de l'application"
+    );
+
+
+    /*
+     * ------------------------------------------------------------
+     * Suppression du compte utilisateur
+     * ------------------------------------------------------------
+     */
+
+    localStorage.removeItem("randos_lorraine");
+
+
+    /*
+     * ------------------------------------------------------------
+     * Suppression de l'avertissement participants
+     * ------------------------------------------------------------
+     */
+
+    localStorage.removeItem(
+        "participantsWarningDisabled"
+    );
+
+
+    /*
+     * ------------------------------------------------------------
+     * Suppression des données des participants
+     *
+     * Les clés commencent par :
+     *
+     * participantsListe_
+     *
+     * et peuvent avoir le suffixe :
+     *
+     * _csv
+     * ------------------------------------------------------------
+     */
+
+    const clesASupprimer = [];
+
+    for (
+        let i = 0;
+        i < localStorage.length;
+        i++
+    ) {
+
+        const cle =
+            localStorage.key(i);
+
+        if (!cle) continue;
+
+
+        if (
+            cle.startsWith("participantsListe_")
+        ) {
+
+            clesASupprimer.push(cle);
+
+        }
+
+    }
+
+
+    clesASupprimer.forEach(cle => {
+
+        localStorage.removeItem(cle);
+
+    });
+
+
+    /*
+     * ------------------------------------------------------------
+     * Réinitialisation des variables mémoire
+     * ------------------------------------------------------------
+     */
+
+    currentUser = null;
+
+    participants = [];
+
+    listeParticipants = [];
+
+    listeParticipantsRando = null;
+
+    participantsRando = {
+
+        date: "",
+        lieu: "",
+        pilote: "",
+        copilote: ""
+
+    };
+
+
+    /*
+     * ------------------------------------------------------------
+     * Retour à l'inscription
+     * ------------------------------------------------------------
+     */
+
+    navigate(
+        "inscription",
+        {
+            title: "Inscription"
+        }
+    );
+
+}
+
+/* ============================================================
+ * Bouton profil / réinitialisation
+ * ============================================================
+ */
+
+appBarIcon.addEventListener("click", () => {
+
+    /*
+     * Le bonhomme n'est actif que sur la page d'accueil.
+     */
+
+    if (currentScreen !== "accueil") {
+
+        return;
+
+    }
+
+
+    afficherConfirmationReinitialisation();
+
+});
+
+/* ============================================================
  * Variables globales
  * ============================================================
  */
