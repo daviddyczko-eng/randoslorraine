@@ -1120,7 +1120,7 @@ select.participant-input {
 
     resize: vertical;
 
-    border: 1px solid #4a9025;
+    border: 1px solid var(--brand-darker);
 
     border-radius: 6px;
 
@@ -1142,7 +1142,7 @@ select.participant-input {
 
     border-radius: 6px;
 
-    background: var(--brand-darker);
+    background: var(--brand-pale);
 
 }
 
