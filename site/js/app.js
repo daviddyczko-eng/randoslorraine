@@ -2942,28 +2942,18 @@ function ouvrirFenetreCommentaire() {
 
 function afficherCommentaire() {
 
-    const conteneur =
-        $("#participants-commentaire");
+    const zone = $("#participants-commentaire");
 
-    if (!conteneur) return;
+    if (!zone) return;
 
+    if (!commentaire || !commentaire.trim()) {
 
-    if (!commentaire) {
-
-        conteneur.innerHTML = "";
-
-        conteneur.classList.add("hidden");
+        zone.innerHTML = "";
 
         return;
-
     }
 
-
-    conteneur.classList.remove("hidden");
-
-
-    conteneur.innerHTML = `
-
+    zone.innerHTML = `
         <div class="participants-commentaire-box">
 
             <strong>Commentaire :</strong>
@@ -2973,9 +2963,7 @@ function afficherCommentaire() {
             </p>
 
         </div>
-
     `;
-
 }
 
 /*
