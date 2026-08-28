@@ -4072,21 +4072,28 @@ function renderParticipants() {
 
     /*
      * ============================================================
-     * SUPPRESSION DU PILOTE
+     * SUPPRESSION De l'affichage du PILOTE
      * ============================================================
      */
 
-    $("#btn-supprimer-pilote")
-        .addEventListener(
-            "click",
-            () => {
+$("#btn-supprimer-pilote").addEventListener("click", () => {
 
-                alert(
-                    "Il doit obligatoirement y avoir un pilote."
-                );
+    const champPilote = $("#participants-pilote");
 
-            }
-        );
+    if (!champPilote) return;
+
+    /*
+     * Effacement du nom du pilote
+     */
+    champPilote.value = "";
+
+    /*
+     * Donner immédiatement le focus au champ
+     * pour faciliter la nouvelle saisie.
+     */
+    champPilote.focus();
+
+});
 
 
     /*
