@@ -2453,13 +2453,7 @@ function ouvrirScannerQr(type) {
             }
             message.textContent =
                 `${prenom} ${nom} — Adhérent·e`;
-            if (
-                champPrenom &&
-                champNom &&
-                champStatut
-            ) {
                 ajouterParticipant();
-            }
         }
         /*
          * --------------------------------------------------------
