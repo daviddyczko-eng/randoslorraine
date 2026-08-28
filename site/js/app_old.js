@@ -88,6 +88,17 @@ let currentRando = null;
 
 let prochaineRando = null;
 
+/* ============================================================
+ * Covoiturage
+ * ============================================================
+ */
+
+const covoiturage = "+33616904093";
+
+let places = 1;
+
+let etape = "";
+
 let infoContent = null;
 
 let backHandler = null;
@@ -741,6 +752,46 @@ Je recherche un covoiturage.
 
 </div>
 
+<div class="modal hidden" id="covoiturage-propose-modal" aria-hidden="true">
+<div class="modal-content">
+<div class="modal-header">Je propose un covoiturage</div>
+<div class="modal-body">
+<div class="modal-field">
+<label for="covoiturage-places">Nombre de places proposées</label>
+<select id="covoiturage-places">
+${[1, 2, 3, 4, 5, 6].map(n =>
+`<option value="${n}"${n === places ? " selected" : ""}>${n}</option>`
+).join("")}
+</select>
+</div>
+<div class="modal-field">
+<label for="covoiturage-propose-etape">Lieu de rendez-vous pour le covoiturage</label>
+<input id="covoiturage-propose-etape" type="text" placeholder="Ex : Nancy, parking de la gare">
+</div>
+</div>
+<div class="modal-footer">
+<button type="button" class="btn--cancel" data-close-modal>Annuler</button>
+<button type="button" class="btn--confirm" id="btn-covoiturage-proposer">Proposer</button>
+</div>
+</div>
+</div>
+
+<div class="modal hidden" id="covoiturage-recherche-modal" aria-hidden="true">
+<div class="modal-content">
+<div class="modal-header">Je recherche un covoiturage</div>
+<div class="modal-body">
+<div class="modal-field">
+<label for="covoiturage-recherche-etape">Lieu de rendez-vous souhaité pour le covoiturage</label>
+<input id="covoiturage-recherche-etape" type="text" value="${escapeHtml(etape)}">
+</div>
+</div>
+<div class="modal-footer">
+<button type="button" class="btn--cancel" data-close-modal>Annuler</button>
+<button type="button" class="btn--confirm" id="btn-covoiturage-demander">Demander</button>
+</div>
+</div>
+</div>
+
 </div>
 `;
 
@@ -788,6 +839,15 @@ Je recherche un covoiturage.
                 "click",
                 ()=>{
 
+                    const champEtape =
+                        $("#covoiturage-recherche-etape");
+
+                    if (champEtape) {
+
+                        champEtape.value = etape;
+
+                    }
+
                     if(typeof openModal==="function"){
 
                         openModal(
@@ -802,6 +862,86 @@ Je recherche un covoiturage.
                         );
 
                     }
+
+                }
+            );
+
+        }
+
+        /* ============================================================
+         * Bouton "Proposer"
+         * ============================================================ */
+
+        const btnProposer =
+            $("#btn-covoiturage-proposer");
+
+        if (btnProposer) {
+
+            btnProposer.addEventListener(
+                "click",
+                () => {
+
+                    const champPlaces =
+                        $("#covoiturage-places");
+
+                    const champEtape =
+                        $("#covoiturage-propose-etape");
+
+                    places = Number(champPlaces?.value) || 1;
+
+                    etape = (champEtape?.value ?? "").trim();
+
+                    const user = getUser();
+
+                    const message =
+`Je vous propose ${places} place(s) pour un covoiturage au départ de ${etape} pour la randonnée du ${rando.date ?? ""} à ${commune}. Si cela vous intéresse, merci de me contacter directement au ${user?.telephone ?? ""} ou via l'adresse ${user?.email ?? ""} pour nous mettre d'accord sur les détails (lieu précis du rendez-vous, heure, tarif).
+${user?.prenom ?? ""} ${initialeNom(user?.nom)}
+Merci`;
+
+                    if (typeof closeModal === "function") {
+
+                        closeModal("covoiturage-propose-modal");
+
+                    }
+
+                    sendSMSWithBody(covoiturage, message);
+
+                }
+            );
+
+        }
+
+        /* ============================================================
+         * Bouton "Demander"
+         * ============================================================ */
+
+        const btnDemander =
+            $("#btn-covoiturage-demander");
+
+        if (btnDemander) {
+
+            btnDemander.addEventListener(
+                "click",
+                () => {
+
+                    const champEtape =
+                        $("#covoiturage-recherche-etape");
+
+                    etape = (champEtape?.value ?? "").trim();
+
+                    const user = getUser();
+
+                    const message =
+`${user?.prenom ?? ""} ${initialeNom(user?.nom)} souhaite un covoiturage depuis ${etape} pour la randonnée du ${rando.date ?? ""} à ${commune}. Contact direct au ${user?.telephone ?? ""} ou via l'adresse ${user?.email ?? ""}
+Merci par avance`;
+
+                    if (typeof closeModal === "function") {
+
+                        closeModal("covoiturage-recherche-modal");
+
+                    }
+
+                    sendSMSWithBody(covoiturage, message);
 
                 }
             );
@@ -1379,6 +1519,41 @@ function sendSMS(number) {
 
     window.location.href =
         "sms:" + number.replace(/\s/g, "");
+
+}
+
+/* ============================================================
+ * SMS avec message pré-rédigé
+ * ============================================================ */
+
+function sendSMSWithBody(number, body) {
+
+    if (!number)
+        return;
+
+    const cleanNumber = number.replace(/\s/g, "");
+
+    const isIOS =
+        /iPad|iPhone|iPod/.test(navigator.userAgent) &&
+        !window.MSStream;
+
+    const separator = isIOS ? "&" : "?";
+
+    window.location.href =
+        `sms:${cleanNumber}${separator}body=${encodeURIComponent(body)}`;
+
+}
+
+/* ============================================================
+ * Initiale du nom (ex. "Dupont" → "D.")
+ * ============================================================ */
+
+function initialeNom(nom) {
+
+    if (!nom)
+        return "";
+
+    return nom.trim().charAt(0).toUpperCase() + ".";
 
 }
 
@@ -2966,6 +3141,460 @@ function afficherCommentaire() {
     `;
 }
 
+/* ============================================================
+ * Scanner QR code
+ * ============================================================
+ */
+
+let qrScannerActif = null;
+
+
+/*
+ * Ouvre le scanner QR code.
+ *
+ * type peut être :
+ *
+ *   "pilote"
+ *   "copilote"
+ *   "participant"
+ *
+ */
+function ouvrirScannerQr(type) {
+
+    /*
+     * Vérification de la bibliothèque
+     */
+
+    if (typeof Html5Qrcode === "undefined") {
+
+        alert(
+            "Le lecteur QR code n'est pas disponible."
+        );
+
+        return;
+    }
+
+
+    /*
+     * Création de la fenêtre de scan
+     */
+
+    const overlay =
+        document.createElement("div");
+
+    overlay.className =
+        "qr-scanner-overlay";
+
+
+    overlay.innerHTML = `
+
+        <div class="qr-scanner-modal">
+
+            <div class="qr-scanner-title">
+                Scanner le QR code
+            </div>
+
+            <div
+                id="qr-reader"
+                class="qr-reader">
+            </div>
+
+            <p
+                id="qr-scanner-message"
+                class="qr-scanner-message">
+
+                Présentez le QR code devant la caméra.
+
+            </p>
+
+            <button
+                type="button"
+                class="btn btn--ghost"
+                id="qr-scanner-cancel">
+
+                Annuler
+
+            </button>
+
+        </div>
+
+    `;
+
+
+    document.body.appendChild(overlay);
+
+
+    const message =
+        overlay.querySelector(
+            "#qr-scanner-message"
+        );
+
+
+    /*
+     * ------------------------------------------------------------
+     * Fonction de fermeture
+     * ------------------------------------------------------------
+     */
+
+    let fermetureEnCours = false;
+
+    async function fermerScanner() {
+
+        if (fermetureEnCours)
+            return;
+
+        fermetureEnCours = true;
+
+
+        /*
+         * Arrêt du scanner
+         */
+
+        if (qrScannerActif) {
+
+            try {
+
+                await qrScannerActif.stop();
+
+            }
+
+            catch (e) {
+
+                console.warn(
+                    "Erreur lors de l'arrêt du scanner :",
+                    e
+                );
+
+            }
+
+            qrScannerActif = null;
+
+        }
+
+
+        /*
+         * Suppression de la fenêtre
+         */
+
+        overlay.remove();
+
+    }
+
+
+    /*
+     * Bouton Annuler
+     */
+
+    overlay
+        .querySelector("#qr-scanner-cancel")
+        .addEventListener(
+            "click",
+            fermerScanner
+        );
+
+
+    /*
+     * Cliquer en dehors de la fenêtre
+     */
+
+    overlay.addEventListener(
+        "click",
+        event => {
+
+            if (event.target === overlay) {
+
+                fermerScanner();
+
+            }
+
+        }
+    );
+
+
+    /*
+     * ------------------------------------------------------------
+     * Traitement du QR code
+     * ------------------------------------------------------------
+     */
+
+    async function qrCodeDetecte(decodedText) {
+
+        console.log(
+            "QR code détecté :",
+            decodedText
+        );
+
+
+        /*
+         * Vérification du contenu
+         *
+         * Le QR généré par storage.js est :
+         *
+         * "Prénom Nom Rando's Lorraine"
+         */
+
+        const suffixe =
+            " Rando's Lorraine";
+
+
+        if (
+            typeof decodedText !== "string" ||
+            !decodedText.endsWith(suffixe)
+        ) {
+
+            message.textContent =
+                "Ce QR code n'est pas une carte Rando's Lorraine.";
+
+            return;
+
+        }
+
+
+        /*
+         * Suppression du suffixe
+         */
+
+        const nomComplet =
+            decodedText
+                .slice(
+                    0,
+                    -suffixe.length
+                )
+                .trim();
+
+
+        if (!nomComplet) {
+
+            message.textContent =
+                "Impossible de lire le nom.";
+
+            return;
+
+        }
+
+
+        /*
+         * Séparation Prénom / Nom
+         *
+         * On considère que le premier mot est le prénom
+         * et que tout ce qui suit constitue le nom.
+         */
+
+        const morceaux =
+            nomComplet
+                .split(/\s+/)
+                .filter(Boolean);
+
+
+        if (morceaux.length < 2) {
+
+            message.textContent =
+                "Le QR code ne contient pas un prénom et un nom valides.";
+
+            return;
+
+        }
+
+
+        const prenom =
+            formatName(morceaux[0]);
+
+        const nom =
+            formatName(
+                morceaux
+                    .slice(1)
+                    .join(" ")
+            );
+
+
+        /*
+         * --------------------------------------------------------
+         * PILOTE
+         * --------------------------------------------------------
+         */
+
+        if (type === "pilote") {
+
+            const champ =
+                $("#participants-pilote");
+
+            if (champ) {
+
+                champ.value =
+                    `${prenom} ${nom}`;
+
+            }
+
+
+            message.textContent =
+                `Pilote : ${prenom} ${nom}`;
+
+        }
+
+
+        /*
+         * --------------------------------------------------------
+         * COPILOTE
+         * --------------------------------------------------------
+         */
+
+        else if (type === "copilote") {
+
+            const champ =
+                $("#participants-copilote");
+
+            if (champ) {
+
+                champ.value =
+                    `${prenom} ${nom}`;
+
+            }
+
+
+            message.textContent =
+                `Copilote : ${prenom} ${nom}`;
+
+        }
+
+
+        /*
+         * --------------------------------------------------------
+         * PARTICIPANT
+         * --------------------------------------------------------
+         */
+
+        else if (type === "participant") {
+
+            const champPrenom =
+                $("#participant-prenom");
+
+            const champNom =
+                $("#participant-nom");
+
+            const champStatut =
+                $("#participant-statut");
+
+
+            if (champPrenom) {
+
+                champPrenom.value =
+                    prenom;
+
+            }
+
+
+            if (champNom) {
+
+                champNom.value =
+                    nom;
+
+            }
+
+
+            if (champStatut) {
+
+                champStatut.value =
+                    "Adhérent·e";
+
+            }
+
+
+            message.textContent =
+                `${prenom} ${nom} — Adhérent·e`;
+
+        }
+
+
+        /*
+         * --------------------------------------------------------
+         * Fermeture automatique
+         * --------------------------------------------------------
+         */
+
+        setTimeout(
+            fermerScanner,
+            500
+        );
+
+    }
+
+
+    /*
+     * ------------------------------------------------------------
+     * Création du lecteur
+     * ------------------------------------------------------------
+     */
+
+    qrScannerActif =
+        new Html5Qrcode("qr-reader");
+
+
+    /*
+     * Configuration de la caméra
+     */
+
+    const configuration = {
+
+        fps: 10,
+
+        qrbox: {
+            width: 250,
+            height: 250
+        }
+
+    };
+
+
+    /*
+     * Démarrage de la caméra arrière
+     */
+
+    qrScannerActif
+        .start(
+
+            {
+                facingMode: "environment"
+            },
+
+            configuration,
+
+            qrCodeDetecte,
+
+            () => {
+
+                /*
+                 * Les erreurs de lecture sont normales
+                 * pendant le scan.
+                 *
+                 * On ne les affiche donc pas.
+                 */
+
+            }
+
+        )
+
+        .catch(error => {
+
+            console.error(
+                "Impossible de démarrer le scanner QR :",
+                error
+            );
+
+
+            message.textContent =
+                "Impossible d'accéder à la caméra.";
+
+
+            /*
+             * On garde le bouton Annuler
+             * pour permettre à l'utilisateur
+             * de fermer la fenêtre.
+             */
+
+        });
+
+}
+
 /*
  * ============================================================
  * renderParticipants()
@@ -4468,84 +5097,40 @@ $("#btn-supprimer-pilote").addEventListener("click", () => {
             }
         );
 
+/* ============================================================
+ * QR code Pilote
+ * ============================================================
+ */
 
-    /*
-     * ============================================================
-     * QR CODE PARTICIPANT
-     * ============================================================
-     */
+$("#btn-scan-pilote").addEventListener("click", () => {
 
-    const btnScan =
-        $("#btn-scan-qr");
+    ouvrirScannerQr("pilote");
 
-
-    if (btnScan) {
-
-        btnScan.addEventListener(
-            "click",
-            () => {
-
-                alert(
-                    "Lecture du QR code : fonctionnalité à venir."
-                );
-
-            }
-        );
-
-    }
+});
 
 
-    /*
-     * ============================================================
-     * QR CODE PILOTE
-     * ============================================================
-     */
+/* ============================================================
+ * QR code Copilote
+ * ============================================================
+ */
 
-    $("#btn-scan-pilote")
-        .addEventListener(
-            "click",
-            () => {
+$("#btn-scan-copilote").addEventListener("click", () => {
 
-                if (
-                    typeof ouvrirScannerQr ===
-                    "function"
-                ) {
+    ouvrirScannerQr("copilote");
 
-                    ouvrirScannerQr(
-                        "pilote"
-                    );
-
-                }
-
-            }
-        );
+});
 
 
-    /*
-     * ============================================================
-     * QR CODE COPILOTE
-     * ============================================================
-     */
+/* ============================================================
+ * QR code Participant
+ * ============================================================
+ */
 
-    $("#btn-scan-copilote")
-        .addEventListener(
-            "click",
-            () => {
+$("#btn-scan-qr").addEventListener("click", () => {
 
-                if (
-                    typeof ouvrirScannerQr ===
-                    "function"
-                ) {
+    ouvrirScannerQr("participant");
 
-                    ouvrirScannerQr(
-                        "copilote"
-                    );
-
-                }
-
-            }
-        );
-
+});
 
     /*
      * ============================================================
@@ -4924,3 +5509,31 @@ async function init(){
 }
 
 init();
+
+/* ============================================================
+ * Sécurité : fermeture des modales après restauration bfcache
+ * ============================================================
+ *
+ * Sur certains navigateurs mobiles (Safari iOS notamment),
+ * revenir sur l'application via le bouton "précédent" peut
+ * restaurer visuellement le dernier état du DOM (y compris une
+ * fenêtre modale ouverte au moment du départ) sans ré-exécuter
+ * le JavaScript. On force donc leur fermeture à chaque
+ * restauration.
+ * ============================================================
+ */
+
+window.addEventListener("pageshow", (event) => {
+
+    if (!event.persisted) return;
+
+    document
+        .querySelectorAll(".modal")
+        .forEach(modal => {
+
+            modal.classList.add("hidden");
+            modal.setAttribute("aria-hidden", "true");
+
+        });
+
+});
