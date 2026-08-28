@@ -3756,7 +3756,7 @@ function renderParticipants() {
 
             count.textContent =
                 participants.length;
-
+    afficherCommentaire();
         }
 
 
