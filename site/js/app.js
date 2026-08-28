@@ -2347,8 +2347,7 @@ function ouvrirScannerQr(type) {
         );
         /*
          * Vérification du contenu
-         * Le QR généré par storage.js est :
-         * "Prénom Nom Rando's Lorraine"
+         * Le QR généré par storage.js est : "Prénom Nom Rando's Lorraine"
          */
         const suffixe =
             " Rando's Lorraine";
@@ -2377,8 +2376,7 @@ function ouvrirScannerQr(type) {
         }
         /*
          * Séparation Prénom / Nom
-         * On considère que le premier mot est le prénom
-         * et que tout ce qui suit constitue le nom.
+         * On considère que le premier mot est le prénom et que tout ce qui suit constitue le nom.
          */
         const morceaux =
             nomComplet
@@ -2463,8 +2461,6 @@ function ouvrirScannerQr(type) {
             fermerScanner,
             500
         );
-        ajouterParticipant();           
-
     }
 
     /*
