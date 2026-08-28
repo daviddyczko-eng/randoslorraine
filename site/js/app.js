@@ -3557,6 +3557,10 @@ function renderParticipants() {
                     </strong>
                 </p>
 
+                <div
+    id="participants-commentaire"
+    class="participants-commentaire">
+</div>
             </div>
 
 
