@@ -2515,97 +2515,59 @@ function ouvrirScannerQr(type) {
 
 /*
  * ============================================================
- * renderParticipants()
- * ============================================================
- *
- * IMPORTANT :
- *
- * Cette fonction existe toujours.
- *
- * Elle est maintenant responsable :
- * - de l'affichage ;
- * - du chargement de la liste locale ;
- * - de l'ajout ;
- * - de la suppression ;
- * - de la gestion pilote/copilote ;
- * - de la sauvegarde en temps réel.
+ * Fonction renderParticipants()
  * ============================================================
  */
-
 function renderParticipants() {
-
     console.log(
         "Affichage de la liste des participant·e·s"
     );
-
-
     /*
      * ------------------------------------------------------------
      * Charger les données locales
      * ------------------------------------------------------------
      */
-
     participants =
         chargerParticipants();
-
-
-    trierParticipants();
-
-
+        trierParticipants();
     /*
      * ------------------------------------------------------------
      * Date par défaut
      * ------------------------------------------------------------
      */
-
     const maintenant =
         new Date();
-
     maintenant.setHours(
         0,
         0,
         0,
         0
     );
-
-
     /*
      * ------------------------------------------------------------
      * Date affichée
      * ------------------------------------------------------------
      */
-
     let dateSelectionnee =
         new Date(maintenant);
-
-
     /*
-     * Si une liste existe déjà,
-     * utiliser sa date.
+     * Si une liste existe déjà, utiliser sa date.
      */
-
     if (
         participants.length &&
         participants[0].date
     ) {
-
         /*
-         * Tentative de récupération de la date
-         * depuis la première ligne.
+         * Tentative de récupération de la date depuis la première ligne.
          */
-
         const dateTexte =
             participants[0].date;
-
         const match =
             dateTexte.match(
                 /(\d{1,2})\s+([a-zàâäéèêëîïôöùûüÿç]+)\s+(\d{4})/i
             );
-
         if (match) {
-
             const moisMap = {
-
                 janvier: 0,
                 février: 1,
                 fevrier: 1,
@@ -2621,151 +2583,99 @@ function renderParticipants() {
                 novembre: 10,
                 décembre: 11,
                 decembre: 11
-
             };
-
             const moisNumero =
                 moisMap[
                     match[2].toLowerCase()
                 ];
-
             if (
                 moisNumero !== undefined
             ) {
-
                 dateSelectionnee =
                     new Date(
                         Number(match[3]),
                         moisNumero,
                         Number(match[1])
                     );
-
             }
-
         }
-
     }
-
-
     /*
      * ------------------------------------------------------------
      * Randonnée du jour
      * ------------------------------------------------------------
      */
-
     const rando =
         prochaineRando;
-
-
     const randoDuJour =
         rando &&
         typeof rando === "object" &&
         isToday(rando.date);
-
-
     /*
      * ------------------------------------------------------------
      * Lieu
      * ------------------------------------------------------------
      */
-
     let lieuInitial = "";
-
-
     if (randoDuJour) {
-
         lieuInitial =
             rando?.lieu?.commune ??
             "";
-
     }
-
-
     /*
-     * Si une liste existe déjà,
-     * conserver son lieu.
+     * Si une liste existe déjà, conserver son lieu.
      */
-
     if (
         participants.length &&
         participants[0].lieu
     ) {
-
         lieuInitial =
             participants[0].lieu;
-
     }
-
-
     /*
      * ------------------------------------------------------------
      * Pilote / copilote
      * ------------------------------------------------------------
      */
-
     let pilote1 = "";
-
     let pilote2 = "";
-
-
     /*
      * Chercher dans la liste locale
      */
-
     const participantPilote =
         participants.find(
             participant =>
                 participant.statut === "Pilote"
         );
-
     const participantCopilote =
         participants.find(
             participant =>
                 participant.statut === "Copilote"
         );
-
-
     if (participantPilote) {
-
         pilote1 =
             `${participantPilote.prenom} ${participantPilote.nom}`;
-
     }
-
-
     if (participantCopilote) {
-
         pilote2 =
             `${participantCopilote.prenom} ${participantCopilote.nom}`;
-
     }
-
-
     /*
      * ------------------------------------------------------------
-     * Si aucune liste locale :
-     *
-     * initialisation à partir du JSON / utilisateur
+     * Si aucune liste locale : initialisation à partir du JSON / utilisateur
      * ------------------------------------------------------------
      */
-
     if (!participants.length) {
-
         const user =
             getUser();
-
-
         const userName =
             user?.prenom && user?.nom
                 ? `${user.prenom} ${user.nom}`
                 : "";
-
-
         if (
             randoDuJour &&
             rando?.pilotes
         ) {
-
             const pilotesText =
                 String(rando.pilotes)
                     .replace(
@@ -2785,50 +2695,33 @@ function renderParticipants() {
                         p => p.trim()
                     )
                     .filter(Boolean);
-
-
             pilote1 =
                 pilotesText[0] ?? "";
-
             pilote2 =
                 pilotesText[1] ?? "";
-
         }
         else {
-
             pilote1 =
                 userName;
-
             pilote2 =
                 "";
-
         }
-
     }
-
-
     /*
      * ------------------------------------------------------------
      * Affichage
      * ------------------------------------------------------------
      */
-
     screenRoot.innerHTML = `
-
         <div class="screen">
-
             <!-- ==================================================
                  DATE
                  ================================================== -->
-
             <div class="detail-row">
-
                 <span class="detail-row__label">
                     Date
                 </span>
-
                 <span class="detail-row__value participant-input-wrapper">
-
                     <input
                         type="text"
                         id="participants-date"
@@ -2840,34 +2733,23 @@ function renderParticipants() {
                         )}"
                         readonly
                     >
-
                     <button
                         type="button"
                         class="calendar-button"
                         id="btn-calendrier"
                         title="Choisir une date">
-
                         🗒
-
                     </button>
-
                 </span>
-
             </div>
-
-
             <!-- ==================================================
                  LIEU
                  ================================================== -->
-
             <div class="detail-row">
-
                 <span class="detail-row__label">
                     Lieu
                 </span>
-
                 <span class="detail-row__value participant-input-wrapper">
-
                     <input
                         type="text"
                         id="participants-lieu"
@@ -2875,24 +2757,16 @@ function renderParticipants() {
                         value="${escapeHtml(lieuInitial)}"
                         placeholder="Lieu"
                     >
-
                 </span>
-
             </div>
-
-
             <!-- ==================================================
                  PILOTE
                  ================================================== -->
-
             <div class="detail-row">
-
                 <span class="detail-row__label">
                     Pilote
                 </span>
-
                 <span class="detail-row__value participant-input-wrapper">
-
                     <input
                         type="text"
                         id="participants-pilote"
@@ -2901,44 +2775,30 @@ function renderParticipants() {
                         placeholder="Prénom Nom"
                         autocomplete="off"
                     >
-
                     <button
                         type="button"
                         class="participant-delete-button"
                         id="btn-supprimer-pilote"
                         title="Supprimer le pilote">
-
                         ✕
-
                     </button>
-
                     <button
                         type="button"
                         class="qr-scan-button"
                         id="btn-scan-pilote"
                         title="Scanner le QR code du pilote">
-
                         ▣
-
                     </button>
-
                 </span>
-
             </div>
-
-
             <!-- ==================================================
                  COPILOTE
                  ================================================== -->
-
             <div class="detail-row">
-
                 <span class="detail-row__label">
                     Copilote
                 </span>
-
                 <span class="detail-row__value participant-input-wrapper">
-
                     <input
                         type="text"
                         id="participants-copilote"
@@ -2947,46 +2807,31 @@ function renderParticipants() {
                         placeholder="Prénom Nom"
                         autocomplete="off"
                     >
-
                     <button
                         type="button"
                         class="participant-delete-button"
                         id="btn-supprimer-copilote"
                         title="Supprimer le copilote">
-
                         ✕
-
                     </button>
-
                     <button
                         type="button"
                         class="qr-scan-button"
                         id="btn-scan-copilote"
                         title="Scanner le QR code du copilote">
-
                         ▣
-
                     </button>
-
                 </span>
-
             </div>
-
-
             <!-- ==================================================
                  AJOUT PARTICIPANT
                  ================================================== -->
-
             <div class="participant-add-box">
-
                 <div class="participant-add-row">
-
                     <div class="participant-field participant-field--half">
-
                         <label for="participant-prenom">
                             Prénom
                         </label>
-
                         <input
                             type="text"
                             id="participant-prenom"
@@ -2994,16 +2839,11 @@ function renderParticipants() {
                             placeholder="Prénom"
                             autocomplete="given-name"
                         >
-
                     </div>
-
-
                     <div class="participant-field participant-field--half">
-
                         <label for="participant-nom">
                             Nom
                         </label>
-
                         <input
                             type="text"
                             id="participant-nom"
@@ -3011,28 +2851,19 @@ function renderParticipants() {
                             placeholder="Nom"
                             autocomplete="family-name"
                         >
-
                     </div>
-
                 </div>
-
-
                 <div class="participant-add-row participant-add-row--bottom">
-
                     <div class="participant-field participant-field--status">
-
                         <label for="participant-statut">
                             Statut
                         </label>
-
                         <select
                             id="participant-statut"
                             class="participant-input">
-
                             <option value="">
                                 Choisir un statut
                             </option>
-
                             ${PARTICIPANT_STATUSES
                                 .map(
                                     statut =>
@@ -3041,269 +2872,176 @@ function renderParticipants() {
                                         </option>`
                                 )
                                 .join("")}
-
                         </select>
-
                     </div>
-
-
                     <button
                         type="button"
                         class="btn btn--primary participant-add-button"
                         id="btn-ajouter-participant">
-
                         Ajouter
-
                     </button>
-
-
                     <button
                         type="button"
                         class="qr-scan-button participant-add-qr"
                         id="btn-scan-qr"
                         title="Scanner le QR code de l'adhérent·e">
-
                         ▣
-
                     </button>
-
                 </div>
-
             </div>
-
-
             <!-- ==================================================
                  LISTE
                  ================================================== -->
-
             <div
                 id="participants-list"
                 class="participants-list">
             </div>
-
-
             <!-- ==================================================
                  TOTAUX
                  ================================================== -->
-
             <div
                 id="participants-totaux"
                 class="participants-totaux">
-
                 <p>
                     Nombre total de participant·e·s :
                     <strong id="participants-count">
                         0
                     </strong>
                 </p>
-
                 <p>
                     Somme perçue :
                     <strong id="participants-total">
                         0 €
                     </strong>
                 </p>
-
                 <div
     id="participants-commentaire"
     class="participants-commentaire">
 </div>
             </div>
-
-
             <!-- ==================================================
                  BOUTONS
                  ================================================== -->
-
             <div class="btn-row">
-
                 <button
                     type="button"
                     class="btn btn--primary"
                     id="btn-commentaire-participants">
-
                     Ajouter un commentaire
-
                 </button>
-
-
                 <button
                     type="button"
                     class="btn btn--primary"
                     id="btn-transmettre-participants">
-
                     Transmettre la liste
-
                 </button>
-
             </div>
-
         </div>
     `;
-
-
     /*
      * ============================================================
      * AFFICHAGE DE LA LISTE
      * ============================================================
      */
-
     function afficherListeParticipants() {
-
     const liste =
         $("#participants-list");
-
     if (!liste) return;
-
-
     trierParticipants();
-
-
     if (!participants.length) {
-
         liste.innerHTML = "";
-
         actualiserTotaux();
-
         return;
-
     }
-
-
     liste.innerHTML =
         participants
             .map(
                 (participant, index) => `
-
                     <div
                         class="participant-list-row"
                         data-index="${index}">
-
                         <span class="participant-list-name">
-
                             ${escapeHtml(
                                 formatName(participant.prenom)
                             )}
                             ${escapeHtml(
                                 formatName(participant.nom)
                             )}
-
                         </span>
-
                         <span class="participant-list-status">
-
                             ${escapeHtml(
                                 participant.statut
                             )}
-
                         </span>
-
                         <button
                             type="button"
                             class="participant-delete-button"
                             data-delete-index="${index}"
                             title="Supprimer">
-
                             ✕
-
                         </button>
-
                     </div>
-
                 `
             )
             .join("");
-
-
     /*
      * ------------------------------------------------------------
      * Boutons de suppression
      * ------------------------------------------------------------
      */
-
     liste
         .querySelectorAll(
             "[data-delete-index]"
         )
         .forEach(button => {
-
             button.addEventListener(
                 "click",
                 () => {
-
                     const index =
                         Number(
                             button.dataset.deleteIndex
                         );
-
-
                     /*
-                     * Le pilote ne peut pas être supprimé
-                     * s'il est le seul pilote.
+                     * Le pilote ne peut pas être supprimé s'il est le seul pilote.
                      */
-
                     if (
                         participants[index]?.statut ===
                         "Pilote"
                     ) {
-
                         alert(
                             "Il doit obligatoirement y avoir un pilote."
                         );
-
                         return;
-
                     }
-
-
                     participants.splice(
                         index,
                         1
                     );
-
-
                     enregistrerParticipants();
-
                     afficherListeParticipants();
-
                 }
             );
-
         });
-
-
     actualiserTotaux();
     afficherCommentaire();
-
 }
-
     /*
      * ============================================================
      * TOTAUX
      * ============================================================
      */
-
     function actualiserTotaux() {
-
         const count =
             $("#participants-count");
-
         const total =
             $("#participants-total");
-
-
         if (count) {
-
             count.textContent =
                 participants.length;
     afficherCommentaire();
         }
-
-
         if (total) {
-
             const tarifs = {
-
                 "Pilote": 0,
                 "Copilote": 0,
                 "Adhérent·e": 0,
@@ -3311,10 +3049,7 @@ function renderParticipants() {
                 "Alsarando 2 €": 2,
                 "Adhésion 24 €": 24,
                 "Demi-tarif 12 €": 12
-
             };
-
-
             const somme =
                 participants.reduce(
                     (acc, participant) =>
@@ -3326,197 +3061,122 @@ function renderParticipants() {
                         ),
                     0
                 );
-
-
             total.textContent =
                 `${somme} €`;
-
         }
-
     }
-
-
     /*
      * ============================================================
      * DATE
      * ============================================================
      */
-
     $("#btn-calendrier")
         .addEventListener(
             "click",
             () => {
-
                 const champDate =
                     $("#participants-date");
-
-
                 ouvrirCalendrierParticipants(
                     dateSelectionnee,
                     nouvelleDate => {
-
                         dateSelectionnee =
                             nouvelleDate;
-
-
                         champDate.value =
                             formaterDateParticipant(
                                 nouvelleDate
                             );
-
-
                         /*
-                         * Modifier la date de toutes les lignes
-                         * existantes.
+                         * Modifier la date de toutes les lignes existantes.
                          */
-
                         const nouvelleDateTexte =
                             formaterDateParticipant(
                                 nouvelleDate
                             );
-
-
                         participants.forEach(
                             participant => {
-
                                 participant.date =
                                     nouvelleDateTexte;
-
                             }
                         );
-
-
                         /*
                          * Sauvegarde immédiate
                          */
-
                         if (participants.length) {
-
                             enregistrerParticipants();
-
                         }
-
-
                         afficherListeParticipants();
-
                     }
                 );
-
             }
         );
-
-
     /*
      * ============================================================
      * LIEU
-     * ============================================================
-     *
      * Sauvegarde à chaque modification.
      * ============================================================
      */
-
     const champLieu =
         $("#participants-lieu");
-
-
     champLieu.addEventListener(
         "input",
         () => {
-
             participants.forEach(
                 participant => {
-
                     participant.lieu =
                         champLieu.value.trim();
-
                 }
             );
-
-
             if (participants.length) {
-
                 enregistrerParticipants();
-
             }
-
         }
     );
-
-
     /*
      * ============================================================
      * PILOTE
      * ============================================================
      */
-
     const champPilote =
         $("#participants-pilote");
-
-
     champPilote.addEventListener(
         "change",
         () => {
-
             const valeur =
                 champPilote.value.trim();
-
-
             if (!valeur) {
-
                 alert(
                     "Il doit obligatoirement y avoir un pilote."
                 );
-
                 /*
                  * Restaurer l'ancien pilote.
                  */
-
                 const ancienPilote =
                     participants.find(
                         participant =>
                             participant.statut ===
                             "Pilote"
                     );
-
-
                 champPilote.value =
                     ancienPilote
                     ? `${ancienPilote.prenom} ${ancienPilote.nom}`
                     : "";
-
                 return;
-
             }
-
-
             const morceaux =
                 valeur.split(/\s+/);
-
-
             const prenom =
                 morceaux.shift();
-
-
             const nom =
                 morceaux.join(" ");
-
-
             if (!nom) {
-
                 alert(
                     "Veuillez saisir le prénom et le nom du pilote."
                 );
-
                 return;
-
             }
-
-
             /*
-             * Vérifier si cette personne existe déjà
-             * sous un autre statut.
+             * Vérifier si cette personne existe déjà sous un autre statut.
              */
-
             const personneExistante =
                 participants.find(
                     participant =>
@@ -3529,46 +3189,33 @@ function renderParticipants() {
                             nom
                         )
                 );
-
-
             /*
              * Si elle existe déjà, elle devient pilote.
              */
-
             if (personneExistante) {
-
                 /*
                  * Supprimer l'ancien pilote.
                  */
-
                 participants =
                     participants.filter(
                         participant =>
                             participant.statut !==
                             "Pilote"
                     );
-
-
                 personneExistante.statut =
                     "Pilote";
-
             }
             else {
-
                 /*
                  * Supprimer l'ancien pilote.
                  */
-
                 participants =
                     participants.filter(
                         participant =>
                             participant.statut !==
                             "Pilote"
                     );
-
-
                 participants.push({
-
                     prenom,
                     nom,
                     statut: "Pilote",
@@ -3578,17 +3225,11 @@ function renderParticipants() {
                         ),
                     lieu:
                         champLieu.value.trim()
-
                 });
-
             }
-
-
             /*
-             * Une même personne ne peut pas être
-             * simultanément copilote.
+             * Une même personne ne peut pas être simultanément copilote.
              */
-
             participants =
                 participants.filter(
                     participant =>
@@ -3605,113 +3246,69 @@ function renderParticipants() {
                             )
                         )
                 );
-
-
             trierParticipants();
-
             enregistrerParticipants();
-
             afficherListeParticipants();
-
         }
     );
-
-
     /*
      * ============================================================
      * SUPPRESSION De l'affichage du PILOTE
      * ============================================================
      */
-
 $("#btn-supprimer-pilote").addEventListener("click", () => {
-
     const champPilote = $("#participants-pilote");
-
     if (!champPilote) return;
-
     /*
      * Effacement du nom du pilote
      */
     champPilote.value = "";
-
     /*
-     * Donner immédiatement le focus au champ
-     * pour faciliter la nouvelle saisie.
+     * Donner immédiatement le focus au champ pour faciliter la nouvelle saisie.
      */
     champPilote.focus();
-
 });
-
-
     /*
      * ============================================================
      * COPILOTE
      * ============================================================
      */
-
     const champCopilote =
         $("#participants-copilote");
-
-
     champCopilote.addEventListener(
         "change",
         () => {
-
             const valeur =
                 champCopilote.value.trim();
-
-
             /*
              * Suppression du copilote
              */
-
             if (!valeur) {
-
                 participants =
                     participants.filter(
                         participant =>
                             participant.statut !==
                             "Copilote"
                     );
-
-
                 enregistrerParticipants();
-
                 afficherListeParticipants();
-
                 return;
-
             }
-
-
             const morceaux =
                 valeur.split(/\s+/);
-
-
             const prenom =
                 morceaux.shift();
-
-
             const nom =
                 morceaux.join(" ");
-
-
             if (!nom) {
-
                 alert(
                     "Veuillez saisir le prénom et le nom du copilote."
                 );
-
                 return;
-
             }
-
-
             /*
-             * Une personne ne peut pas être
-             * simultanément pilote et copilote.
+             * Une personne ne peut pas être simultanément pilote et copilote.
              */
-
             const estPilote =
                 participants.some(
                     participant =>
@@ -3725,36 +3322,24 @@ $("#btn-supprimer-pilote").addEventListener("click", () => {
                             nom
                         )
                 );
-
-
             if (estPilote) {
-
                 alert(
                     "Le pilote ne peut pas être également copilote."
                 );
-
                 return;
-
             }
-
-
             /*
              * Supprimer l'ancien copilote.
              */
-
             participants =
                 participants.filter(
                     participant =>
                         participant.statut !==
                         "Copilote"
                 );
-
-
             /*
-             * Supprimer cette personne si elle
-             * existe déjà sous un autre statut.
+             * Supprimer cette personne si elle existe déjà sous un autre statut.
              */
-
             participants =
                 participants.filter(
                     participant =>
@@ -3767,14 +3352,10 @@ $("#btn-supprimer-pilote").addEventListener("click", () => {
                             nom
                         )
                 );
-
-
             /*
              * Ajouter le nouveau copilote.
              */
-
             participants.push({
-
                 prenom,
                 nom,
                 statut: "Copilote",
@@ -3784,386 +3365,253 @@ $("#btn-supprimer-pilote").addEventListener("click", () => {
                     ),
                 lieu:
                     champLieu.value.trim()
-
             });
-
-
             trierParticipants();
-
             enregistrerParticipants();
-
             afficherListeParticipants();
-
         }
     );
-
-
     /*
      * ============================================================
      * SUPPRESSION DU COPILOTE
      * ============================================================
      */
-
     $("#btn-supprimer-copilote")
         .addEventListener(
             "click",
             () => {
-
                 participants =
                     participants.filter(
                         participant =>
                             participant.statut !==
                             "Copilote"
                     );
-
-
                 champCopilote.value =
                     "";
-
-
                 enregistrerParticipants();
-
                 afficherListeParticipants();
-
             }
         );
-
-
     /*
      * ============================================================
      * AJOUT D'UN PARTICIPANT
      * ============================================================
      */
-
     $("#btn-ajouter-participant")
         .addEventListener(
             "click",
             () => {
-
                 const prenom =
                     $("#participant-prenom")
                         ?.value
                         .trim() ?? "";
-
-
                 const nom =
                     $("#participant-nom")
                         ?.value
                         .trim() ?? "";
-
-
                 const statut =
                     $("#participant-statut")
                         ?.value ?? "";
-
-
                 if (!prenom || !nom) {
-
                     alert(
                         "Veuillez renseigner le prénom et le nom."
                     );
-
                     return;
-
                 }
-
-
                 if (!statut) {
-
                     alert(
                         "Veuillez sélectionner un statut."
                     );
-
                     return;
-
                 }
-
-
                 /*
                  * ------------------------------------------------
                  * Pilote
                  * ------------------------------------------------
                  */
-
                 if (
                     statut === "Pilote"
                 ) {
-
                     champPilote.value =
                         `${prenom} ${nom}`;
 
                     champPilote.dispatchEvent(
                         new Event("change")
                     );
-
-
                     $("#participant-prenom").value =
                         "";
-
                     $("#participant-nom").value =
                         "";
-
                     $("#participant-statut").value =
                         "";
-
                     return;
-
                 }
-
-
                 /*
                  * ------------------------------------------------
                  * Copilote
                  * ------------------------------------------------
                  */
-
                 if (
                     statut === "Copilote"
                 ) {
-
                     champCopilote.value =
                         `${prenom} ${nom}`;
-
                     champCopilote.dispatchEvent(
                         new Event("change")
                     );
-
-
                     $("#participant-prenom").value =
                         "";
-
                     $("#participant-nom").value =
                         "";
-
                     $("#participant-statut").value =
                         "";
-
                     return;
-
                 }
-
-
                 /*
                  * ------------------------------------------------
                  * Vérifier les doublons
                  * ------------------------------------------------
                  */
-
                 if (
                     participantExiste(
                         prenom,
                         nom
                     )
                 ) {
-
                     alert(
                         "Cette personne figure déjà dans la liste."
                     );
-
                     return;
-
                 }
-
-
                 /*
                  * ------------------------------------------------
                  * Ajouter
                  * ------------------------------------------------
                  */
-
                 participants.push({
-
                     prenom,
                     nom,
                     statut,
-
                     date:
                         formaterDateParticipant(
                             dateSelectionnee
                         ),
-
                     lieu:
                         champLieu.value.trim()
-
                 });
-
-
                 /*
                  * Tri + sauvegarde immédiate
                  */
-
                 trierParticipants();
-
                 enregistrerParticipants();
-
                 afficherListeParticipants();
-
-
                 /*
                  * Vider le formulaire
                  */
-
                 $("#participant-prenom").value =
                     "";
-
                 $("#participant-nom").value =
                     "";
-
                 $("#participant-statut").value =
                     "";
-
             }
         );
-
 /* ============================================================
  * QR code Pilote
  * ============================================================
  */
-
 $("#btn-scan-pilote").addEventListener("click", () => {
-
     ouvrirScannerQr("pilote");
-
 });
-
-
 /* ============================================================
  * QR code Copilote
  * ============================================================
  */
-
 $("#btn-scan-copilote").addEventListener("click", () => {
-
     ouvrirScannerQr("copilote");
-
 });
-
-
 /* ============================================================
  * QR code Participant
  * ============================================================
  */
-
 $("#btn-scan-qr").addEventListener("click", () => {
-
     ouvrirScannerQr("participant");
-
 });
-
     /*
      * ============================================================
      * COMMENTAIRE
      * ============================================================
      */
-
     $("#btn-commentaire-participants")
         .addEventListener(
             "click",
             () => {
-
                 ouvrirFenetreCommentaire();
-
             }
         );
-
-
     /*
      * ============================================================
      * TRANSMISSION
      * ============================================================
      */
-
     $("#btn-transmettre-participants")
         .addEventListener(
             "click",
             () => {
-
                 /*
-                 * Avant transmission :
-                 * vérifier qu'il existe bien un pilote.
+                 * Avant transmission : vérifier qu'il existe bien un pilote.
                  */
-
                 const pilote =
                     participants.find(
                         participant =>
                             participant.statut ===
                             "Pilote"
                     );
-
-
                 if (!pilote) {
-
                     alert(
                         "Impossible de transmettre la liste : un pilote est obligatoire."
                     );
-
                     return;
-
                 }
-
-
                 enregistrerParticipants();
-
-
                 alert(
                     "Transmission de la liste : fonctionnalité à venir."
                 );
-
             }
         );
-
-
     /*
      * ============================================================
      * INITIALISATION DE LA LISTE
      * ============================================================
      */
-
     /*
-     * Si aucune liste locale n'existe encore,
-     * créer automatiquement le pilote initial.
+     * Si aucune liste locale n'existe encore, créer automatiquement le pilote initial.
      */
-
     if (!participants.length && pilote1) {
-
         const morceaux =
             pilote1
                 .trim()
                 .split(/\s+/);
-
-
         if (morceaux.length >= 2) {
-
             participants.push({
-
                 prenom:
                     morceaux.shift(),
-
                 nom:
                     morceaux.join(" "),
-
                 statut:
                     "Pilote",
-
                 date:
                     formaterDateParticipant(
                         dateSelectionnee
                     ),
-
                 lieu:
                     lieuInitial
-
             });
-
         }
-
     }
-
-
     /*
      * Ajouter le copilote initial si nécessaire.
      */
-
     if (
         !participants.some(
             participant =>
@@ -4172,64 +3620,48 @@ $("#btn-scan-qr").addEventListener("click", () => {
         ) &&
         pilote2
     ) {
-
         const morceaux =
             pilote2
                 .trim()
                 .split(/\s+/);
-
-
         if (morceaux.length >= 2) {
-
             participants.push({
-
                 prenom:
                     morceaux.shift(),
-
                 nom:
                     morceaux.join(" "),
-
                 statut:
                     "Copilote",
-
                 date:
                     formaterDateParticipant(
                         dateSelectionnee
                     ),
-
                 lieu:
                     lieuInitial
-
             });
-
         }
-
     }
-
-
     /*
      * Sauvegarde initiale.
      */
-
     if (participants.length) {
-
         enregistrerParticipants();
-
     }
-
-
     /*
      * Affichage final.
      */
-
     afficherListeParticipants();
 /*
  * Afficher le commentaire mémorisé
  */
-
 afficherCommentaire();
 }
 
+/*
+* ============================================================
+* INSCRIPTION A L'APPLICATION
+* ============================================================
+*/
 function renderInscription() {
   screenRoot.innerHTML = `
     <div class="screen">
@@ -4260,47 +3692,44 @@ function renderInscription() {
       </form>
     </div>
   `;
-
   $("#btn-quit").addEventListener("click", () => {
     alert("Fermez l'onglet pour quitter.");
   });
-
   $("#form-inscription").addEventListener("submit", (e) => {
     e.preventDefault();
     console.log("Formulaire d'inscription soumis");
-
     const prenom = formatName($("#prenom").value);
     const nom = formatName($("#nom").value);
     const email = $("#email").value.trim();
     const telephone = $("#telephone").value.trim();
     const dateInscription = new Date().toISOString();
-
     // Validation du format du téléphone (optionnel)
     if (telephone && !/^\+\d{10,15}$/.test(telephone)) {
       alert("Le numéro de téléphone doit être au format international (ex: +33612345678).");
       return;
     }
-
     // Validation du format de l'email (optionnel)
     if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       alert("L'adresse e-mail n'est pas valide.");
       return;
     }
-
     console.log(`Prénom: ${prenom}, Nom: ${nom}, Email: ${email}, Téléphone: ${telephone}, Date: ${dateInscription}`);
-
     const success = saveUser({ prenom, nom, email, telephone, dateInscription });
     if (!success) {
       console.error("Échec de la sauvegarde de l'utilisateur.");
       alert("Une erreur est survenue. Veuillez réessayer.");
       return;
     }
-
     console.log("Navigation vers l'accueil...");
     navigate("accueil", { prenom, nom });
   });
 }
 
+/*
+* ============================================================
+* NOUVELLE COTISATION CHAQUE ANNEE
+* ============================================================
+*/
 function renderCotisation(prenom, nom, dateInscription) {
   const currentYear = new Date().getFullYear();
   screenRoot.innerHTML = `
@@ -4313,7 +3742,6 @@ function renderCotisation(prenom, nom, dateInscription) {
       </div>
     </div>
   `;
-
   $("#btn-cotisation-ok").addEventListener("click", () => {
     const user = getUser();
     saveUser({
@@ -4325,11 +3753,15 @@ function renderCotisation(prenom, nom, dateInscription) {
   });
 }
 
+/*
+* ============================================================
+* GESTION DE LA CARTE D'ADHERENT.E
+* ============================================================
+*/
 function renderCarte(prenom, nom) {
   const user = getUser();
   const email = user?.email || "";
   const telephone = user?.telephone || "";
-
   screenRoot.innerHTML = `
     <div class="screen screen--center">
       <div id="qr-large"></div>
@@ -4337,9 +3769,7 @@ function renderCarte(prenom, nom) {
       <button class="btn btn--primary" id="btn-corriger">Corriger</button>
     </div>
   `;
-
   renderQr($("#qr-large"), qrData(prenom, nom), 260);
-
   $("#btn-corriger").addEventListener("click", () => {
     navigate("correction", {
       prenom,
@@ -4353,6 +3783,11 @@ function renderCarte(prenom, nom) {
   });
 }
 
+/*
+* ============================================================
+* CORRECTION DE LA CARTE
+* ============================================================
+*/
 function renderCorrection(prenom, nom, email = "", telephone = "") {
   screenRoot.innerHTML = `
     <div class="screen">
@@ -4377,7 +3812,6 @@ function renderCorrection(prenom, nom, email = "", telephone = "") {
       </form>
     </div>
   `;
-
   $("#form-correction").addEventListener("submit", (e) => {
     e.preventDefault();
     const newPrenom = formatName($("#prenom").value);
@@ -4385,7 +3819,6 @@ function renderCorrection(prenom, nom, email = "", telephone = "") {
     const newEmail = $("#email").value.trim();
     const newTelephone = $("#telephone").value.trim();
     const user = getUser();
-
     saveUser({
       prenom: newPrenom,
       nom: newNom,
@@ -4393,7 +3826,6 @@ function renderCorrection(prenom, nom, email = "", telephone = "") {
       telephone: newTelephone,
       dateInscription: user?.dateInscription ?? new Date().toISOString(),
     });
-
     navigate("carte", {
       prenom: newPrenom,
       nom: newNom,
@@ -4408,24 +3840,16 @@ function renderCorrection(prenom, nom, email = "", telephone = "") {
  * Initialisation
  * ============================================================
  */
-
 async function init(){
-
     console.log("Initialisation");
-
     const start=await checkUserAndStart();
-
     await new Promise(resolve=>setTimeout(resolve,200));
-
     splashEl.classList.add("hidden");
-
     navigate(
         start.screen,
         start.options
     );
-
 }
-
 init();
 
 /* ============================================================
@@ -4440,18 +3864,12 @@ init();
  * restauration.
  * ============================================================
  */
-
 window.addEventListener("pageshow", (event) => {
-
     if (!event.persisted) return;
-
     document
         .querySelectorAll(".modal")
         .forEach(modal => {
-
             modal.classList.add("hidden");
             modal.setAttribute("aria-hidden", "true");
-
         });
-
 });
