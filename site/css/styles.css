@@ -1046,14 +1046,17 @@ select.participant-input {
     width: 34px;
     height: 34px;
 
-    border: none;
-
     background: transparent;
 
     cursor: pointer;
 
     font-size: 18px;
 
+    border: 1px solid var(--danger);
+
+    color: var(--danger);
+
+    font-weight: bold;
 }
 /* ============================================================
  * Fenêtre commentaire
