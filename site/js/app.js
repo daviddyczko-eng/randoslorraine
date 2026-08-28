@@ -5113,11 +5113,7 @@ $("#btn-supprimer-pilote").addEventListener("click", () => {
         btnScan.addEventListener(
             "click",
             () => {
-
-                alert(
-                    "Lecture du QR code : fonctionnalité à venir."
-                );
-
+    ouvrirScannerQr("participant");
             }
         );
 
@@ -5135,14 +5131,7 @@ $("#btn-supprimer-pilote").addEventListener("click", () => {
             "click",
             () => {
 
-                if (
-                    typeof ouvrirScannerQr ===
-                    "function"
-                ) {
-
-                    ouvrirScannerQr(
-                        "pilote"
-                    );
+    ouvrirScannerQr("pilote");
 
                 }
 
@@ -5161,14 +5150,7 @@ $("#btn-supprimer-pilote").addEventListener("click", () => {
             "click",
             () => {
 
-                if (
-                    typeof ouvrirScannerQr ===
-                    "function"
-                ) {
-
-                    ouvrirScannerQr(
-                        "copilote"
-                    );
+    ouvrirScannerQr("copilote");
 
                 }
 
