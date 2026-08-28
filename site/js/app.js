@@ -3141,6 +3141,460 @@ function afficherCommentaire() {
     `;
 }
 
+/* ============================================================
+ * Scanner QR code
+ * ============================================================
+ */
+
+let qrScannerActif = null;
+
+
+/*
+ * Ouvre le scanner QR code.
+ *
+ * type peut être :
+ *
+ *   "pilote"
+ *   "copilote"
+ *   "participant"
+ *
+ */
+function ouvrirScannerQr(type) {
+
+    /*
+     * Vérification de la bibliothèque
+     */
+
+    if (typeof Html5Qrcode === "undefined") {
+
+        alert(
+            "Le lecteur QR code n'est pas disponible."
+        );
+
+        return;
+    }
+
+
+    /*
+     * Création de la fenêtre de scan
+     */
+
+    const overlay =
+        document.createElement("div");
+
+    overlay.className =
+        "qr-scanner-overlay";
+
+
+    overlay.innerHTML = `
+
+        <div class="qr-scanner-modal">
+
+            <div class="qr-scanner-title">
+                Scanner le QR code
+            </div>
+
+            <div
+                id="qr-reader"
+                class="qr-reader">
+            </div>
+
+            <p
+                id="qr-scanner-message"
+                class="qr-scanner-message">
+
+                Présentez le QR code devant la caméra.
+
+            </p>
+
+            <button
+                type="button"
+                class="btn btn--ghost"
+                id="qr-scanner-cancel">
+
+                Annuler
+
+            </button>
+
+        </div>
+
+    `;
+
+
+    document.body.appendChild(overlay);
+
+
+    const message =
+        overlay.querySelector(
+            "#qr-scanner-message"
+        );
+
+
+    /*
+     * ------------------------------------------------------------
+     * Fonction de fermeture
+     * ------------------------------------------------------------
+     */
+
+    let fermetureEnCours = false;
+
+    async function fermerScanner() {
+
+        if (fermetureEnCours)
+            return;
+
+        fermetureEnCours = true;
+
+
+        /*
+         * Arrêt du scanner
+         */
+
+        if (qrScannerActif) {
+
+            try {
+
+                await qrScannerActif.stop();
+
+            }
+
+            catch (e) {
+
+                console.warn(
+                    "Erreur lors de l'arrêt du scanner :",
+                    e
+                );
+
+            }
+
+            qrScannerActif = null;
+
+        }
+
+
+        /*
+         * Suppression de la fenêtre
+         */
+
+        overlay.remove();
+
+    }
+
+
+    /*
+     * Bouton Annuler
+     */
+
+    overlay
+        .querySelector("#qr-scanner-cancel")
+        .addEventListener(
+            "click",
+            fermerScanner
+        );
+
+
+    /*
+     * Cliquer en dehors de la fenêtre
+     */
+
+    overlay.addEventListener(
+        "click",
+        event => {
+
+            if (event.target === overlay) {
+
+                fermerScanner();
+
+            }
+
+        }
+    );
+
+
+    /*
+     * ------------------------------------------------------------
+     * Traitement du QR code
+     * ------------------------------------------------------------
+     */
+
+    async function qrCodeDetecte(decodedText) {
+
+        console.log(
+            "QR code détecté :",
+            decodedText
+        );
+
+
+        /*
+         * Vérification du contenu
+         *
+         * Le QR généré par storage.js est :
+         *
+         * "Prénom Nom Rando's Lorraine"
+         */
+
+        const suffixe =
+            " Rando's Lorraine";
+
+
+        if (
+            typeof decodedText !== "string" ||
+            !decodedText.endsWith(suffixe)
+        ) {
+
+            message.textContent =
+                "Ce QR code n'est pas une carte Rando's Lorraine.";
+
+            return;
+
+        }
+
+
+        /*
+         * Suppression du suffixe
+         */
+
+        const nomComplet =
+            decodedText
+                .slice(
+                    0,
+                    -suffixe.length
+                )
+                .trim();
+
+
+        if (!nomComplet) {
+
+            message.textContent =
+                "Impossible de lire le nom.";
+
+            return;
+
+        }
+
+
+        /*
+         * Séparation Prénom / Nom
+         *
+         * On considère que le premier mot est le prénom
+         * et que tout ce qui suit constitue le nom.
+         */
+
+        const morceaux =
+            nomComplet
+                .split(/\s+/)
+                .filter(Boolean);
+
+
+        if (morceaux.length < 2) {
+
+            message.textContent =
+                "Le QR code ne contient pas un prénom et un nom valides.";
+
+            return;
+
+        }
+
+
+        const prenom =
+            formatName(morceaux[0]);
+
+        const nom =
+            formatName(
+                morceaux
+                    .slice(1)
+                    .join(" ")
+            );
+
+
+        /*
+         * --------------------------------------------------------
+         * PILOTE
+         * --------------------------------------------------------
+         */
+
+        if (type === "pilote") {
+
+            const champ =
+                $("#participants-pilote");
+
+            if (champ) {
+
+                champ.value =
+                    `${prenom} ${nom}`;
+
+            }
+
+
+            message.textContent =
+                `Pilote : ${prenom} ${nom}`;
+
+        }
+
+
+        /*
+         * --------------------------------------------------------
+         * COPILOTE
+         * --------------------------------------------------------
+         */
+
+        else if (type === "copilote") {
+
+            const champ =
+                $("#participants-copilote");
+
+            if (champ) {
+
+                champ.value =
+                    `${prenom} ${nom}`;
+
+            }
+
+
+            message.textContent =
+                `Copilote : ${prenom} ${nom}`;
+
+        }
+
+
+        /*
+         * --------------------------------------------------------
+         * PARTICIPANT
+         * --------------------------------------------------------
+         */
+
+        else if (type === "participant") {
+
+            const champPrenom =
+                $("#participant-prenom");
+
+            const champNom =
+                $("#participant-nom");
+
+            const champStatut =
+                $("#participant-statut");
+
+
+            if (champPrenom) {
+
+                champPrenom.value =
+                    prenom;
+
+            }
+
+
+            if (champNom) {
+
+                champNom.value =
+                    nom;
+
+            }
+
+
+            if (champStatut) {
+
+                champStatut.value =
+                    "Adhérent·e";
+
+            }
+
+
+            message.textContent =
+                `${prenom} ${nom} — Adhérent·e`;
+
+        }
+
+
+        /*
+         * --------------------------------------------------------
+         * Fermeture automatique
+         * --------------------------------------------------------
+         */
+
+        setTimeout(
+            fermerScanner,
+            500
+        );
+
+    }
+
+
+    /*
+     * ------------------------------------------------------------
+     * Création du lecteur
+     * ------------------------------------------------------------
+     */
+
+    qrScannerActif =
+        new Html5Qrcode("qr-reader");
+
+
+    /*
+     * Configuration de la caméra
+     */
+
+    const configuration = {
+
+        fps: 10,
+
+        qrbox: {
+            width: 250,
+            height: 250
+        }
+
+    };
+
+
+    /*
+     * Démarrage de la caméra arrière
+     */
+
+    qrScannerActif
+        .start(
+
+            {
+                facingMode: "environment"
+            },
+
+            configuration,
+
+            qrCodeDetecte,
+
+            () => {
+
+                /*
+                 * Les erreurs de lecture sont normales
+                 * pendant le scan.
+                 *
+                 * On ne les affiche donc pas.
+                 */
+
+            }
+
+        )
+
+        .catch(error => {
+
+            console.error(
+                "Impossible de démarrer le scanner QR :",
+                error
+            );
+
+
+            message.textContent =
+                "Impossible d'accéder à la caméra.";
+
+
+            /*
+             * On garde le bouton Annuler
+             * pour permettre à l'utilisateur
+             * de fermer la fenêtre.
+             */
+
+        });
+
+}
+
 /*
  * ============================================================
  * renderParticipants()
