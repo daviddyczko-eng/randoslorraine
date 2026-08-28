@@ -304,6 +304,28 @@ function reinitialiserApplication() {
 }
 
 /* ============================================================
+ * Bouton profil / réinitialisation
+ * ============================================================
+ */
+
+appBarIcon.addEventListener("click", () => {
+
+    /*
+     * Le bonhomme n'est actif que sur la page d'accueil.
+     */
+
+    if (currentScreen !== "accueil") {
+
+        return;
+
+    }
+
+
+    afficherConfirmationReinitialisation();
+
+});
+
+/* ============================================================
  * Variables globales
  * ============================================================
  */
