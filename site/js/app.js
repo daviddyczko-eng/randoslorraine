@@ -2451,9 +2451,9 @@ function ouvrirScannerQr(type) {
                 champStatut.value =
                     "Adhérent·e";
             }
+            ajouterParticipant();           
             message.textContent =
                 `${prenom} ${nom} — Adhérent·e`;
-                ajouterParticipant();
         }
         /*
          * --------------------------------------------------------
