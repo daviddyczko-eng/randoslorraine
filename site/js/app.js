@@ -5135,7 +5135,6 @@ $("#btn-supprimer-pilote").addEventListener("click", () => {
 
                 }
 
-            }
         );
 
 
@@ -5154,7 +5153,6 @@ $("#btn-supprimer-pilote").addEventListener("click", () => {
 
                 }
 
-            }
         );
 
 
