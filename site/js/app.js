@@ -830,11 +830,8 @@ Merci par avance`;
  * Page d'information
  * ============================================================ */
 function renderInfoPage(key) {
-
     if (!infoContent) {
-
         screenRoot.replaceChildren();
-
         screenRoot.insertAdjacentHTML(
             "afterbegin",
             `
@@ -843,17 +840,11 @@ function renderInfoPage(key) {
             </div>
             `
         );
-
         return;
-
     }
-
     const page = infoContent[key];
-
     if (!page) {
-
         screenRoot.replaceChildren();
-
         screenRoot.insertAdjacentHTML(
             "afterbegin",
             `
@@ -862,328 +853,193 @@ function renderInfoPage(key) {
             </div>
             `
         );
-
         return;
-
     }
-
     const chooseStore = (obj) => {
-
         if (!obj) return "#";
-
         const ua = navigator.userAgent;
-
         if (/Android/i.test(ua))
             return obj.store_android ?? obj.url ?? "#";
-
         if (/iPad|iPhone|iPod/.test(ua))
             return obj.store_ios ?? obj.url ?? "#";
-
         return obj.url ??
                obj.store_android ??
                obj.store_ios ??
                "#";
-
     };
-
     let html = `<div class="screen">`;
-
     for (const section of page.sections ?? []) {
-
         html += `
 <section class="info-section">
-
 <h3>
-
 ${escapeHtml(section.heading)}
-
 </h3>
 `;
-
         /* ---------- Liste ---------- */
-
         if (section.items?.length) {
-
             html += "<ul>";
-
             section.items.forEach((item,index)=>{
-
                 const link = section.links?.[index];
-
                 if (!link) {
-
                     html += `<li>${escapeHtml(item)}</li>`;
-
                     return;
-
                 }
-
                 html += `
 <li>
-
 ${escapeHtml(item)}
-
 :
-
 <a
 href="${chooseStore(link)}"
 target="_blank"
 rel="noopener"
 class="info-link">
-
 ${escapeHtml(link.label)}
-
 </a>
-
 </li>
 `;
-
             });
-
             html += "</ul>";
-
         }
-
         /* ---------- Texte ---------- */
-
         if (section.text?.length) {
-
             section.text.forEach((t)=>{
-
                 if (typeof t === "string") {
-
                     html += `
 <p class="info-text">
-
 ${escapeHtml(t)}
-
 </p>
 `;
-
                     return;
-
                 }
-
                 html += `
 <p class="info-text">
-
 <a
 href="${chooseStore(t)}"
 target="_blank"
 rel="noopener"
 class="app-link">
-
 ${escapeHtml(t.label)}
-
 </a>
-
 </p>
 `;
-
             });
-
         }
-
         /* ---------- Liens ---------- */
-
         if (section.links && !section.items) {
-
             section.links.forEach((l)=>{
-
                 html += `
 <p>
-
 <a
 href="${chooseStore(l)}"
 target="_blank"
 rel="noopener"
 class="info-link">
-
 ${escapeHtml(l.label)}
-
 </a>
-
 </p>
 `;
-
             });
-
         }
-
         if (section.footer) {
-
             html += `
 <p class="info-footer">
-
 ${escapeHtml(section.footer)}
-
 </p>
 `;
-
         }
-
         html += `
 </section>
 `;
-
     }
-
     html += `
 </div>
 `;
-
     screenRoot.replaceChildren();
-
     screenRoot.insertAdjacentHTML(
         "afterbegin",
         html
     );
-
 }
 
 /* ============================================================
  * Gestion des modales de covoiturage
  * ============================================================ */
-
 function openModal(id) {
-
     const modal = document.getElementById(id);
-
     if (!modal) {
-
         console.warn(`Modal "${id}" introuvable.`);
         return;
-
     }
-
     modal.classList.remove("hidden");
     modal.setAttribute("aria-hidden", "false");
-
 }
-
 function closeModal(id) {
-
     const modal = document.getElementById(id);
-
     if (!modal) {
-
         return;
-
     }
-
     modal.classList.add("hidden");
     modal.setAttribute("aria-hidden", "true");
-
 }
-
 function initCovoiturageModals() {
-
     document
         .querySelectorAll("[data-close-modal]")
         .forEach(btn => {
-
             btn.onclick = () => {
-
                 const modal =
                     btn.closest(".modal");
-
                 if (modal) {
-
                     closeModal(modal.id);
-
                 }
-
             };
-
         });
-
     document
         .querySelectorAll(".modal")
         .forEach(modal => {
-
             modal.onclick = (e) => {
-
                 if (e.target === modal) {
-
                     closeModal(modal.id);
-
                 }
-
             };
-
         });
-
     document.onkeydown = (e) => {
-
         if (e.key !== "Escape") return;
-
         document
             .querySelectorAll(".modal")
             .forEach(modal => {
-
                 if (!modal.classList.contains("hidden")) {
-
                     closeModal(modal.id);
-
                 }
-
             });
-
     };
-
 }
 
 /* ============================================================
  * Fonctions utilitaires
  * ============================================================ */
-
-/**
- * Retourne vrai si la date correspond à aujourd'hui.
- *
- * Formats acceptés :
- *   "Dimanche 30 août 2026"
- *   "Samedi 15 août 2026"
- *   "15/08/2026"
- *   "2026-08-15"
- *   Date(...)
- */
 function isToday(dateValue) {
-
     if (!dateValue) {
         return false;
     }
-
     let d = null;
-
     /* ============================================================
      * Cas 1 : objet Date
      * ============================================================ */
     if (dateValue instanceof Date) {
-
         d = dateValue;
     }
-
     /* ============================================================
      * Cas 2 : chaîne de caractères
      * ============================================================ */
     else if (typeof dateValue === "string") {
-
         const value = dateValue.trim();
-
-        /* --------------------------------------------------------
-         * Format français :
-         * "Dimanche 30 août 2026"
-         * -------------------------------------------------------- */
         const frenchMatch = value.match(
             /^(?:lundi|mardi|mercredi|jeudi|vendredi|samedi|dimanche)\s+(\d{1,2})\s+([a-zàâäéèêëîïôöùûüÿç]+)\s+(\d{4})$/i
         );
-
         if (frenchMatch) {
-
             const jour = Number(frenchMatch[1]);
             const moisNom = frenchMatch[2].toLowerCase();
             const annee = Number(frenchMatch[3]);
-
             const mois = {
                 janvier: 0,
                 février: 1,
@@ -1201,9 +1057,7 @@ function isToday(dateValue) {
                 décembre: 11,
                 decembre: 11
             };
-
             if (Object.prototype.hasOwnProperty.call(mois, moisNom)) {
-
                 d = new Date(
                     annee,
                     mois[moisNom],
@@ -1211,28 +1065,22 @@ function isToday(dateValue) {
                 );
             }
         }
-
         /* --------------------------------------------------------
          * Format "DD/MM/YYYY"
          * -------------------------------------------------------- */
         else if (/^\d{1,2}\/\d{1,2}\/\d{4}$/.test(value)) {
-
             const p = value.split("/");
-
             d = new Date(
                 Number(p[2]),
                 Number(p[1]) - 1,
                 Number(p[0])
             );
         }
-
         /* --------------------------------------------------------
          * Format ISO "YYYY-MM-DD"
          * -------------------------------------------------------- */
         else if (/^\d{4}-\d{2}-\d{2}$/.test(value)) {
-
             const p = value.split("-");
-
             d = new Date(
                 Number(p[0]),
                 Number(p[1]) - 1,
@@ -1240,20 +1088,16 @@ function isToday(dateValue) {
             );
         }
     }
-
     /* ============================================================
      * Date invalide
      * ============================================================ */
     if (!d || isNaN(d.getTime())) {
         return false;
     }
-
     /* ============================================================
      * Comparaison avec aujourd'hui
      * ============================================================ */
-
     const today = new Date();
-
     return (
         d.getDate() === today.getDate() &&
         d.getMonth() === today.getMonth() &&
@@ -1264,119 +1108,86 @@ function isToday(dateValue) {
 /* ============================================================
  * Ouvre un lien externe
  * ============================================================ */
-
 function openExternal(url) {
-
     if (!url)
         return;
-
     window.open(
         url,
         "_blank",
         "noopener,noreferrer"
     );
-
 }
-
 /* ============================================================
  * Téléphone
  * ============================================================ */
-
 function callPhone(number) {
-
     if (!number)
         return;
-
     window.location.href =
         "tel:" + number.replace(/\s/g, "");
-
 }
-
 /* ============================================================
  * SMS
  * ============================================================ */
-
 function sendSMS(number) {
-
     if (!number)
         return;
-
     window.location.href =
         "sms:" + number.replace(/\s/g, "");
-
 }
-
 /* ============================================================
  * SMS avec message pré-rédigé
  * ============================================================ */
-
 function sendSMSWithBody(number, body) {
-
     if (!number)
         return;
-
     const cleanNumber = number.replace(/\s/g, "");
-
     const isIOS =
         /iPad|iPhone|iPod/.test(navigator.userAgent) &&
         !window.MSStream;
-
     const separator = isIOS ? "&" : "?";
-
     window.location.href =
         `sms:${cleanNumber}${separator}body=${encodeURIComponent(body)}`;
-
 }
-
 /* ============================================================
  * Initiale du nom (ex. "Dupont" → "D.")
  * ============================================================ */
-
 function initialeNom(nom) {
-
     if (!nom)
         return "";
-
     return nom.trim().charAt(0).toUpperCase() + ".";
-
 }
-
 /* ============================================================
  * Google Maps
  * ============================================================ */
-
 function openMaps(lat, lng) {
-
     if (
         lat == null ||
         lng == null
     )
         return;
-
     const url =
         `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`;
-
     openExternal(url);
-
 }
 
+
+/* ============================================================
+ * Fonction Page d'Accueil
+ * ============================================================ */
 function renderAccueil(prenom, nom) {
   const rando = prochaineRando;
-
   let dateText = "Aucune date disponible";
   let lieuText = "Lieu inconnu";
   let randoTitle = "Prochaine randonnée";
-
   if (rando && typeof rando === 'object') {
     dateText = rando.date || "Date inconnue";
     lieuText = (rando.lieu && rando.lieu.commune) ? rando.lieu.commune : "Lieu inconnu";
-
     // Vérifier si la date est aujourd'hui
     if (isToday(rando.date)) {
       randoTitle = "Rando du jour";
     }
   }
-
   screenRoot.innerHTML = `
     <div class="screen">
       <div class="card-list">
@@ -1384,7 +1195,6 @@ function renderAccueil(prenom, nom) {
           <span class="home-card__title">Bonjour ${escapeHtml(prenom)} !</span>
           <div id="qr-small" style="display: inline-block; margin-left: 10px;"></div>
         </div>
-
         <div class="home-card" id="btn-rando">
           <span class="home-card__title">${escapeHtml(randoTitle)}</span>
           <span class="home-card__preview">
@@ -1392,39 +1202,31 @@ function renderAccueil(prenom, nom) {
             <small>${escapeHtml(lieuText)}</small>
           </span>
         </div>
-
         <div class="home-card" id="btn-participants">
           <span class="home-card__title">
             Liste des participant·e·s
           </span>
         </div>
-
         <div class="home-card" id="btn-info-avant">
           <span class="home-card__title">Avant le départ</span>
         </div>
-
         <div class="home-card" id="btn-info-accident">
           <span class="home-card__title">En cas d'accident</span>
         </div>
-
         <div class="home-card" id="btn-info-tarifs">
           <span class="home-card__title">Tout sur les tarifs</span>
         </div>
-
         <div class="home-card home-card--clickable" onclick="window.open('https://randoslorraine.org', '_blank')">
           <span class="home-card__title">Lien internet</span>
         </div>
       </div>
     </div>
   `;
-
   renderQr($("#qr-small"), qrData(prenom, nom), 60);
-
   // Écouteurs pour les boutons
   $("#btn-carte").addEventListener("click", () => {
     navigate("carte", { prenom, nom, title: "Ma carte Rando's Lorraine", showBack: true });
   });
-
   $("#btn-rando").addEventListener("click", () => {
     navigate("rando", {
       rando: prochaineRando,
@@ -1436,13 +1238,8 @@ function renderAccueil(prenom, nom) {
       }
     });
   });
-
 $("#btn-participants").addEventListener("click", () => {
-
-  // Si l'utilisateur a déjà demandé à ne plus afficher
-  // l'avertissement, ouvrir directement la liste.
   if (participantsWarningDisabled) {
-
     navigate("participants", {
       title: "Liste des participant·e·s",
       showBack: true,
@@ -1454,10 +1251,7 @@ $("#btn-participants").addEventListener("click", () => {
         });
       }
     });
-
   } else {
-
-    // Première utilisation : afficher l'avertissement.
     navigate("participants-warning", {
       title: "Important",
       showBack: true,
@@ -1469,11 +1263,8 @@ $("#btn-participants").addEventListener("click", () => {
         });
       }
     });
-
   }
-
 });
-    
   $("#btn-info-avant").addEventListener("click", () => {
     navigate("info", {
       infoKey: "avant-depart",
@@ -1485,7 +1276,6 @@ $("#btn-participants").addEventListener("click", () => {
       }
     });
   });
-
   $("#btn-info-accident").addEventListener("click", () => {
     navigate("info", {
       infoKey: "accident",
@@ -1497,7 +1287,6 @@ $("#btn-participants").addEventListener("click", () => {
       }
     });
   });
-
   $("#btn-info-tarifs").addEventListener("click", () => {
     navigate("info", {
       infoKey: "tarifs",
@@ -1514,9 +1303,7 @@ $("#btn-participants").addEventListener("click", () => {
 /* ============================================================
  * Debug
  * ============================================================ */
-
 window.appDebug = {
-
     navigate,
     getUser,
     saveUser,
@@ -1525,9 +1312,7 @@ window.appDebug = {
     renderRandoDetails,
     renderCarte,
     renderInfoPage
-
 };
-
 console.log(
     "✅ app.js chargé correctement."
 );
@@ -1536,124 +1321,72 @@ console.log(
  * Chargement des données
  * ============================================================
  */
-
 async function checkUserAndStart() {
-
     console.log("checkUserAndStart()");
-
     try{
-
         const [info,rando]=await Promise.all([
-
             fetch("./data/info.json")
             .then(r=>{
-
                 if(!r.ok)
                     throw new Error(r.status);
-
                 return r.json();
-
             }),
-
             fetchRandoDetails()
-
         ]);
-
         infoContent=info;
-
         prochaineRando=rando;
-
     }
-
     catch(err){
-
         console.error(err);
-
     }
-
     currentUser=getUser();
-
     if(
         !currentUser?.prenom ||
         !currentUser?.nom ||
         !currentUser?.dateInscription
     ){
-
         return{
-
             screen:"inscription",
-
             options:{
-
                 title:"Inscription"
-
             }
-
         };
-
     }
-
     if(
         needsCotisation(
             currentUser.dateInscription
         )
     ){
-
         return{
-
             screen:"cotisation",
-
             options:{
-
                 prenom:currentUser.prenom,
-
                 nom:currentUser.nom,
-
                 dateInscription:
                     currentUser.dateInscription,
-
                 title:"Cotisation"
-
             }
-
         };
-
     }
-
     return{
-
         screen:"accueil",
-
         options:{
-
             prenom:currentUser.prenom,
-
             nom:currentUser.nom,
-
             title:"Rando's Lorraine"
-
         }
-
     };
-
 }
 
 /* ============================================================
  * Page d'avertissement - Liste des participant·e·s
  * ============================================================ */
-
 function renderParticipantsWarning() {
-
     appBarTitle.textContent = "Important";
-
     screenRoot.innerHTML = `
-
         <div class="screen">
-
             <div class="alert alert--danger">
-
                 <h2>Attention</h2>
-
                 <p>
                     La liste des participant·e·s est sous la
                     responsabilité de la ou du pilote. Il est donc préférable
@@ -1661,84 +1394,56 @@ function renderParticipantsWarning() {
                     Si vous la faites, n'oubliez pas de l'en informer.
                     Merci
                 </p>
-
             </div>
-
             <div class="warning-option">
-
                 <label class="checkbox-label">
-
                     <input
                         type="checkbox"
                         id="participants-warning-checkbox"
                     >
-
                     <span>Ne plus afficher</span>
-
                 </label>
-
             </div>
-
             <div class="btn-row">
-
                 <button
                     type="button"
                     class="btn btn--primary"
                     id="btn-participants-warning-ok">
                     J'ai compris.
                 </button>
-
             </div>
-
         </div>
     `;
-
     const checkbox = $("#participants-warning-checkbox");
-
     const button = $("#btn-participants-warning-ok");
-
-    // ------------------------------------------------------------
     // Bouton "J'ai compris."
-    // ------------------------------------------------------------
-
 button.addEventListener("click", () => {
-
     if (checkbox.checked) {
-
         participantsWarningDisabled = true;
-
         localStorage.setItem(
             "participantsWarningDisabled",
             "true"
         );
-
     }
-
     navigate("participants", {
         title: "Liste des participant·e·s",
         showBack: true,
         onBack: () => {
-
             const user = getUser();
-
             navigate("accueil", {
                 prenom: user.prenom,
                 nom: user.nom
             });
-
         }
     });
-
 });
-
 }
+
 /* ============================================================
  * Calendrier des participants
  * ============================================================
  */
-
 function ouvrirCalendrierParticipants(dateActuelle, onValidate) {
-
     const moisNoms = [
         "janvier",
         "février",
@@ -1753,456 +1458,282 @@ function ouvrirCalendrierParticipants(dateActuelle, onValidate) {
         "novembre",
         "décembre"
     ];
-
     const aujourdHui = new Date();
-
     aujourdHui.setHours(0, 0, 0, 0);
-
-    /*
-     * ------------------------------------------------------------
-     * Date minimale :
-     *
-     * premier jour du mois précédent
-     * ------------------------------------------------------------
-     */
-
     const dateMinimum = new Date(
         aujourdHui.getFullYear(),
         aujourdHui.getMonth() - 1,
         1
     );
-
-    /*
-     * ------------------------------------------------------------
-     * Date sélectionnée
-     * ------------------------------------------------------------
-     */
-
     let dateSelectionnee = new Date(dateActuelle);
-
     if (isNaN(dateSelectionnee.getTime())) {
-
         dateSelectionnee = new Date(aujourdHui);
-
     }
-
     dateSelectionnee.setHours(0, 0, 0, 0);
-
-
-    /*
-     * Sécurité
-     */
-
     if (dateSelectionnee < dateMinimum) {
-
         dateSelectionnee = new Date(dateMinimum);
-
     }
-
     if (dateSelectionnee > aujourdHui) {
-
         dateSelectionnee = new Date(aujourdHui);
-
     }
-
 
     /*
      * ------------------------------------------------------------
      * Fenêtre
      * ------------------------------------------------------------
      */
-
     const overlay = document.createElement("div");
-
     overlay.className = "calendar-overlay";
-
     overlay.innerHTML = `
-
         <div class="calendar-modal">
-
             <div class="calendar-title">
                 Choisir une date
             </div>
-
             <div class="calendar-wheels">
-
                 <div class="calendar-wheel">
-
                     <label for="calendar-day">
                         Jour
                     </label>
-
                     <select id="calendar-day">
                     </select>
-
                 </div>
-
-
                 <div class="calendar-wheel">
-
                     <label for="calendar-month">
                         Mois
                     </label>
-
                     <select id="calendar-month">
                     </select>
-
                 </div>
-
-
                 <div class="calendar-wheel">
-
                     <label for="calendar-year">
                         Année
                     </label>
-
                     <select id="calendar-year">
                     </select>
-
                 </div>
-
             </div>
-
             <div
                 class="calendar-selected-date"
                 id="calendar-selected-date">
             </div>
-
             <div class="calendar-buttons">
-
                 <button
                     type="button"
                     class="btn btn--ghost"
                     id="calendar-cancel">
-
                     Annuler
-
                 </button>
-
                 <button
                     type="button"
                     class="btn btn--primary"
                     id="calendar-ok">
-
                     Valider
-
                 </button>
-
             </div>
-
         </div>
     `;
-
     document.body.appendChild(overlay);
-
-
     const daySelect =
         overlay.querySelector("#calendar-day");
-
     const monthSelect =
         overlay.querySelector("#calendar-month");
-
     const yearSelect =
         overlay.querySelector("#calendar-year");
-
     const selectedDateText =
         overlay.querySelector("#calendar-selected-date");
-
-
     /*
      * ------------------------------------------------------------
      * Années disponibles
-     *
-     * Normalement une seule année.
-     *
      * En janvier :
      * année courante + année précédente.
      * ------------------------------------------------------------
      */
-
     const anneeMinimum =
         dateMinimum.getFullYear();
-
     const anneeMaximum =
         aujourdHui.getFullYear();
-
     for (
         let annee = anneeMinimum;
         annee <= anneeMaximum;
         annee++
     ) {
-
         const option =
             document.createElement("option");
-
         option.value = annee;
-
         option.textContent = annee;
-
         yearSelect.appendChild(option);
-
     }
-
-
     /*
      * ------------------------------------------------------------
      * Mois autorisés
      * ------------------------------------------------------------
      */
-
     function moisAutorises(annee) {
-
         const resultat = [];
-
         for (
             let mois = 0;
             mois < 12;
             mois++
         ) {
-
             const premierJour =
                 new Date(annee, mois, 1);
-
             const dernierJour =
                 new Date(annee, mois + 1, 0);
-
             if (
                 dernierJour >= dateMinimum &&
                 premierJour <= aujourdHui
             ) {
-
                 resultat.push(mois);
-
             }
-
         }
-
         return resultat;
-
     }
-
-
     /*
      * ------------------------------------------------------------
      * Nombre de jours dans un mois
      * ------------------------------------------------------------
      */
-
     function nombreJoursDansMois(annee, mois) {
-
         return new Date(
             annee,
             mois + 1,
             0
         ).getDate();
-
     }
-
-
     /*
      * ------------------------------------------------------------
      * Mise à jour des molettes
      * ------------------------------------------------------------
      */
-
     function actualiserMolettes() {
-
         const annee =
             parseInt(yearSelect.value, 10);
-
         const moisAvant =
             parseInt(monthSelect.value, 10);
-
         const moisDisponibles =
             moisAutorises(annee);
-
-
         /*
          * --------------------------------------------------------
          * MOIS
          * --------------------------------------------------------
          */
-
         monthSelect.innerHTML = "";
-
         moisDisponibles.forEach(mois => {
-
             const option =
                 document.createElement("option");
-
             option.value = mois;
-
             option.textContent =
                 moisNoms[mois];
-
             monthSelect.appendChild(option);
-
         });
-
-
         /*
          * Conserver le mois si possible
          */
-
         if (
             moisDisponibles.includes(moisAvant)
         ) {
-
             monthSelect.value =
                 moisAvant;
-
         }
         else {
-
             /*
              * Si le mois n'est plus disponible,
              * prendre le premier mois autorisé.
              */
-
             monthSelect.value =
                 moisDisponibles[0];
-
         }
-
-
         const mois =
             parseInt(monthSelect.value, 10);
-
-
         /*
          * --------------------------------------------------------
          * JOURS
          * --------------------------------------------------------
          */
-
         const ancienJour =
             parseInt(daySelect.value, 10) ||
             dateSelectionnee.getDate();
-
         const nombreJours =
             nombreJoursDansMois(
                 annee,
                 mois
             );
-
-
         let jourMinimum = 1;
-
         let jourMaximum =
             nombreJours;
-
-
         /*
          * Limite inférieure
          */
-
         if (
             annee === dateMinimum.getFullYear() &&
             mois === dateMinimum.getMonth()
         ) {
-
             jourMinimum =
                 dateMinimum.getDate();
-
         }
-
-
         /*
          * Limite supérieure
          */
-
         if (
             annee === aujourdHui.getFullYear() &&
             mois === aujourdHui.getMonth()
         ) {
-
             jourMaximum =
                 aujourdHui.getDate();
-
         }
-
-
         daySelect.innerHTML = "";
-
         for (
             let jour = jourMinimum;
             jour <= jourMaximum;
             jour++
         ) {
-
             const option =
                 document.createElement("option");
-
             option.value = jour;
-
             option.textContent =
                 String(jour).padStart(2, "0");
-
             daySelect.appendChild(option);
-
         }
-
-
         /*
          * Conserver le jour si possible
          */
-
         if (
             ancienJour >= jourMinimum &&
             ancienJour <= jourMaximum
         ) {
-
             daySelect.value =
                 ancienJour;
-
         }
         else if (
             ancienJour < jourMinimum
         ) {
-
             daySelect.value =
                 jourMinimum;
-
         }
         else {
-
             daySelect.value =
                 jourMaximum;
-
         }
-
-
         afficherDateSelectionnee();
-
     }
-
-
     /*
      * ------------------------------------------------------------
      * Affichage de la date sélectionnée
      * ------------------------------------------------------------
      */
-
     function afficherDateSelectionnee() {
-
         const jour =
             parseInt(daySelect.value, 10);
-
         const mois =
             parseInt(monthSelect.value, 10);
-
         const annee =
             parseInt(yearSelect.value, 10);
-
-
         const date =
             new Date(
                 annee,
                 mois,
                 jour
             );
-
-
         const texte =
             new Intl.DateTimeFormat(
                 "fr-FR",
@@ -2213,169 +1744,118 @@ function ouvrirCalendrierParticipants(dateActuelle, onValidate) {
                     year: "numeric"
                 }
             ).format(date);
-
-
         selectedDateText.textContent =
             texte.charAt(0).toUpperCase() +
             texte.slice(1);
-
     }
-
-
     /*
      * ------------------------------------------------------------
      * Initialisation
      * ------------------------------------------------------------
      */
-
     yearSelect.value =
         dateSelectionnee.getFullYear();
-
     actualiserMolettes();
-
     monthSelect.value =
         dateSelectionnee.getMonth();
-
     actualiserMolettes();
-
     daySelect.value =
         dateSelectionnee.getDate();
-
     afficherDateSelectionnee();
-
-
     /*
      * ------------------------------------------------------------
      * Événements
      * ------------------------------------------------------------
      */
-
     yearSelect.addEventListener(
         "change",
         actualiserMolettes
     );
-
     monthSelect.addEventListener(
         "change",
         actualiserMolettes
     );
-
     daySelect.addEventListener(
         "change",
         afficherDateSelectionnee
     );
-
-
     /*
      * ------------------------------------------------------------
      * Annuler
      * ------------------------------------------------------------
      */
-
     overlay.querySelector(
         "#calendar-cancel"
     ).addEventListener(
         "click",
         () => {
-
             overlay.remove();
-
         }
     );
-
-
     /*
      * ------------------------------------------------------------
      * Valider
      * ------------------------------------------------------------
  */
-
     overlay.querySelector(
         "#calendar-ok"
     ).addEventListener(
         "click",
         () => {
-
             const jour =
                 parseInt(daySelect.value, 10);
-
             const mois =
                 parseInt(monthSelect.value, 10);
-
             const annee =
                 parseInt(yearSelect.value, 10);
-
-
             const dateFinale =
                 new Date(
                     annee,
                     mois,
                     jour
                 );
-
             dateFinale.setHours(
                 0,
                 0,
                 0,
                 0
             );
-
-
             /*
              * Sécurité
              */
-
             if (
                 dateFinale < dateMinimum ||
                 dateFinale > aujourdHui
             ) {
-
                 alert(
                     "La date sélectionnée n'est pas autorisée."
                 );
-
                 return;
-
             }
-
-
             if (
                 typeof onValidate === "function"
             ) {
-
                 onValidate(dateFinale);
-
             }
-
             overlay.remove();
-
         }
     );
-
-
     /*
      * ------------------------------------------------------------
      * Cliquer en dehors
      * ------------------------------------------------------------
      */
-
     overlay.addEventListener(
         "click",
         event => {
-
             if (
                 event.target === overlay
             ) {
-
                 overlay.remove();
-
             }
-
         }
     );
-
 }
-
 
 /* ============================================================
  * Gestion locale de la liste des participant·e·s
