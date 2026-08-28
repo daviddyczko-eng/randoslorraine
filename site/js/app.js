@@ -19,7 +19,6 @@ if ("serviceWorker" in navigator) {
             registrations.forEach(reg => reg.unregister());
         });
 }
-
 if ("caches" in window) {
     caches.keys().then(keys => {
         keys.forEach(key => caches.delete(key));
@@ -1861,139 +1860,85 @@ function ouvrirCalendrierParticipants(dateActuelle, onValidate) {
  * Gestion locale de la liste des participant·e·s
  * ============================================================
  */
-
-/*
- * Clé utilisée dans localStorage.
- *
- * Une seule liste temporaire est conservée pour la randonnée
- * actuellement éditée.
- */
-
 const PARTICIPANTS_STORAGE_KEY =
     "participantsListe";
-
-
-/*
- * ------------------------------------------------------------
- * Chargement de la liste depuis la mémoire du téléphone
- * ------------------------------------------------------------
- */
-
 function chargerParticipants() {
-
     try {
-
         const data =
             localStorage.getItem(
                 PARTICIPANTS_STORAGE_KEY
             );
-
         if (!data) {
-
             return [];
-
         }
-
         const liste =
             JSON.parse(data);
-
         if (!Array.isArray(liste)) {
-
             return [];
-
         }
-
         return liste;
-
     }
     catch (err) {
-
         console.error(
             "Erreur de lecture des participants :",
             err
         );
-
         return [];
-
     }
-
 }
-
 
 /*
  * ------------------------------------------------------------
  * Sauvegarde de la liste
  * ------------------------------------------------------------
- *
- * Cette fonction est appelée après CHAQUE modification.
- *
- * Les données restent donc disponibles hors ligne.
- * ------------------------------------------------------------
  */
-
 function sauvegarderParticipants() {
-
     try {
-
         localStorage.setItem(
             PARTICIPANTS_STORAGE_KEY,
             JSON.stringify(participants)
         );
-
         console.log(
             "Liste des participants sauvegardée.",
             participants
         );
-
     }
     catch (err) {
-
         console.error(
             "Impossible de sauvegarder la liste :",
             err
         );
-
         alert(
             "Impossible d'enregistrer la liste dans la mémoire du téléphone."
         );
-
     }
-
 }
-
 
 /*
  * ------------------------------------------------------------
  * Normalisation d'un nom
  * ------------------------------------------------------------
  */
-
 function normaliserNomParticipant(prenom, nom) {
-
     return (
         `${prenom} ${nom}`
     )
         .trim()
         .replace(/\s+/g, " ")
         .toLowerCase();
-
 }
-
 
 /*
  * ------------------------------------------------------------
  * Vérifier si une personne existe déjà
  * ------------------------------------------------------------
  */
-
 function participantExiste(prenom, nom) {
-
     const cle =
         normaliserNomParticipant(
             prenom,
             nom
         );
-
     return participants.some(
         participant =>
             normaliserNomParticipant(
@@ -2001,76 +1946,51 @@ function participantExiste(prenom, nom) {
                 participant.nom
             ) === cle
     );
-
 }
-
 
 /*
  * ------------------------------------------------------------
  * Ordre des statuts
  * ------------------------------------------------------------
- *
- * L'ordre est celui défini dans
- * PARTICIPANT_STATUSES.
- * ------------------------------------------------------------
  */
-
 function ordreStatut(statut) {
-
     const index =
         PARTICIPANT_STATUSES.indexOf(
             statut
         );
-
     return index === -1
         ? 999
         : index;
-
 }
-
 
 /*
  * ------------------------------------------------------------
  * Tri de la liste
- *
  * 1. Statut
  * 2. Nom
  * 3. Prénom
  * ------------------------------------------------------------
  */
-
 function trierParticipants() {
-
     participants.sort(
         (a, b) => {
-
             const statutA =
                 ordreStatut(a.statut);
-
             const statutB =
                 ordreStatut(b.statut);
-
-
             if (statutA !== statutB) {
-
                 return statutA - statutB;
-
             }
-
-
             const nomA =
                 `${a.nom} ${a.prenom}`
                     .toLocaleLowerCase(
                         "fr"
                     );
-
             const nomB =
                 `${b.nom} ${b.prenom}`
                     .toLocaleLowerCase(
                         "fr"
                     );
-
-
             return nomA.localeCompare(
                 nomB,
                 "fr",
@@ -2078,33 +1998,23 @@ function trierParticipants() {
                     sensitivity: "base"
                 }
             );
-
         }
     );
-
 }
-
 
 /*
  * ------------------------------------------------------------
  * Création du CSV
  * ------------------------------------------------------------
- *
  * Une ligne :
- *
  * Date ; Lieu ; Statut ; Prénom Nom
  * ------------------------------------------------------------
  */
-
 function creerCsvParticipants() {
-
     trierParticipants();
-
-
     const lignes =
         participants.map(
             participant => {
-
                 return [
                     participant.date,
                     participant.lieu,
@@ -2126,59 +2036,41 @@ function creerCsvParticipants() {
                             `"${valeur}"`
                     )
                     .join(" ; ");
-
             }
         );
-
-
     return lignes.join("\n");
-
 }
-
 
 /*
  * ------------------------------------------------------------
  * Sauvegarde complète :
- *
  * mémoire interne + CSV temporaire
  * ------------------------------------------------------------
  */
-
 function enregistrerParticipants() {
-
     trierParticipants();
-
     sauvegarderParticipants();
-
     const csv =
         creerCsvParticipants();
-
     /*
-     * Le CSV est également conservé en mémoire
-     * dans localStorage.
+     * Le CSV est également conservé en mémoire dans localStorage.
      */
-
     localStorage.setItem(
         "participantsCsv",
         csv
     );
-
     console.log(
         "CSV participants mis à jour :\n",
         csv
     );
-
 }
-
 
 /*
  * ------------------------------------------------------------
  * Formatage d'une date
  * ------------------------------------------------------------
  */
-
 function formaterDateParticipant(date) {
-
     const jours = [
         "Dimanche",
         "Lundi",
@@ -2188,7 +2080,6 @@ function formaterDateParticipant(date) {
         "Vendredi",
         "Samedi"
     ];
-
     const mois = [
         "janvier",
         "février",
@@ -2203,204 +2094,136 @@ function formaterDateParticipant(date) {
         "novembre",
         "décembre"
     ];
-
-
     return (
         `${jours[date.getDay()]} ` +
         `${String(date.getDate()).padStart(2, "0")} ` +
         `${mois[date.getMonth()]} ` +
         `${date.getFullYear()}`
     );
-
 }
+
 /* ============================================================
  * Gestion du commentaire
  * ============================================================
  */
-
 function ouvrirFenetreCommentaire() {
-
     /*
      * Création de la fenêtre
      */
-
     const overlay =
         document.createElement("div");
-
     overlay.className =
         "commentaire-overlay";
-
     overlay.innerHTML = `
-
         <div
             class="commentaire-modal"
             role="dialog"
             aria-modal="true"
             aria-labelledby="commentaire-title">
-
             <div
                 class="commentaire-title"
                 id="commentaire-title">
-
                 Commentaire
-
             </div>
-
-
             <textarea
                 id="commentaire-input"
                 class="commentaire-input"
                 placeholder="Saisissez votre commentaire..."
                 rows="6"
             >${escapeHtml(commentaire)}</textarea>
-
-
             <div class="calendar-buttons">
-
                 <button
                     type="button"
                     class="btn btn--ghost"
                     id="commentaire-cancel">
-
                     Annuler
-
                 </button>
-
-
                 <button
                     type="button"
                     class="btn btn--primary"
                     id="commentaire-ok">
-
                     Valider le commentaire
-
                 </button>
-
             </div>
-
         </div>
     `;
-
     document.body.appendChild(overlay);
-
-
     const input =
         overlay.querySelector(
             "#commentaire-input"
         );
-
-
     /*
      * Donner automatiquement le focus
      */
-
     input.focus();
-
-
     /*
      * ------------------------------------------------------------
      * Annuler
      * ------------------------------------------------------------
      */
-
     overlay
         .querySelector("#commentaire-cancel")
         .addEventListener("click", () => {
-
             overlay.remove();
-
         });
-
-
     /*
      * ------------------------------------------------------------
      * Valider le commentaire
      * ------------------------------------------------------------
      */
-
     overlay
         .querySelector("#commentaire-ok")
         .addEventListener("click", () => {
-
             commentaire =
                 input.value.trim();
-
-
             /*
              * Mémorisation dans le téléphone
              */
-
             localStorage.setItem(
                 "participantsCommentaire",
                 commentaire
             );
-
-
             /*
              * Fermer la fenêtre
              */
-
             overlay.remove();
-
-
             /*
              * Actualiser l'affichage
              */
-
             afficherCommentaire();
-
         });
-
-
     /*
      * ------------------------------------------------------------
      * Cliquer en dehors de la fenêtre
      * ------------------------------------------------------------
      */
-
     overlay.addEventListener(
         "click",
         event => {
-
             if (event.target === overlay) {
-
                 overlay.remove();
-
             }
-
         }
     );
-
 }
-
 
 /* ============================================================
  * Affichage du commentaire
  * ============================================================
  */
-
 function afficherCommentaire() {
-
     const zone = $("#participants-commentaire");
-
     if (!zone) return;
-
     if (!commentaire || !commentaire.trim()) {
-
         zone.innerHTML = "";
-
         return;
     }
-
     zone.innerHTML = `
         <div class="participants-commentaire-box">
-
             <strong>Commentaire :</strong>
-
             <p>
                 ${escapeHtml(commentaire)}
             </p>
-
         </div>
     `;
 }
@@ -2409,215 +2232,137 @@ function afficherCommentaire() {
  * Scanner QR code
  * ============================================================
  */
-
 let qrScannerActif = null;
-
-
 /*
  * Ouvre le scanner QR code.
- *
  * type peut être :
- *
  *   "pilote"
  *   "copilote"
  *   "participant"
- *
  */
 function ouvrirScannerQr(type) {
-
     /*
      * Vérification de la bibliothèque
      */
-
     if (typeof Html5Qrcode === "undefined") {
-
         alert(
             "Le lecteur QR code n'est pas disponible."
         );
-
         return;
     }
-
-
     /*
      * Création de la fenêtre de scan
      */
-
     const overlay =
         document.createElement("div");
-
     overlay.className =
         "qr-scanner-overlay";
-
-
     overlay.innerHTML = `
-
         <div class="qr-scanner-modal">
-
             <div class="qr-scanner-title">
                 Scanner le QR code
             </div>
-
             <div
                 id="qr-reader"
                 class="qr-reader">
             </div>
-
             <p
                 id="qr-scanner-message"
                 class="qr-scanner-message">
-
                 Présentez le QR code devant la caméra.
-
             </p>
-
             <button
                 type="button"
                 class="btn btn--ghost"
                 id="qr-scanner-cancel">
-
                 Annuler
-
             </button>
-
         </div>
-
     `;
-
-
     document.body.appendChild(overlay);
-
-
     const message =
         overlay.querySelector(
             "#qr-scanner-message"
         );
-
-
     /*
      * ------------------------------------------------------------
      * Fonction de fermeture
      * ------------------------------------------------------------
      */
-
     let fermetureEnCours = false;
-
     async function fermerScanner() {
-
         if (fermetureEnCours)
             return;
-
         fermetureEnCours = true;
-
-
         /*
          * Arrêt du scanner
          */
-
         if (qrScannerActif) {
-
             try {
-
                 await qrScannerActif.stop();
-
             }
-
             catch (e) {
-
                 console.warn(
                     "Erreur lors de l'arrêt du scanner :",
                     e
                 );
-
             }
-
             qrScannerActif = null;
-
         }
-
-
         /*
          * Suppression de la fenêtre
          */
-
         overlay.remove();
-
     }
-
-
     /*
      * Bouton Annuler
      */
-
     overlay
         .querySelector("#qr-scanner-cancel")
         .addEventListener(
             "click",
             fermerScanner
         );
-
-
     /*
      * Cliquer en dehors de la fenêtre
      */
-
     overlay.addEventListener(
         "click",
         event => {
-
             if (event.target === overlay) {
-
                 fermerScanner();
-
             }
-
         }
     );
-
-
     /*
+
      * ------------------------------------------------------------
      * Traitement du QR code
      * ------------------------------------------------------------
      */
-
     async function qrCodeDetecte(decodedText) {
-
         console.log(
             "QR code détecté :",
             decodedText
         );
-
-
         /*
          * Vérification du contenu
-         *
          * Le QR généré par storage.js est :
-         *
          * "Prénom Nom Rando's Lorraine"
          */
-
         const suffixe =
             " Rando's Lorraine";
-
-
         if (
             typeof decodedText !== "string" ||
             !decodedText.endsWith(suffixe)
         ) {
-
             message.textContent =
                 "Ce QR code n'est pas une carte Rando's Lorraine.";
-
             return;
-
         }
-
-
         /*
          * Suppression du suffixe
          */
-
         const nomComplet =
             decodedText
                 .slice(
@@ -2625,238 +2370,147 @@ function ouvrirScannerQr(type) {
                     -suffixe.length
                 )
                 .trim();
-
-
         if (!nomComplet) {
-
             message.textContent =
                 "Impossible de lire le nom.";
-
             return;
-
         }
-
-
         /*
          * Séparation Prénom / Nom
-         *
          * On considère que le premier mot est le prénom
          * et que tout ce qui suit constitue le nom.
          */
-
         const morceaux =
             nomComplet
                 .split(/\s+/)
                 .filter(Boolean);
-
-
         if (morceaux.length < 2) {
-
             message.textContent =
                 "Le QR code ne contient pas un prénom et un nom valides.";
-
             return;
-
         }
-
-
         const prenom =
             formatName(morceaux[0]);
-
         const nom =
             formatName(
                 morceaux
                     .slice(1)
                     .join(" ")
             );
-
-
         /*
          * --------------------------------------------------------
          * PILOTE
          * --------------------------------------------------------
          */
-
         if (type === "pilote") {
-
             const champ =
                 $("#participants-pilote");
-
             if (champ) {
-
                 champ.value =
                     `${prenom} ${nom}`;
-
             }
-
-
             message.textContent =
                 `Pilote : ${prenom} ${nom}`;
-
         }
-
-
         /*
          * --------------------------------------------------------
          * COPILOTE
          * --------------------------------------------------------
          */
-
         else if (type === "copilote") {
-
             const champ =
                 $("#participants-copilote");
-
             if (champ) {
-
                 champ.value =
                     `${prenom} ${nom}`;
-
             }
-
-
             message.textContent =
                 `Copilote : ${prenom} ${nom}`;
-
         }
-
-
         /*
          * --------------------------------------------------------
          * PARTICIPANT
          * --------------------------------------------------------
          */
-
         else if (type === "participant") {
-
             const champPrenom =
                 $("#participant-prenom");
-
             const champNom =
                 $("#participant-nom");
-
             const champStatut =
                 $("#participant-statut");
-
-
             if (champPrenom) {
-
                 champPrenom.value =
                     prenom;
-
             }
-
-
             if (champNom) {
-
                 champNom.value =
                     nom;
-
             }
-
-
             if (champStatut) {
-
                 champStatut.value =
                     "Adhérent·e";
-
             }
-
-
             message.textContent =
                 `${prenom} ${nom} — Adhérent·e`;
-
         }
-
-
         /*
          * --------------------------------------------------------
          * Fermeture automatique
          * --------------------------------------------------------
          */
-
         setTimeout(
             fermerScanner,
             500
         );
-
     }
-
 
     /*
      * ------------------------------------------------------------
      * Création du lecteur
      * ------------------------------------------------------------
      */
-
     qrScannerActif =
         new Html5Qrcode("qr-reader");
-
-
     /*
      * Configuration de la caméra
      */
-
     const configuration = {
-
         fps: 10,
-
         qrbox: {
             width: 250,
             height: 250
         }
-
     };
-
 
     /*
      * Démarrage de la caméra arrière
      */
-
     qrScannerActif
         .start(
-
             {
                 facingMode: "environment"
             },
-
             configuration,
-
             qrCodeDetecte,
-
             () => {
-
                 /*
-                 * Les erreurs de lecture sont normales
-                 * pendant le scan.
-                 *
+                 * Les erreurs de lecture sont normales pendant le scan.
                  * On ne les affiche donc pas.
                  */
-
             }
-
         )
-
         .catch(error => {
-
             console.error(
                 "Impossible de démarrer le scanner QR :",
                 error
             );
-
-
             message.textContent =
                 "Impossible d'accéder à la caméra.";
-
-
             /*
-             * On garde le bouton Annuler
-             * pour permettre à l'utilisateur
-             * de fermer la fenêtre.
+             * On garde le bouton Annuler pour permettre à l'utilisateur de fermer la fenêtre.
              */
-
         });
-
 }
 
 /*
