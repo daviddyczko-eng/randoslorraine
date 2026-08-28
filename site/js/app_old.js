@@ -1,52 +1,37 @@
 /* ============================================================
  * Randos Lorraine
  * app.js
- * Bloc 1 : Initialisation
  * ============================================================
  */
-
 import {
     getUser,
     saveUser,
     needsCotisation,
     qrData
 } from "./storage.js";
-
 /* ============================================================
  * Désactivation du Service Worker (développement)
  * ============================================================
  */
-
 if ("serviceWorker" in navigator) {
-
     navigator.serviceWorker.getRegistrations()
         .then(registrations => {
-
             registrations.forEach(reg => reg.unregister());
-
         });
-
 }
 
 if ("caches" in window) {
-
     caches.keys().then(keys => {
-
         keys.forEach(key => caches.delete(key));
-
     });
-
 }
 
 /* ============================================================
  * Constantes
  * ============================================================
  */
-
 const $ = selector => document.querySelector(selector);
-
 const $$ = selector => [...document.querySelectorAll(selector)];
-
 const PARTICLES = [
     "de",
     "du",
@@ -63,279 +48,135 @@ const PARTICLES = [
  * Eléments du DOM
  * ============================================================
  */
-
 const splashEl = $("#view-splash");
 const mainEl = $("#view-main");
-
 const screenRoot = $("#screen-root");
-
 const appBarTitle = $("#app-bar-title");
-
 const appBarBack = $("#btn-back");
-
 const appBarIcon = $("#app-bar-icon");
 
 /* ============================================================
  * Réinitialisation de l'application
  * ============================================================
  */
-
 function afficherConfirmationReinitialisation() {
-
     /*
      * Création de la fenêtre
      */
-
     const overlay =
         document.createElement("div");
-
     overlay.className =
         "reset-overlay";
-
     overlay.innerHTML = `
-
         <div class="reset-modal">
-
             <div class="reset-modal__title">
                 Réinitialiser l'application
             </div>
-
             <div class="reset-modal__message">
-
                 Voulez-vous effacer toutes vos données
                 personnelles de l'application ?
-
             </div>
-
             <div class="reset-modal__buttons">
-
                 <button
                     type="button"
                     class="btn btn--cancel"
                     id="reset-non">
-
                     Non
-
                 </button>
-
                 <button
                     type="button"
                     class="btn btn--primary"
                     id="reset-oui">
-
                     Oui
-
                 </button>
-
             </div>
-
         </div>
-
     `;
-
-
     document.body.appendChild(overlay);
-
-
-    /*
-     * ------------------------------------------------------------
-     * Bouton NON
-     * ------------------------------------------------------------
-     */
-
     overlay
         .querySelector("#reset-non")
         .addEventListener("click", () => {
-
             overlay.remove();
-
         });
-
-
-    /*
-     * ------------------------------------------------------------
-     * Bouton OUI
-     * ------------------------------------------------------------
-     */
-
     overlay
         .querySelector("#reset-oui")
         .addEventListener("click", () => {
-
             reinitialiserApplication();
-
             overlay.remove();
-
         });
-
-
-    /*
-     * Cliquer en dehors de la fenêtre
-     */
-
     overlay.addEventListener("click", event => {
-
         if (event.target === overlay) {
-
             overlay.remove();
-
         }
-
     });
-
 }
-
 
 /* ============================================================
  * Suppression de toutes les données personnelles
  * ============================================================
  */
-
 function reinitialiserApplication() {
-
     console.log(
         "Réinitialisation de l'application"
     );
-
-
-    /*
-     * ------------------------------------------------------------
-     * Suppression du compte utilisateur
-     * ------------------------------------------------------------
-     */
-
     localStorage.removeItem("randos_lorraine");
-
-
-    /*
-     * ------------------------------------------------------------
-     * Suppression de l'avertissement participants
-     * ------------------------------------------------------------
-     */
-
     localStorage.removeItem(
         "participantsWarningDisabled"
     );
-
-
-    /*
-     * ------------------------------------------------------------
-     * Suppression des données des participants
-     *
-     * Les clés commencent par :
-     *
-     * participantsListe_
-     *
-     * et peuvent avoir le suffixe :
-     *
-     * _csv
-     * ------------------------------------------------------------
-     */
-
     const clesASupprimer = [];
-
     for (
         let i = 0;
         i < localStorage.length;
         i++
     ) {
-
         const cle =
             localStorage.key(i);
-
         if (!cle) continue;
-
-
         if (
             cle.startsWith("participantsListe_")
         ) {
-
             clesASupprimer.push(cle);
-
         }
-
     }
-
-
     clesASupprimer.forEach(cle => {
-
         localStorage.removeItem(cle);
-
     });
-
-
-    /*
-     * ------------------------------------------------------------
-     * Réinitialisation des variables mémoire
-     * ------------------------------------------------------------
-     */
-
     currentUser = null;
-
     participants = [];
-
     listeParticipants = [];
-
     listeParticipantsRando = null;
-
     participantsRando = {
-
         date: "",
         lieu: "",
         pilote: "",
         copilote: ""
-
     };
-
-
-    /*
-     * ------------------------------------------------------------
-     * Retour à l'inscription
-     * ------------------------------------------------------------
-     */
-
     navigate(
         "inscription",
         {
             title: "Inscription"
         }
     );
-
 }
 
 /* ============================================================
  * Bouton profil / réinitialisation
  * ============================================================
  */
-
 appBarIcon.addEventListener("click", () => {
-
-    /*
-     * Le bonhomme n'est actif que sur la page d'accueil.
-     */
-
     if (currentScreen !== "accueil") {
-
         return;
-
     }
-
-
     afficherConfirmationReinitialisation();
-
 });
 
 /* ============================================================
  * Variables globales
  * ============================================================
  */
-
 let currentUser = getUser();
-
 let currentScreen = "accueil";
-
 let currentRando = null;
-
 let prochaineRando = null;
 
 /* ============================================================
@@ -344,33 +185,20 @@ let prochaineRando = null;
  */
 
 const covoiturage = "+33616904093";
-
 let places = 1;
-
 let etape = "";
-
 let infoContent = null;
-
 let backHandler = null;
-
 let participantsWarningDisabled =
     localStorage.getItem("participantsWarningDisabled") === "true";
-
 let listeParticipants = [];
-
 let listeParticipantsRando = null;
-
 let commentaire =
     localStorage.getItem("participantsCommentaire") || "";
 
 /* ============================================================
  * Liste des participant·e·s
  * ============================================================
- */
-
-/*
- * Statuts disponibles dans la liste déroulante.
- * L'ordre est volontairement celui demandé.
  */
 const PARTICIPANT_STATUSES = [
     "Pilote",
@@ -381,24 +209,7 @@ const PARTICIPANT_STATUSES = [
     "Adhésion 24 €",
     "Demi-tarif 12 €"
 ];
-
-/*
- * Liste des participant·e·s de la randonnée en cours.
- *
- * Chaque participant sera enregistré sous la forme :
- *
- * {
- *     prenom: "Jean",
- *     nom: "Dupont",
- *     statut: "Adhérent·e"
- * }
- */
 let participants = [];
-
-/*
- * Informations de la randonnée utilisées
- * par la liste des participant·e·s.
- */
 let participantsRando = {
     date: "",
     lieu: "",
@@ -410,9 +221,7 @@ let participantsRando = {
  * Utilitaires
  * ============================================================
  */
-
 function escapeHtml(value) {
-
     return String(value ?? "")
         .replace(/&#039;/g, "'")
         .replace(/&#39;/g, "'")
@@ -421,219 +230,142 @@ function escapeHtml(value) {
         .replace(/</g,"&lt;")
         .replace(/>/g,"&gt;")
         .replace(/"/g,"&quot;");
-
 }
-
 function formatName(name="") {
-
     return name
         .trim()
         .split(/\s+/)
         .map(word=>{
-
             if(PARTICLES.includes(word.toLowerCase()))
                 return word.toLowerCase();
-
             return word.charAt(0).toUpperCase() +
                    word.slice(1).toLowerCase();
-
         })
         .join(" ");
-
 }
 
 /* ============================================================
  * Affichage principal
  * ============================================================
  */
-
 function showMain(showBack,title,onBack=null){
-
     screenRoot.replaceChildren();
-
     mainEl.classList.remove("hidden");
-
     appBarTitle.textContent=title;
-
     appBarBack.classList.toggle("hidden",!showBack);
-
     appBarIcon.classList.toggle("hidden",showBack);
-
     backHandler=onBack ?? (()=>{
-
         currentUser=getUser();
-
         navigate(
             "accueil",
             currentUser
         );
-
     });
-
 }
 
 /* ============================================================
  * Bouton Retour
  * ============================================================
  */
-
 appBarBack.addEventListener("click",()=>{
-
     if(backHandler){
-
         backHandler();
-
         return;
-
     }
-
     history.back();
-
 });
 
 /* ============================================================
  * QR Code
  * ============================================================
  */
-
 function renderQr(container,text,size=120){
-
     if(!container) return;
-
     container.replaceChildren();
-
     const qr=document.createElement("div");
-
     qr.className=size>120
         ?"qr-box qr-box--lg"
         :"qr-box";
-
     container.appendChild(qr);
-
     new QRCode(qr,{
-
         text,
-
         width:size,
-
         height:size,
-
         colorDark:"#3d7820",
-
         colorLight:"#ffffff",
-
         correctLevel:QRCode.CorrectLevel.M
-
     });
-
 }
 
 /* ============================================================
  * Chargement de la prochaine randonnée
  * ============================================================
  */
-
 async function fetchRandoDetails(){
-
     const cache=localStorage.getItem("prochaineRando");
-
     if(!navigator.onLine){
-
         if(cache)
             return JSON.parse(cache);
-
         throw new Error("Mode hors ligne.");
-
     }
-
     const url=
         "https://randoslorraine.pages.dev/api/rando?v="+Date.now();
-
     try{
-
         const response=await fetch(url,{
-
             cache:"no-store"
-
         });
-
         if(!response.ok)
             throw new Error(response.status);
-
         const data=await response.json();
-
         localStorage.setItem(
             "prochaineRando",
             JSON.stringify(data)
         );
-
         prochaineRando=data;
-
         return data;
-
     }
-
     catch(err){
-
         if(cache){
-
             prochaineRando=JSON.parse(cache);
-
             return prochaineRando;
-
         }
-
         throw err;
-
     }
-
 }
 
 /* ============================================================
  * Navigation
  * ============================================================
  */
-
 function navigate(screen, options = {}) {
-
     console.log("navigate →", screen, options);
-
     currentScreen = screen;
-
     currentUser = getUser();
-
     showMain(
         options.showBack ?? false,
         options.title ?? "Rando's Lorraine",
         options.onBack
     );
-
     screenRoot.replaceChildren();
-
     switch (screen) {
-
         case "inscription":
             return renderInscription();
-
         case "cotisation":
             return renderCotisation(
                 options.prenom,
                 options.nom,
                 options.dateInscription
             );
-
         case "accueil":
             return renderAccueil(
                 options.prenom,
                 options.nom
             );
-
         case "carte":
             return renderCarte(
                 options.prenom,
                 options.nom
             );
-
         case "correction":
             return renderCorrection(
                 options.prenom,
@@ -641,87 +373,58 @@ function navigate(screen, options = {}) {
                 options.email,
                 options.telephone
             );
-
         case "rando":
             return renderRandoDetails(options.rando ?? prochaineRando);
-
         case "participants-warning":
     renderParticipantsWarning();
-    break;
-            
+    break;         
         case "participants":
             return renderParticipants();
-
         case "info":
             return renderInfoPage(options.infoKey);
-
         default:
-
             console.warn("Écran inconnu :", screen);
-
             return renderAccueil(
                 currentUser?.prenom,
                 currentUser?.nom
             );
     }
-
 }
 
 /* ============================================================
  * Ouverture application / Store
  * ============================================================
  */
-
 function openAppOrStore(scheme, androidUrl, iosUrl) {
-
     if (!scheme && !androidUrl && !iosUrl) {
-
         alert("Application indisponible.");
-
         return;
-
     }
-
     const isAndroid =
         /Android|webOS|BlackBerry|IEMobile|Opera Mini/i
         .test(navigator.userAgent);
-
     if (scheme) {
-
         window.location.href = scheme;
-
         setTimeout(() => {
-
             if (isAndroid && androidUrl)
                 window.location.href = androidUrl;
-
             else if (iosUrl)
                 window.location.href = iosUrl;
-
         },500);
-
         return;
-
     }
-
     if (isAndroid && androidUrl)
         window.location.href = androidUrl;
-
     else if (iosUrl)
         window.location.href = iosUrl;
-
 }
 
 /* ============================================================
  * Affichage de la randonnée
  * ============================================================ */
-
 function renderRandoDetails(r = null) {
-
     console.log("renderRandoDetails()", r);
-
     screenRoot.replaceChildren();
-
     screenRoot.insertAdjacentHTML(
         "afterbegin",
         `
@@ -732,15 +435,10 @@ function renderRandoDetails(r = null) {
         </div>
         `
     );
-
     const show = (rando) => {
-
         console.log("Affichage randonnée", rando);
-
         if (!rando || typeof rando !== "object") {
-
             screenRoot.replaceChildren();
-
             screenRoot.insertAdjacentHTML(
                 "afterbegin",
                 `
@@ -751,53 +449,38 @@ function renderRandoDetails(r = null) {
                 </div>
                 `
             );
-
             return;
-
         }
-
         const randoTitle =
             isToday(rando.date)
                 ? "Rando du jour"
                 : "Prochaine randonnée";
-
         appBarTitle.textContent = randoTitle;
-
         const randoUrl = rando.url ?? null;
-
         const [lat, lng] =
             (rando.gps ?? "")
                 .split(",")
                 .map(v => Number(v.trim()));
-
         const mapsUrl =
             Number.isFinite(lat) &&
             Number.isFinite(lng)
-
                 ? `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`
-
                 : null;
-
         const commune =
             rando.lieu?.commune ??
             "Lieu inconnu";
-
         const pays =
             rando.lieu?.pays ?? null;
-
         const departement =
             rando.lieu?.departement ?? null;
-
         const accueil =
             rando.heureAccueil ??
             rando.lieu?.heureAccueil ??
             "Non précisée";
-
         const depart =
             rando.heureDepart ??
             rando.lieu?.heureDepart ??
             "Non précisée";
-
         const pilotes =
             (rando.pilotes ?? "")
                 .replace(/&amp;/g, "&")
@@ -806,22 +489,17 @@ function renderRandoDetails(r = null) {
                 .split(",")
                 .map(p => p.trim())
                 .filter(Boolean);
-
         const telephones =
             rando.telephones ?? [];
-
         let html = `
 <div class="screen">
-
 <div class="detail-list">
-
 <div class="detail-row">
 <span class="detail-row__label">Date</span>
 <span class="detail-row__value">
 ${escapeHtml(rando.date ?? "Date inconnue")}
 </span>
 </div>
-
 <div class="detail-row">
 <span class="detail-row__label">Lieu</span>
 <span class="detail-row__value">
@@ -829,60 +507,45 @@ ${escapeHtml(commune)}
 </span>
 </div>
 `;
-
         if (pays && pays.toLowerCase() !== "france") {
-
             html += `
 <div class="detail-row">
 <span class="detail-row__label">
 Pays
 </span>
-
 <span class="detail-row__value">
 ${escapeHtml(pays)}
 </span>
 </div>
 `;
-
             if (departement) {
-
                 html += `
 <div class="detail-row">
 <span class="detail-row__label">
 Département
 </span>
-
 <span class="detail-row__value">
 ${escapeHtml(departement)}
 </span>
 </div>
 `;
-
             }
-
         }
-
         html += `
 <div class="detail-row">
 <span class="detail-row__label">
 Heure d'accueil
 </span>
-
 <span class="detail-row__value">
 ${escapeHtml(accueil)}
 </span>
 </div>
-
 <div class="detail-row">
-
 <span class="detail-row__label">
 Heure de départ
 </span>
-
 <span class="detail-row__value">
-
 ${escapeHtml(depart)}
-
 ${
 randoUrl
 ?
@@ -897,25 +560,17 @@ title="Voir la randonnée">
 :
 ""
 }
-
 </span>
-
 </div>
 `;
-
                 if (rando.rendezVous) {
-
             html += `
 <div class="detail-row">
-
 <span class="detail-row__label">
 Rendez-vous
 </span>
-
 <span class="detail-row__value">
-
 ${escapeHtml(rando.rendezVous)}
-
 ${
 mapsUrl
 ?
@@ -930,16 +585,11 @@ title="Ouvrir dans Google Maps">
 :
 ""
 }
-
 </span>
-
 </div>
 `;
-
         }
-
         telephones.forEach((tel,index)=>{
-
             const label =
                 index===0
                 ? (pilotes[0]
@@ -948,20 +598,13 @@ title="Ouvrir dans Google Maps">
                 : (pilotes[index]
                     ? `& ${escapeHtml(pilotes[index])}`
                     : "Contact");
-
             html += `
 <div class="detail-row">
-
 <span class="detail-row__label">
-
 ${label}
-
 </span>
-
 <span class="detail-row__value">
-
 ${escapeHtml(tel)}
-
 <button
 class="info-button"
 onclick="window.location.href='tel:${tel.replace(/\s/g,"")}'"
@@ -970,20 +613,13 @@ title="Téléphoner">
 ✆
 
 </button>
-
 </span>
-
 </div>
 `;
-
         });
-
         html += `
-
 </div>
-
 <div class="btn-row">
-
 <button
 class="btn btn--primary"
 id="btn-covoiturage-propose">
@@ -991,7 +627,6 @@ id="btn-covoiturage-propose">
 Je propose un covoiturage.
 
 </button>
-
 <button
 class="btn btn--primary"
 id="btn-covoiturage-recherche">
@@ -999,9 +634,7 @@ id="btn-covoiturage-recherche">
 Je recherche un covoiturage.
 
 </button>
-
 </div>
-
 <div class="modal hidden" id="covoiturage-propose-modal" aria-hidden="true">
 <div class="modal-content">
 <div class="modal-header">Je propose un covoiturage</div>
@@ -1025,7 +658,6 @@ ${[1, 2, 3, 4, 5, 6].map(n =>
 </div>
 </div>
 </div>
-
 <div class="modal hidden" id="covoiturage-recherche-modal" aria-hidden="true">
 <div class="modal-content">
 <div class="modal-header">Je recherche un covoiturage</div>
@@ -1041,260 +673,162 @@ ${[1, 2, 3, 4, 5, 6].map(n =>
 </div>
 </div>
 </div>
-
 </div>
 `;
-
         screenRoot.replaceChildren();
-
         screenRoot.insertAdjacentHTML(
             "afterbegin",
             html
         );
-
         if (typeof initCovoiturageModals === "function") {
-
             initCovoiturageModals();
-
         }
-
         const btnPropose =
             $("#btn-covoiturage-propose");
-
         if (btnPropose) {
-
             btnPropose.addEventListener(
                 "click",
                 ()=>{
-
                     if(typeof openModal==="function"){
-
                         openModal(
                             "covoiturage-propose-modal"
                         );
-
                     }
-
                 }
             );
-
         }
-
         const btnRecherche =
             $("#btn-covoiturage-recherche");
-
         if (btnRecherche) {
-
             btnRecherche.addEventListener(
                 "click",
                 ()=>{
-
                     const champEtape =
                         $("#covoiturage-recherche-etape");
-
                     if (champEtape) {
-
                         champEtape.value = etape;
-
                     }
-
                     if(typeof openModal==="function"){
-
                         openModal(
                             "covoiturage-recherche-modal"
                         );
-
                     }
                     else{
-
                         alert(
                             "Fonction en cours de développement."
                         );
-
                     }
-
                 }
             );
-
         }
-
         /* ============================================================
          * Bouton "Proposer"
          * ============================================================ */
-
         const btnProposer =
             $("#btn-covoiturage-proposer");
-
         if (btnProposer) {
-
             btnProposer.addEventListener(
                 "click",
                 () => {
-
                     const champPlaces =
                         $("#covoiturage-places");
-
                     const champEtape =
                         $("#covoiturage-propose-etape");
-
                     places = Number(champPlaces?.value) || 1;
-
                     etape = (champEtape?.value ?? "").trim();
-
                     const user = getUser();
-
                     const message =
 `Je vous propose ${places} place(s) pour un covoiturage au départ de ${etape} pour la randonnée du ${rando.date ?? ""} à ${commune}. Si cela vous intéresse, merci de me contacter directement au ${user?.telephone ?? ""} ou via l'adresse ${user?.email ?? ""} pour nous mettre d'accord sur les détails (lieu précis du rendez-vous, heure, tarif).
 ${user?.prenom ?? ""} ${initialeNom(user?.nom)}
 Merci`;
-
                     if (typeof closeModal === "function") {
-
                         closeModal("covoiturage-propose-modal");
-
                     }
-
                     sendSMSWithBody(covoiturage, message);
-
                 }
             );
-
         }
-
         /* ============================================================
          * Bouton "Demander"
          * ============================================================ */
-
         const btnDemander =
             $("#btn-covoiturage-demander");
-
         if (btnDemander) {
-
             btnDemander.addEventListener(
                 "click",
                 () => {
-
                     const champEtape =
                         $("#covoiturage-recherche-etape");
-
                     etape = (champEtape?.value ?? "").trim();
-
                     const user = getUser();
-
                     const message =
 `${user?.prenom ?? ""} ${initialeNom(user?.nom)} souhaite un covoiturage depuis ${etape} pour la randonnée du ${rando.date ?? ""} à ${commune}. Contact direct au ${user?.telephone ?? ""} ou via l'adresse ${user?.email ?? ""}
 Merci par avance`;
-
                     if (typeof closeModal === "function") {
-
                         closeModal("covoiturage-recherche-modal");
-
                     }
-
                     sendSMSWithBody(covoiturage, message);
-
                 }
             );
-
         }
-
     };
-
     /* ============================================================
      * Gestion des erreurs
      * ============================================================ */
-
     const showError = (message) => {
-
         console.error("renderRandoDetails :", message);
-
         screenRoot.replaceChildren();
-
         screenRoot.insertAdjacentHTML(
             "afterbegin",
             `
             <div class="screen screen--center">
-
                 <p class="alert alert--danger">
-
                     ${escapeHtml(message)}
-
                 </p>
-
                 <button
                     id="btn-retry"
                     class="btn btn--primary">
-
                     Réessayer
-
                 </button>
-
             </div>
             `
         );
-
         const retry = $("#btn-retry");
-
         if (retry) {
-
             retry.addEventListener("click", () => {
-
                 renderRandoDetails();
-
             });
-
         }
-
     };
-
     /* ============================================================
      * Chargement des données
      * ============================================================ */
-
     if (r && typeof r === "object") {
-
         prochaineRando = r;
-
         show(r);
-
         return;
-
     }
-
     fetchRandoDetails()
-
         .then((data) => {
-
             if (!data) {
-
                 throw new Error(
                     "Aucune randonnée disponible."
                 );
-
             }
-
             prochaineRando = data;
-
             show(data);
-
         })
-
         .catch((err) => {
-
             console.error(err);
-
             showError(
                 "Impossible de charger les informations de la randonnée."
             );
-
         });
-
 }
 
 /* ============================================================
  * Page d'information
  * ============================================================ */
-
 function renderInfoPage(key) {
 
     if (!infoContent) {
