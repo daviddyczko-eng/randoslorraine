@@ -1166,3 +1166,82 @@ select.participant-input {
     white-space: pre-wrap;
 
 }
+/* ============================================================
+ * Scanner QR code
+ * ============================================================
+ */
+
+.qr-scanner-overlay {
+
+    position: fixed;
+
+    inset: 0;
+
+    z-index: 9999;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    padding: 20px;
+
+    background: rgba(0, 0, 0, 0.75);
+
+}
+
+
+.qr-scanner-modal {
+
+    width: min(100%, 420px);
+
+    background: white;
+
+    border-radius: 16px;
+
+    padding: 20px;
+
+    box-sizing: border-box;
+
+    text-align: center;
+
+}
+
+
+.qr-scanner-title {
+
+    font-size: 1.25rem;
+
+    font-weight: 700;
+
+    margin-bottom: 15px;
+
+}
+
+
+.qr-reader {
+
+    width: 100%;
+
+    overflow: hidden;
+
+    border-radius: 12px;
+
+}
+
+
+.qr-scanner-message {
+
+    margin: 15px 0;
+
+    font-size: 0.95rem;
+
+}
+
+
+.qr-scanner-modal .btn {
+
+    margin-top: 10px;
+
+}
