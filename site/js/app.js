@@ -88,6 +88,17 @@ let currentRando = null;
 
 let prochaineRando = null;
 
+/* ============================================================
+ * Covoiturage
+ * ============================================================
+ */
+
+const covoiturage = "+33616904093";
+
+let places = 1;
+
+let etape = "";
+
 let infoContent = null;
 
 let backHandler = null;
@@ -741,6 +752,46 @@ Je recherche un covoiturage.
 
 </div>
 
+<div class="modal hidden" id="covoiturage-propose-modal" aria-hidden="true">
+<div class="modal-content">
+<div class="modal-header">Je propose un covoiturage</div>
+<div class="modal-body">
+<div class="modal-field">
+<label for="covoiturage-places">Nombre de places proposées</label>
+<select id="covoiturage-places">
+${[1, 2, 3, 4, 5, 6].map(n =>
+`<option value="${n}"${n === places ? " selected" : ""}>${n}</option>`
+).join("")}
+</select>
+</div>
+<div class="modal-field">
+<label for="covoiturage-propose-etape">Lieu de rendez-vous pour le covoiturage</label>
+<input id="covoiturage-propose-etape" type="text" placeholder="Ex : Nancy, parking de la gare">
+</div>
+</div>
+<div class="modal-footer">
+<button type="button" class="btn--cancel" data-close-modal>Annuler</button>
+<button type="button" class="btn--confirm" id="btn-covoiturage-proposer">Proposer</button>
+</div>
+</div>
+</div>
+
+<div class="modal hidden" id="covoiturage-recherche-modal" aria-hidden="true">
+<div class="modal-content">
+<div class="modal-header">Je recherche un covoiturage</div>
+<div class="modal-body">
+<div class="modal-field">
+<label for="covoiturage-recherche-etape">Lieu de rendez-vous souhaité pour le covoiturage</label>
+<input id="covoiturage-recherche-etape" type="text" value="${escapeHtml(etape)}">
+</div>
+</div>
+<div class="modal-footer">
+<button type="button" class="btn--cancel" data-close-modal>Annuler</button>
+<button type="button" class="btn--confirm" id="btn-covoiturage-demander">Demander</button>
+</div>
+</div>
+</div>
+
 </div>
 `;
 
@@ -788,6 +839,15 @@ Je recherche un covoiturage.
                 "click",
                 ()=>{
 
+                    const champEtape =
+                        $("#covoiturage-recherche-etape");
+
+                    if (champEtape) {
+
+                        champEtape.value = etape;
+
+                    }
+
                     if(typeof openModal==="function"){
 
                         openModal(
@@ -802,6 +862,86 @@ Je recherche un covoiturage.
                         );
 
                     }
+
+                }
+            );
+
+        }
+
+        /* ============================================================
+         * Bouton "Proposer"
+         * ============================================================ */
+
+        const btnProposer =
+            $("#btn-covoiturage-proposer");
+
+        if (btnProposer) {
+
+            btnProposer.addEventListener(
+                "click",
+                () => {
+
+                    const champPlaces =
+                        $("#covoiturage-places");
+
+                    const champEtape =
+                        $("#covoiturage-propose-etape");
+
+                    places = Number(champPlaces?.value) || 1;
+
+                    etape = (champEtape?.value ?? "").trim();
+
+                    const user = getUser();
+
+                    const message =
+`Je vous propose ${places} place(s) pour un covoiturage au départ de ${etape} pour la randonnée du ${rando.date ?? ""} à ${commune}. Si cela vous intéresse, merci de me contacter directement au ${user?.telephone ?? ""} ou via l'adresse ${user?.email ?? ""} pour nous mettre d'accord sur les détails (lieu précis du rendez-vous, heure, tarif).
+${user?.prenom ?? ""} ${initialeNom(user?.nom)}
+Merci`;
+
+                    if (typeof closeModal === "function") {
+
+                        closeModal("covoiturage-propose-modal");
+
+                    }
+
+                    sendSMSWithBody(covoiturage, message);
+
+                }
+            );
+
+        }
+
+        /* ============================================================
+         * Bouton "Demander"
+         * ============================================================ */
+
+        const btnDemander =
+            $("#btn-covoiturage-demander");
+
+        if (btnDemander) {
+
+            btnDemander.addEventListener(
+                "click",
+                () => {
+
+                    const champEtape =
+                        $("#covoiturage-recherche-etape");
+
+                    etape = (champEtape?.value ?? "").trim();
+
+                    const user = getUser();
+
+                    const message =
+`${user?.prenom ?? ""} ${initialeNom(user?.nom)} souhaite un covoiturage depuis ${etape} pour la randonnée du ${rando.date ?? ""} à ${commune}. Contact direct au ${user?.telephone ?? ""} ou via l'adresse ${user?.email ?? ""}
+Merci par avance`;
+
+                    if (typeof closeModal === "function") {
+
+                        closeModal("covoiturage-recherche-modal");
+
+                    }
+
+                    sendSMSWithBody(covoiturage, message);
 
                 }
             );
@@ -1379,6 +1519,41 @@ function sendSMS(number) {
 
     window.location.href =
         "sms:" + number.replace(/\s/g, "");
+
+}
+
+/* ============================================================
+ * SMS avec message pré-rédigé
+ * ============================================================ */
+
+function sendSMSWithBody(number, body) {
+
+    if (!number)
+        return;
+
+    const cleanNumber = number.replace(/\s/g, "");
+
+    const isIOS =
+        /iPad|iPhone|iPod/.test(navigator.userAgent) &&
+        !window.MSStream;
+
+    const separator = isIOS ? "&" : "?";
+
+    window.location.href =
+        `sms:${cleanNumber}${separator}body=${encodeURIComponent(body)}`;
+
+}
+
+/* ============================================================
+ * Initiale du nom (ex. "Dupont" → "D.")
+ * ============================================================ */
+
+function initialeNom(nom) {
+
+    if (!nom)
+        return "";
+
+    return nom.trim().charAt(0).toUpperCase() + ".";
 
 }
 
