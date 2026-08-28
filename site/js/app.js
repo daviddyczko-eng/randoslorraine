@@ -5099,31 +5099,3 @@ async function init(){
 }
 
 init();
-
-/* ============================================================
- * Sécurité : fermeture des modales après restauration bfcache
- * ============================================================
- *
- * Sur certains navigateurs mobiles (Safari iOS notamment),
- * revenir sur l'application via le bouton "précédent" peut
- * restaurer visuellement le dernier état du DOM (y compris une
- * fenêtre modale ouverte au moment du départ) sans ré-exécuter
- * le JavaScript. On force donc leur fermeture à chaque
- * restauration.
- * ============================================================
- */
-
-window.addEventListener("pageshow", (event) => {
-
-    if (!event.persisted) return;
-
-    document
-        .querySelectorAll(".modal")
-        .forEach(modal => {
-
-            modal.classList.add("hidden");
-            modal.setAttribute("aria-hidden", "true");
-
-        });
-
-});
