@@ -3734,6 +3734,7 @@ function renderParticipants() {
 
 
     actualiserTotaux();
+    afficherCommentaire();
 
 }
 
