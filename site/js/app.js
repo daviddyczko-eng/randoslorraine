@@ -3635,10 +3635,10 @@ function renderParticipants() {
                         <span class="participant-list-name">
 
                             ${escapeHtml(
-                                participant.prenom
+                                formatName(participant.prenom)
                             )}
                             ${escapeHtml(
-                                participant.nom
+                                formatName(participant.nom)
                             )}
 
                         </span>
