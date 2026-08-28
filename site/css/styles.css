@@ -460,20 +460,14 @@ svg path {
 }
 
 .modal {
-  background: var(--surface);
-  border-radius: var(--radius);
-  padding: 24px;
-  max-width: 320px;
-  width: 100%;
-  text-align: center;
-  box-shadow: var(--shadow);
-  display: none;
+  display: flex;
   position: fixed;
-  top: 0;
-  left: 0;
-  z-index: 2000;
+  inset: 0;
   align-items: center;
   justify-content: center;
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 2000;
 }
 
 .modal h2 {
@@ -524,7 +518,7 @@ svg path {
   font-weight: bold;
 }
 
-.modal-field input, .modal-field textarea {
+.modal-field input, .modal-field select, .modal-field textarea {
   width: 100%;
   padding: 8px;
   border: 1px solid var(--border);
