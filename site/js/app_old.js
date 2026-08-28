@@ -2942,28 +2942,18 @@ function ouvrirFenetreCommentaire() {
 
 function afficherCommentaire() {
 
-    const conteneur =
-        $("#participants-commentaire");
+    const zone = $("#participants-commentaire");
 
-    if (!conteneur) return;
+    if (!zone) return;
 
+    if (!commentaire || !commentaire.trim()) {
 
-    if (!commentaire) {
-
-        conteneur.innerHTML = "";
-
-        conteneur.classList.add("hidden");
+        zone.innerHTML = "";
 
         return;
-
     }
 
-
-    conteneur.classList.remove("hidden");
-
-
-    conteneur.innerHTML = `
-
+    zone.innerHTML = `
         <div class="participants-commentaire-box">
 
             <strong>Commentaire :</strong>
@@ -2973,9 +2963,7 @@ function afficherCommentaire() {
             </p>
 
         </div>
-
     `;
-
 }
 
 /*
@@ -3569,6 +3557,10 @@ function renderParticipants() {
                     </strong>
                 </p>
 
+                <div
+    id="participants-commentaire"
+    class="participants-commentaire">
+</div>
             </div>
 
 
@@ -3734,6 +3726,7 @@ function renderParticipants() {
 
 
     actualiserTotaux();
+    afficherCommentaire();
 
 }
 
@@ -3756,7 +3749,7 @@ function renderParticipants() {
 
             count.textContent =
                 participants.length;
-
+    afficherCommentaire();
         }
 
 
@@ -4079,21 +4072,28 @@ function renderParticipants() {
 
     /*
      * ============================================================
-     * SUPPRESSION DU PILOTE
+     * SUPPRESSION De l'affichage du PILOTE
      * ============================================================
      */
 
-    $("#btn-supprimer-pilote")
-        .addEventListener(
-            "click",
-            () => {
+$("#btn-supprimer-pilote").addEventListener("click", () => {
 
-                alert(
-                    "Il doit obligatoirement y avoir un pilote."
-                );
+    const champPilote = $("#participants-pilote");
 
-            }
-        );
+    if (!champPilote) return;
+
+    /*
+     * Effacement du nom du pilote
+     */
+    champPilote.value = "";
+
+    /*
+     * Donner immédiatement le focus au champ
+     * pour faciliter la nouvelle saisie.
+     */
+    champPilote.focus();
+
+});
 
 
     /*
