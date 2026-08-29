@@ -40,6 +40,14 @@
 
   <script src="js/qrcode.min.js"></script>
   <script src="js/html5-qrcode.min.js"></script>
+  <script>
+  // Test : Vérifier si Html5Qrcode est défini
+  if (typeof Html5Qrcode === "undefined") {
+    console.error("❌ Html5Qrcode N'EST PAS défini !");
+  } else {
+    console.log("✅ Html5Qrcode est défini :", Html5Qrcode);
+  }
+</script>
   <script src="js/app.js" type="module"></script>
   
   <!-- Fenêtre modale pour proposer un covoiturage -->
