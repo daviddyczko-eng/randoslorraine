@@ -41,6 +41,6 @@ export function needsCotisation(dateInscription) {
 }
 
 export function qrData(prenom, nom) {
-    const fullName = `${prenom} ${nom} Rando's Lorraine`;
+    const fullName = `${prenom} ${nom} RandosLorraine`;
     return encodeURIComponent(fullName);
 }
