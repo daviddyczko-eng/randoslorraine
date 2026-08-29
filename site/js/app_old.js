@@ -179,11 +179,12 @@ let currentRando = null;
 let prochaineRando = null;
 
 /* ============================================================
- * Covoiturage
+ * Covoiturage / Trésorerie
  * ============================================================
  */
 
 const covoiturage = "+33616904093";
+const tresorerie = "+33616904093";
 let places = 1;
 let etape = "";
 let infoContent = null;
@@ -205,6 +206,7 @@ const PARTICIPANT_STATUSES = [
     "Adhérent·e",
     "Invité·e 2 €",
     "Alsarando 2 €",
+    "Payant 6 €",
     "Adhésion 24 €",
     "Demi-tarif 12 €"
 ];
@@ -2355,10 +2357,10 @@ function ouvrirScannerQr(type) {
         );
         /*
          * Vérification du contenu
-         * Le QR généré par storage.js est : "Prénom Nom Rando's Lorraine"
+         * Le QR généré par storage.js est : "Prénom Nom RandosLorraine"
          */
         const suffixe =
-            " Rando's Lorraine";
+            " RandosLorraine";
         if (
             typeof decodedText !== "string" ||
             !decodedText.endsWith(suffixe)
@@ -3079,6 +3081,7 @@ function renderParticipants() {
                 "Adhérent·e": 0,
                 "Invité·e 2 €": 2,
                 "Alsarando 2 €": 2,
+                "Payant 6 €": 6,
                 "Adhésion 24 €": 24,
                 "Demi-tarif 12 €": 12
             };
