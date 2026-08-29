@@ -2346,7 +2346,7 @@ function ouvrirScannerQr(type) {
          * Empêche tout traitement d'une lecture ultérieure pendant que la fermeture est en cours (le lecteur
          * continue d'analyser des images tant qu'il n'est pas explicitement arrêté).
          */
-        if (dejaDetecte) {
+            if (dejaDetecte) {
             return;
         }
         console.log(
