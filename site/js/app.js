@@ -666,7 +666,6 @@ ${[1, 2, 3, 4, 5, 6].map(n =>
 `;
         }
         html += `
-</div>
 `;
 <div class="modal hidden" id="covoiturage-recherche-modal" aria-hidden="true">
 <div class="modal-content">
