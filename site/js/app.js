@@ -827,6 +827,96 @@ Merci par avance`;
         });
 }
 
+    /* ============================================================
+     * Fenêtre pour la transmission de la liste
+     * ============================================================ */
+function ouvrirFenetreTransmission() {
+    // Vérifier qu'il y a bien un pilote
+    const pilote = participants.find(participant => participant.statut === "Pilote");
+    if (!pilote) {
+        alert("Impossible de transmettre la liste : un pilote est obligatoire.");
+        return;
+    }
+    // Créer le CSV
+    const csv = creerCsvParticipants();
+    // Extraire les informations pour l'affichage
+    const date = participants.length > 0 ? participants[0].date : "";
+    const lieu = participants.length > 0 ? participants[0].lieu : "";
+    const nombreParticipants = participants.length;
+    // Créer la liste des participants pour l'affichage
+    const listeParticipantsAffichage = participants.map(participant => {
+        const prenomFormate = formatName(participant.prenom);
+        const nomFormate = formatName(participant.nom);
+        const nomComplet = `${prenomFormate} ${nomFormate}`;
+        return {
+            nom: nomComplet,
+            statut: participant.statut
+        };
+    });
+    // Créer la fenêtre modale
+    const overlay = document.createElement("div");
+    overlay.className = "transmission-overlay";
+    overlay.innerHTML = `
+        <div class="transmission-modal">
+            <div class="transmission-title">Liste à transmettre</div>
+            <div class="transmission-info">
+                <p><strong>Date :</strong> ${escapeHtml(date)}</p>
+                <p><strong>Lieu :</strong> ${escapeHtml(lieu)}</p>
+                <p><strong>Nombre de participant·e·s :</strong> ${nombreParticipants}</p>
+                <p><strong>Commentaire :</strong> ${escapeHtml(commentaire)}</p>
+            </div>
+            <div class="transmission-liste">
+                <h3>Liste complète :</h3>
+                <div class="transmission-liste-header">
+                    <span class="transmission-liste-participant">Participant</span>
+                    <span class="transmission-liste-statut">Statut</span>
+                </div>
+                ${listeParticipantsAffichage.map(p => `
+                    <div class="transmission-liste-row">
+                        <span class="transmission-liste-participant">${escapeHtml(p.nom)}</span>
+                        <span class="transmission-liste-statut">${escapeHtml(p.statut)}</span>
+                    </div>
+                `).join("")}
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn--cancel" id="transmission-cancel">Annuler</button>
+                <button type="button" class="btn btn--primary" id="transmission-validate">Valider la transmission</button>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(overlay);
+    // Gérer le bouton Annuler
+    overlay.querySelector("#transmission-cancel").addEventListener("click", () => {
+        overlay.remove();
+    });
+    // Gérer le bouton Valider
+    overlay.querySelector("#transmission-validate").addEventListener("click", () => {
+        // Créer un Blob avec le CSV
+        const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+        // Créer un lien pour télécharger le fichier CSV
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = `liste_participants_${date.replace(/\s+/g, "_")}.csv`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+        // Préparer le message SMS
+        const message = `Bonjour, voici ci-joint la liste de la randonnée du ${date} à ${lieu}.`;
+        // Envoyer le SMS 
+        sendSMSWithBody(tresorerie, message);
+        // Fermer la fenêtre modale
+        overlay.remove();
+    });
+    // Fermer la fenêtre en cliquant en dehors
+    overlay.addEventListener("click", (event) => {
+        if (event.target === overlay) {
+            overlay.remove();
+        }
+    });
+}
+
 /* ============================================================
  * Page d'information
  * ============================================================ */
