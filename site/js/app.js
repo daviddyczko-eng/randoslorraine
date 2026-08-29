@@ -3636,9 +3636,7 @@ $("#btn-scan-qr").addEventListener("click", () => {
                     return;
                 }
                 enregistrerParticipants();
-                alert(
-                    "Transmission de la liste : fonctionnalité à venir."
-                );
+                ouvrirFenetreTransmission();
             }
         );
     /*
