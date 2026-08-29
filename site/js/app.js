@@ -849,8 +849,19 @@ function ouvrirFenetreTransmission() {
         <div class="transmission-modal">
             <div class="transmission-title">Liste à transmettre</div>
             <div class="transmission-info">
-                <p>Veuillez valider le contenu du fichier CSV avant transmission :</p>
-                <textarea class="transmission-csv-content" readonly>${escapeHtml(csv)}</textarea>
+                <p><strong>Date :</strong> ${escapeHtml(date)}</p>
+                <p><strong>Lieu :</strong> ${escapeHtml(lieu)}</p>
+                <p><strong>Nombre de participant·e·s :</strong> ${nombreParticipants}</p>
+                <p><strong>Commentaire :</strong> ${escapeHtml(commentaire)}</p>
+            </div>
+            <div class="transmission-liste">
+                <h3>Liste complète :</h3>
+                ${listeParticipantsAffichage.map(p => `
+                    <div class="transmission-liste-row">
+                        <span class="transmission-liste-participant">${escapeHtml(p.nom)}</span>
+                        <span class="transmission-liste-statut">${escapeHtml(p.statut)}</span>
+                    </div>
+                `).join("")}
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn--cancel" id="transmission-cancel">Annuler</button>
