@@ -183,8 +183,8 @@ let prochaineRando = null;
  * ============================================================
  */
 
-const covoiturage = "+33616904093";
-const tresorerie = "+33616904093";
+const covoiturage = "+33672997397";
+const tresorerie = "+33689928560";
 let places = 1;
 let etape = "";
 let infoContent = null;
@@ -827,94 +827,298 @@ Merci par avance`;
         });
 }
 
-    /* ============================================================
-     * Fenêtre pour la transmission de la liste
-     * ============================================================ */
+/* ============================================================
+ * Fenêtre pour la transmission de la liste
+ * ============================================================ */
 function ouvrirFenetreTransmission() {
-    const pilote = participants.find(participant => participant.statut === "Pilote");
+    /*
+     * Vérification de la présence du pilote
+     */
+    const pilote =
+        participants.find(
+            participant =>
+                participant.statut === "Pilote"
+        );
     if (!pilote) {
-        alert("Impossible de transmettre la liste : un pilote est obligatoire.");
+        alert(
+            "Impossible de transmettre la liste : un pilote est obligatoire."
+        );
         return;
     }
-    const csv = creerCsvParticipants();
-    const date = participants.length > 0 ? participants[0].date : "";
-    // Extraire jour, mois, année pour le nom du fichier
-    const dateParts = date.split(/\s+/);
-    const day = dateParts[1]; // "26"
-    const month = dateParts[2]; // "juillet"
-    const year = dateParts[3]; // "2026"
-    // Dictionnaire pour convertir les mois en numéros
+    /*
+     * Création du CSV
+     */
+    const csv =
+        creerCsvParticipants();
+    /*
+     * Récupération de la date et du lieu
+     */
+    const date =
+        participants.length > 0
+            ? participants[0].date
+            : "";
+    const lieu =
+        participants.length > 0
+            ? participants[0].lieu
+            : "";
+    /*
+     * Création du nom du fichier
+     */
+    const dateParts =
+        date.split(/\s+/);
+    const day =
+        dateParts[1] || "01";
+    const month =
+        dateParts[2] || "janvier";
+    const year =
+        dateParts[3] ||
+        new Date().getFullYear();
     const moisEnNumeros = {
-        "janvier": "01", "février": "02", "fevrier": "02", "mars": "03",
-        "avril": "04", "mai": "05", "juin": "06", "juillet": "07",
-        "août": "08", "aout": "08", "septembre": "09", "octobre": "10",
-        "novembre": "11", "décembre": "12", "decembre": "12"
+        "janvier": "01",
+        "février": "02",
+        "fevrier": "02",
+        "mars": "03",
+        "avril": "04",
+        "mai": "05",
+        "juin": "06",
+        "juillet": "07",
+        "août": "08",
+        "aout": "08",
+        "septembre": "09",
+        "octobre": "10",
+        "novembre": "11",
+        "décembre": "12",
+        "decembre": "12"
     };
-    const monthNumber = moisEnNumeros[month.toLowerCase()] || "01";
-    const dateForFilename = `${String(day).padStart(2, '0')}-${monthNumber}-${year}`;
-    // Créer la fenêtre modale
-    const overlay = document.createElement("div");
-    overlay.className = "transmission-overlay";
+    const monthNumber =
+        moisEnNumeros[
+            month.toLowerCase()
+        ] || "01";
+    const dateForFilename =
+        `${String(day).padStart(2, "0")}-${monthNumber}-${year}`;
+    const nomFichier =
+        `${dateForFilename}.csv`;
+    /*
+     * Création de la fenêtre
+     */
+    const overlay =
+        document.createElement("div");
+    overlay.className =
+        "transmission-overlay";
     overlay.innerHTML = `
         <div class="transmission-modal">
-            <div class="transmission-title">Liste à transmettre</div>
+            <div class="transmission-title">
+                Liste à transmettre
+            </div>
             <div class="transmission-info">
-                <p>Veuillez valider le contenu du fichier CSV avant transmission :</p>
-                <textarea class="transmission-csv-content" readonly>${escapeHtml(csv)}</textarea>
+                <p>
+                    Veuillez valider le contenu
+                    du fichier CSV avant transmission :
+                </p>
+                <textarea
+                    class="transmission-csv-content"
+                    readonly
+                >${escapeHtml(csv)}</textarea>
             </div>
             <div class="transmission-actions">
-                <button type="button" class="btn btn--primary" id="transmission-download">
-                    Télécharger le CSV (${dateForFilename}.csv)
+                <button
+                    type="button"
+                    class="btn btn--primary"
+                    id="transmission-download"
+                >
+                    Télécharger le CSV
+                    (${nomFichier})
                 </button>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn--cancel" id="transmission-cancel">Annuler</button>
-                <button type="button" class="btn btn--primary" id="transmission-validate">Valider la transmission</button>
+                <button
+                    type="button"
+                    class="btn btn--cancel"
+                    id="transmission-cancel"
+                >
+                    Annuler
+                </button>
+                <button
+                    type="button"
+                    class="btn btn--primary"
+                    id="transmission-validate"
+                >
+                    Envoyer ce fichier par SMS à notre trésorier·ère au ${tresorerie}
+                </button>
             </div>
         </div>
     `;
     document.body.appendChild(overlay);
-    // Gérer le bouton Annuler
-    overlay.querySelector("#transmission-cancel").addEventListener("click", () => {
-        overlay.remove();
-    });
-    // Gérer le bouton Télécharger le CSV
-    overlay.querySelector("#transmission-download").addEventListener("click", () => {
-        const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement("a");
-        link.href = url;
-        link.download = `${dateForFilename}.csv`;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        URL.revokeObjectURL(url);
-    });
-    // Gérer le bouton Valider
-    overlay.querySelector("#transmission-validate").addEventListener("click", () => {
-        // Ouvrir le SMS en premier
-        const message = `Bonjour, voici ci-joint la liste de la randonnée du ${date} à ${lieu}.`;
-        sendSMSWithBody(tresorerie, message);
-        // Télécharger le CSV après un léger délai (pour éviter les blocages)
-        setTimeout(() => {
-            const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
-            const url = URL.createObjectURL(blob);
-            const link = document.createElement("a");
-            link.href = url;
-            link.download = `${dateForFilename}.csv`;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            URL.revokeObjectURL(url);
-        }, 500); // Délai de 500 ms
-        overlay.remove();
-    });
-    // Fermer la fenêtre en cliquant en dehors
-    overlay.addEventListener("click", (event) => {
-        if (event.target === overlay) {
-            overlay.remove();
+    /*
+     * Fonction de création du fichier CSV
+     */
+    function creerFichierCsv() {
+        /*
+         * BOM UTF-8 :
+         * permet notamment à Excel de reconnaître correctement les caractères accentués.
+         */
+        const contenu =
+            "\uFEFF" + csv;
+        return new File(
+            [contenu],
+            nomFichier,
+            {
+                type: "text/csv;charset=utf-8"
+            }
+        );
+    }
+    /*
+     * Bouton Annuler
+     */
+    overlay
+        .querySelector(
+            "#transmission-cancel"
+        )
+        .addEventListener(
+            "click",
+            () => {
+                overlay.remove();
+            }
+        );
+    /*
+     * Bouton Télécharger le CSV
+     */
+    overlay
+        .querySelector(
+            "#transmission-download"
+        )
+        .addEventListener(
+            "click",
+            () => {
+                const fichier =
+                    creerFichierCsv();
+                const url =
+                    URL.createObjectURL(
+                        fichier
+                    );
+                const link =
+                    document.createElement("a");
+                link.href = url;
+                link.download =
+                    nomFichier;
+                document.body.appendChild(
+                    link
+                );
+                link.click();
+                document.body.removeChild(
+                    link
+                );
+                URL.revokeObjectURL(
+                    url
+                );
+            }
+        );
+    /*
+     * Bouton Valider la transmission
+     */
+    overlay
+        .querySelector(
+            "#transmission-validate"
+        )
+        .addEventListener(
+            "click",
+            async () => {
+                /*
+                 * Création du fichier CSV
+                 */
+                const fichier =
+                    creerFichierCsv();
+                /*
+                 * Message qui accompagnera le fichier.
+                 */
+                const message =
+                    `Bonjour, voici la liste de la randonnée du ${date} à ${lieu}.`;
+                /*
+                 * Vérifier si le téléphone accepte le partage de fichiers.
+                 */
+                if (
+                    navigator.share &&
+                    navigator.canShare
+                ) {
+                    const partagePossible =
+                        navigator.canShare({
+                            files: [fichier]
+                        });
+                    if (partagePossible) {
+                        try {
+                            await navigator.share({
+                                title:
+                                    "Liste des participant·e·s",
+                                text:
+                                    message,
+                                files:
+                                    [fichier]
+                            });
+                            /*
+                             * Le partage a été proposé avec succès.
+                             */
+                            overlay.remove();
+                            return;
+                        }
+                        catch (erreur) {
+                            /*
+                             * L'utilisateur peut avoir simplement fermé la fenêtre de partage.
+                             */
+                            console.log(
+                                "Partage annulé ou interrompu :",
+                                erreur
+                            );
+                            return;
+                        }
+                    }
+                }
+                /*
+                 * Solution de secours
+                 * Si le navigateur ne permet pas le partage de fichiers, on télécharge le CSV et on ouvre ensuite le SMS.
+                 */
+                const url =
+                    URL.createObjectURL(
+                        fichier
+                    );
+                const link =
+                    document.createElement("a");
+                link.href =
+                    url;
+                link.download =
+                    nomFichier;
+                document.body.appendChild(
+                    link
+                );
+                link.click();
+                document.body.removeChild(
+                    link
+                );
+                URL.revokeObjectURL(
+                    url
+                );
+                /*
+                 * Ouvrir ensuite le SMS.
+                 */
+                sendSMSWithBody(
+                    tresorerie,
+                    message
+                );
+                overlay.remove();
+            }
+        );
+    /*
+     * Fermer en cliquant en dehors
+     */
+    overlay.addEventListener(
+        "click",
+        event => {
+            if (
+                event.target === overlay
+            ) {
+                overlay.remove();
+            }
         }
-    });
+    );
 }
 
 /* ============================================================
@@ -2665,6 +2869,34 @@ function ouvrirScannerQr(type) {
         });
 }
 
+/* ============================================================
+ * Mise à zéro de la liste des participant·e·s
+ * ============================================================ */
+function reinitialiserListeParticipants() {
+    /*
+     * Confirmation
+     */
+    const confirmation =
+        confirm(
+            "Voulez-vous effacer toutes les données de la liste des participant·e·s ?"
+        );
+    if (!confirmation) {
+        return;
+    }
+    localStorage.removeItem(
+        PARTICIPANTS_STORAGE_KEY
+    );
+    localStorage.removeItem(
+        "participantsCsv"
+    );
+    localStorage.removeItem(
+        "participantsCommentaire"
+    );
+    commentaire = "";
+    participants = [];
+    renderParticipants();
+}
+
 /*
  * ============================================================
  * Fonction renderParticipants()
@@ -3086,6 +3318,14 @@ function renderParticipants() {
                     class="btn btn--primary"
                     id="btn-transmettre-participants">
                     Transmettre la liste
+                </button>
+            </div>
+            <div class="btn-row">
+                <button
+                    type="button"
+                    class="btn btn--danger"
+                    id="btn-reset-participants">
+                    Mise à zéro de la liste
                 </button>
             </div>
         </div>
@@ -3702,6 +3942,21 @@ $("#btn-scan-qr").addEventListener("click", () => {
                 ouvrirFenetreCommentaire();
             }
         );
+    /*
+     * ============================================================
+     * MISE À ZÉRO DE LA LISTE
+     * ============================================================
+     */
+    const btnResetParticipants =
+        $("#btn-reset-participants");
+        if (btnResetParticipants) {
+            btnResetParticipants.addEventListener(
+                "click",
+                () => {
+                    reinitialiserListeParticipants();
+                }
+            );
+        }
     /*
      * ============================================================
      * TRANSMISSION
