@@ -2451,7 +2451,6 @@ function ouvrirScannerQr(type) {
             }
             message.textContent =
                 `${prenom} ${nom} — Adhérent·e`;
-             {
                 const prenom =
                     $("#participant-prenom")
                         ?.value
@@ -2474,8 +2473,6 @@ function ouvrirScannerQr(type) {
                         "Veuillez sélectionner un statut."
                     );
                     return;
-                }
-
         }
         /*
          * --------------------------------------------------------
