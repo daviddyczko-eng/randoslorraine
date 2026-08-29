@@ -831,21 +831,20 @@ Merci par avance`;
      * Fenêtre pour la transmission de la liste
      * ============================================================ */
 function ouvrirFenetreTransmission() {
-    // Vérifier qu'il y a bien un pilote
     const pilote = participants.find(participant => participant.statut === "Pilote");
     if (!pilote) {
         alert("Impossible de transmettre la liste : un pilote est obligatoire.");
         return;
     }
-    // Créer le CSV
     const csv = creerCsvParticipants();
-    // Extraire la date pour le nom du fichier (format DD-MM-AAAA)
     const date = participants.length > 0 ? participants[0].date : "";
+    // Extraire jour, mois, année pour le nom du fichier (format DD-MM-AAAA)
     const dateParts = date.split(/\s+/);
     const day = dateParts[0];
     const month = dateParts[1];
     const year = dateParts[2];
-    const monthNumber = new Date(`${day} ${month} ${year}`).getMonth() + 1;
+    // Convertir le mois en numéro (ex: "juillet" → "07")
+    const monthNumber = new Date(`1 ${month} ${year}`).getMonth() + 1;
     const dateForFilename = `${String(day).padStart(2, '0')}-${String(monthNumber).padStart(2, '0')}-${year}`;
     // Créer la fenêtre modale
     const overlay = document.createElement("div");
@@ -856,6 +855,11 @@ function ouvrirFenetreTransmission() {
             <div class="transmission-info">
                 <p>Veuillez valider le contenu du fichier CSV avant transmission :</p>
                 <textarea class="transmission-csv-content" readonly>${escapeHtml(csv)}</textarea>
+            </div>
+            <div class="transmission-actions">
+                <button type="button" class="btn btn--primary" id="transmission-download">
+                    Télécharger le CSV (${dateForFilename}.csv)
+                </button>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn--cancel" id="transmission-cancel">Annuler</button>
@@ -868,24 +872,33 @@ function ouvrirFenetreTransmission() {
     overlay.querySelector("#transmission-cancel").addEventListener("click", () => {
         overlay.remove();
     });
-    // Gérer le bouton Valider
-    overlay.querySelector("#transmission-validate").addEventListener("click", () => {
-        // Créer un Blob avec le CSV
+    // Gérer le bouton Télécharger le CSV
+    overlay.querySelector("#transmission-download").addEventListener("click", () => {
         const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
-        // Créer un lien pour télécharger le fichier CSV
         const url = URL.createObjectURL(blob);
         const link = document.createElement("a");
         link.href = url;
-        link.download = `${dateForFilename}.csv`; // Nom du fichier : DD-MM-AAAA.csv
+        link.download = `${dateForFilename}.csv`;
         document.body.appendChild(link);
-        link.click(); // Déclencher le téléchargement
+        link.click();
         document.body.removeChild(link);
-        URL.revokeObjectURL(url); // Libérer l'URL
-        // Préparer le message SMS
-        const message = `Bonjour, voici ci-joint la liste de la randonnée du ${date}.`;
-        // Ouvrir le SMS avec le message pré-rempli
+        URL.revokeObjectURL(url);
+    });
+    // Gérer le bouton Valider
+    overlay.querySelector("#transmission-validate").addEventListener("click", () => {
+        // Télécharger automatiquement le CSV (fonctionne sur ordinateur, pas toujours sur mobile)
+        const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = `${dateForFilename}.csv`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+        // Ouvrir le SMS
+        const message = `Bonjour, voici ci-joint la liste de la randonnée du ${date} à ${lieu}.`;
         sendSMSWithBody(tresorerie, message);
-        // Fermer la fenêtre modale
         overlay.remove();
     });
     // Fermer la fenêtre en cliquant en dehors
