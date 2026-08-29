@@ -831,43 +831,27 @@ Merci par avance`;
      * Fenêtre pour la transmission de la liste
      * ============================================================ */
 function ouvrirFenetreTransmission() {
-    // Vérifier qu'il y a bien un pilote
     const pilote = participants.find(participant => participant.statut === "Pilote");
     if (!pilote) {
         alert("Impossible de transmettre la liste : un pilote est obligatoire.");
         return;
     }
-    // Créer le CSV
     const csv = creerCsvParticipants();
-    // Extraire les informations pour l'affichage
     const date = participants.length > 0 ? participants[0].date : "";
-    const lieu = participants.length > 0 ? participants[0].lieu : "";
-    const nombreParticipants = participants.length;
-    // Calculer la somme perçue
-    const tarifs = {
-        "Pilote": 0,
-        "Copilote": 0,
-        "Adhérent·e": 0,
-        "Invité·e 2 €": 2,
-        "Alsarando 2 €": 2,
-        "Payant 6 €": 6,
-        "Adhésion 24 €": 24,
-        "Demi-tarif 12 €": 12
+    // Extraire jour, mois, année pour le nom du fichier
+    const dateParts = date.split(/\s+/);
+    const day = dateParts[1]; // "26"
+    const month = dateParts[2]; // "juillet"
+    const year = dateParts[3]; // "2026"
+    // Dictionnaire pour convertir les mois en numéros
+    const moisEnNumeros = {
+        "janvier": "01", "février": "02", "fevrier": "02", "mars": "03",
+        "avril": "04", "mai": "05", "juin": "06", "juillet": "07",
+        "août": "08", "aout": "08", "septembre": "09", "octobre": "10",
+        "novembre": "11", "décembre": "12", "decembre": "12"
     };
-    const sommePerçue = participants.reduce(
-        (acc, participant) => acc + (tarifs[participant.statut] ?? 0),
-        0
-    );
-    // Créer la liste des participants pour l'affichage
-    const listeParticipantsAffichage = participants.map(participant => {
-        const prenomFormate = formatName(participant.prenom);
-        const nomFormate = formatName(participant.nom);
-        const nomComplet = `${prenomFormate} ${nomFormate}`;
-        return {
-            nom: nomComplet,
-            statut: participant.statut
-        };
-    });
+    const monthNumber = moisEnNumeros[month.toLowerCase()] || "01";
+    const dateForFilename = `${String(day).padStart(2, '0')}-${monthNumber}-${year}`;
     // Créer la fenêtre modale
     const overlay = document.createElement("div");
     overlay.className = "transmission-overlay";
@@ -875,20 +859,13 @@ function ouvrirFenetreTransmission() {
         <div class="transmission-modal">
             <div class="transmission-title">Liste à transmettre</div>
             <div class="transmission-info">
-                <p><strong>Date :</strong> ${escapeHtml(date)}</p>
-                <p><strong>Lieu :</strong> ${escapeHtml(lieu)}</p>
-                <p><strong>Nombre de participant·e·s :</strong> ${nombreParticipants}</p>
-                <p><strong>Somme perçue :</strong> ${sommePerçue} €</p>
-                <p><strong>Commentaire :</strong> ${escapeHtml(commentaire)}</p>
+                <p>Veuillez valider le contenu du fichier CSV avant transmission :</p>
+                <textarea class="transmission-csv-content" readonly>${escapeHtml(csv)}</textarea>
             </div>
-            <div class="transmission-liste">
-                <h3>Liste complète :</h3>
-                ${listeParticipantsAffichage.map(p => `
-                    <div class="transmission-liste-row">
-                        <span class="transmission-liste-participant">${escapeHtml(p.nom)}</span>
-                        <span class="transmission-liste-statut">${escapeHtml(p.statut)}</span>
-                    </div>
-                `).join("")}
+            <div class="transmission-actions">
+                <button type="button" class="btn btn--primary" id="transmission-download">
+                    Télécharger le CSV (${dateForFilename}.csv)
+                </button>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn--cancel" id="transmission-cancel">Annuler</button>
@@ -901,24 +878,35 @@ function ouvrirFenetreTransmission() {
     overlay.querySelector("#transmission-cancel").addEventListener("click", () => {
         overlay.remove();
     });
-    // Gérer le bouton Valider
-    overlay.querySelector("#transmission-validate").addEventListener("click", () => {
-        // Créer un Blob avec le CSV
+    // Gérer le bouton Télécharger le CSV
+    overlay.querySelector("#transmission-download").addEventListener("click", () => {
         const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
-        // Créer un lien pour télécharger le fichier CSV
         const url = URL.createObjectURL(blob);
         const link = document.createElement("a");
         link.href = url;
-        link.download = `liste_participants_${date.replace(/\s+/g, "_")}.csv`;
+        link.download = `${dateForFilename}.csv`;
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
         URL.revokeObjectURL(url);
-        // Préparer le message SMS
+    });
+    // Gérer le bouton Valider
+    overlay.querySelector("#transmission-validate").addEventListener("click", () => {
+        // Ouvrir le SMS en premier
         const message = `Bonjour, voici ci-joint la liste de la randonnée du ${date} à ${lieu}.`;
-        // Envoyer le SMS
         sendSMSWithBody(tresorerie, message);
-        // Fermer la fenêtre modale
+        // Télécharger le CSV après un léger délai (pour éviter les blocages)
+        setTimeout(() => {
+            const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.href = url;
+            link.download = `${dateForFilename}.csv`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+        }, 500); // Délai de 500 ms
         overlay.remove();
     });
     // Fermer la fenêtre en cliquant en dehors
@@ -2134,8 +2122,8 @@ function creerCsvParticipants() {
     const date = participants.length > 0 ? participants[0].date : "";
     const lieu = participants.length > 0 ? participants[0].lieu : "";
     const ligneNombreParticipants = [
-        `"Date"`,
-        `"Lieu"`,
+        `"${date.replace(/"/g, '""')}"`,
+        `"${lieu.replace(/"/g, '""')}"`,
         `"Nombre de Participant·e·s"`,
         `"${participants.length}"`
     ].join(" ; ");
@@ -2145,6 +2133,7 @@ function creerCsvParticipants() {
         "Adhérent·e": 0,
         "Invité·e 2 €": 2,
         "Alsarando 2 €": 2,
+        "Payant 6 €": 6,
         "Adhésion 24 €": 24,
         "Demi-tarif 12 €": 12
     };
@@ -2153,14 +2142,14 @@ function creerCsvParticipants() {
         0
     );
     const ligneSommePerçue = [
-        `"Date"`,
-        `"Lieu"`,
+        `"${date.replace(/"/g, '""')}"`,
+        `"${lieu.replace(/"/g, '""')}"`,
         `"Somme perçue"`,
         `"${sommePerçue} €"`
     ].join(" ; ");
     const ligneCommentaire = [
-        `"Date"`,
-        `"Lieu"`,
+        `"${date.replace(/"/g, '""')}"`,
+        `"${lieu.replace(/"/g, '""')}"`,
         `"Commentaire"`,
         `"${commentaire.replace(/"/g, '""')}"`
     ].join(" ; ");
