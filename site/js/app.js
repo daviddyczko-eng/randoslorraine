@@ -1428,34 +1428,436 @@ function closeModal(id) {
     modal.classList.add("hidden");
     modal.setAttribute("aria-hidden", "true");
 }
+/* ============================================================
+ * Gestion des fenêtres de covoiturage
+ * ============================================================
+ */
 function initCovoiturageModals() {
+
+    /*
+     * ------------------------------------------------------------
+     * Bouton : Je propose un covoiturage
+     * ------------------------------------------------------------
+     */
+    const btnProposer =
+        document.getElementById(
+            "btn-covoiturage-proposer"
+        );
+
+    if (btnProposer) {
+
+        btnProposer.onclick = () => {
+
+            const places =
+                document.getElementById(
+                    "covoiturage-propose-places"
+                );
+
+            const etape =
+                document.getElementById(
+                    "covoiturage-propose-etape"
+                );
+
+            if (places) {
+                places.value = "";
+            }
+
+            if (etape) {
+                etape.value = "";
+            }
+
+            openModal(
+                "covoiturage-propose-modal"
+            );
+        };
+    }
+
+
+    /*
+     * ------------------------------------------------------------
+     * Bouton : Je recherche un covoiturage
+     * ------------------------------------------------------------
+     */
+    const btnRechercher =
+        document.getElementById(
+            "btn-covoiturage-rechercher"
+        );
+
+    if (btnRechercher) {
+
+        btnRechercher.onclick = () => {
+
+            const places =
+                document.getElementById(
+                    "covoiturage-recherche-places"
+                );
+
+            const etape =
+                document.getElementById(
+                    "covoiturage-recherche-etape"
+                );
+
+            if (places) {
+                places.value = "";
+            }
+
+            if (etape) {
+                etape.value = "";
+            }
+
+            openModal(
+                "covoiturage-recherche-modal"
+            );
+        };
+    }
+
+
+    /*
+     * ------------------------------------------------------------
+     * Validation : proposition de covoiturage
+     * ------------------------------------------------------------
+     */
+    const btnValiderProposition =
+        document.getElementById(
+            "covoiturage-propose-confirm"
+        );
+
+    if (btnValiderProposition) {
+
+        btnValiderProposition.onclick = () => {
+
+            const places =
+                document.getElementById(
+                    "covoiturage-propose-places"
+                );
+
+            const etape =
+                document.getElementById(
+                    "covoiturage-propose-etape"
+                );
+
+            const nombrePlaces =
+                places
+                    ? Number(places.value)
+                    : 0;
+
+            const lieuEtape =
+                etape
+                    ? etape.value.trim()
+                    : "";
+
+
+            /*
+             * Vérification
+             */
+            if (!nombrePlaces || nombrePlaces < 1) {
+
+                alert(
+                    "Veuillez indiquer le nombre de places proposées."
+                );
+
+                if (places) {
+                    places.focus();
+                }
+
+                return;
+            }
+
+
+            if (!lieuEtape) {
+
+                alert(
+                    "Veuillez indiquer le lieu de rencontre."
+                );
+
+                if (etape) {
+                    etape.focus();
+                }
+
+                return;
+            }
+
+
+            /*
+             * Récupération de l'utilisateur
+             */
+            const user =
+                getUser();
+
+            if (!user) {
+
+                alert(
+                    "Impossible de récupérer vos données personnelles."
+                );
+
+                return;
+            }
+
+
+            /*
+             * Récupération de la randonnée
+             */
+            const rando =
+                prochaineRando || {};
+
+
+            const date =
+                rando.date ||
+                "Date inconnue";
+
+            const lieu =
+                rando.lieu?.commune ||
+                "Lieu inconnu";
+
+
+            const prenom =
+                user.prenom || "";
+
+            const nom =
+                user.nom || "";
+
+
+            /*
+             * Construction du SMS
+             */
+            const message =
+`Bonjour,
+
+Je propose un covoiturage pour la randonnée du ${date} à ${lieu}.
+
+Conducteur : ${prenom} ${nom}
+Nombre de place(s) proposée(s) : ${nombrePlaces}
+Lieu de rencontre : ${lieuEtape}
+
+Rando's Lorraine`;
+
+
+            /*
+             * Fermeture de la fenêtre
+             */
+            closeModal(
+                "covoiturage-propose-modal"
+            );
+
+
+            /*
+             * Ouverture du SMS
+             */
+            sendSMSWithBody(
+                "",
+                message
+            );
+        };
+    }
+
+
+    /*
+     * ------------------------------------------------------------
+     * Validation : recherche de covoiturage
+     * ------------------------------------------------------------
+     */
+    const btnValiderRecherche =
+        document.getElementById(
+            "covoiturage-recherche-confirm"
+        );
+
+    if (btnValiderRecherche) {
+
+        btnValiderRecherche.onclick = () => {
+
+            const places =
+                document.getElementById(
+                    "covoiturage-recherche-places"
+                );
+
+            const etape =
+                document.getElementById(
+                    "covoiturage-recherche-etape"
+                );
+
+            const nombrePlaces =
+                places
+                    ? Number(places.value)
+                    : 0;
+
+            const lieuEtape =
+                etape
+                    ? etape.value.trim()
+                    : "";
+
+
+            /*
+             * Vérification
+             */
+            if (!nombrePlaces || nombrePlaces < 1) {
+
+                alert(
+                    "Veuillez indiquer le nombre de places recherchées."
+                );
+
+                if (places) {
+                    places.focus();
+                }
+
+                return;
+            }
+
+
+            if (!lieuEtape) {
+
+                alert(
+                    "Veuillez indiquer le lieu de rencontre souhaité."
+                );
+
+                if (etape) {
+                    etape.focus();
+                }
+
+                return;
+            }
+
+
+            /*
+             * Récupération de l'utilisateur
+             */
+            const user =
+                getUser();
+
+            if (!user) {
+
+                alert(
+                    "Impossible de récupérer vos données personnelles."
+                );
+
+                return;
+            }
+
+
+            /*
+             * Récupération de la randonnée
+             */
+            const rando =
+                prochaineRando || {};
+
+
+            const date =
+                rando.date ||
+                "Date inconnue";
+
+            const lieu =
+                rando.lieu?.commune ||
+                "Lieu inconnu";
+
+
+            const prenom =
+                user.prenom || "";
+
+            const nom =
+                user.nom || "";
+
+
+            /*
+             * Construction du SMS
+             */
+            const message =
+`Bonjour,
+
+Je recherche un covoiturage pour la randonnée du ${date} à ${lieu}.
+
+Passager·ère : ${prenom} ${nom}
+Nombre de place(s) recherchée(s) : ${nombrePlaces}
+Lieu de rencontre souhaité : ${lieuEtape}
+
+Rando's Lorraine`;
+
+
+            /*
+             * Fermeture de la fenêtre
+             */
+            closeModal(
+                "covoiturage-recherche-modal"
+            );
+
+
+            /*
+             * Ouverture du SMS
+             */
+            sendSMSWithBody(
+                "",
+                message
+            );
+        };
+    }
+
+
+    /*
+     * ------------------------------------------------------------
+     * Boutons Annuler
+     * ------------------------------------------------------------
+     */
     document
-        .querySelectorAll("[data-close-modal]")
-        .forEach(btn => {
-            btn.onclick = () => {
+        .querySelectorAll(
+            "[data-close-modal]"
+        )
+        .forEach(button => {
+
+            button.onclick = () => {
+
                 const modal =
-                    btn.closest(".modal");
+                    button.closest(".modal");
+
                 if (modal) {
                     closeModal(modal.id);
                 }
             };
         });
+
+
+    /*
+     * ------------------------------------------------------------
+     * Clic à l'extérieur d'une fenêtre
+     * ------------------------------------------------------------
+     */
     document
         .querySelectorAll(".modal")
         .forEach(modal => {
-            modal.onclick = (e) => {
-                if (e.target === modal) {
-                    closeModal(modal.id);
+
+            modal.onclick = event => {
+
+                if (event.target === modal) {
+
+                    closeModal(
+                        modal.id
+                    );
                 }
             };
         });
-    document.onkeydown = (e) => {
-        if (e.key !== "Escape") return;
+
+
+    /*
+     * ------------------------------------------------------------
+     * Touche Échap
+     * ------------------------------------------------------------
+     */
+    document.onkeydown = event => {
+
+        if (event.key !== "Escape") {
+            return;
+        }
+
         document
             .querySelectorAll(".modal")
             .forEach(modal => {
-                if (!modal.classList.contains("hidden")) {
-                    closeModal(modal.id);
+
+                if (
+                    !modal.classList.contains(
+                        "hidden"
+                    )
+                ) {
+
+                    closeModal(
+                        modal.id
+                    );
                 }
             });
     };
