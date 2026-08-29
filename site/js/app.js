@@ -837,7 +837,6 @@ function ouvrirFenetreTransmission() {
         return;
     }
     const csv = creerCsvParticipants();
-    const date = participants.length > 0 ? participants[0].date : "";
     // Extraire la date pour le nom du fichier
     const date = participants.length > 0 ? participants[0].date : "";
     const dateParts = date.split(/\s+/);
