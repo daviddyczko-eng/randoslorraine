@@ -2347,8 +2347,7 @@ function ouvrirScannerQr(type) {
         );
         /*
          * Vérification du contenu
-         * Le QR généré par storage.js est :
-         * "Prénom Nom Rando's Lorraine"
+         * Le QR généré par storage.js est : "Prénom Nom Rando's Lorraine"
          */
         const suffixe =
             " Rando's Lorraine";
@@ -2377,8 +2376,7 @@ function ouvrirScannerQr(type) {
         }
         /*
          * Séparation Prénom / Nom
-         * On considère que le premier mot est le prénom
-         * et que tout ce qui suit constitue le nom.
+         * On considère que le premier mot est le prénom et que tout ce qui suit constitue le nom.
          */
         const morceaux =
             nomComplet
@@ -2408,6 +2406,9 @@ function ouvrirScannerQr(type) {
             if (champ) {
                 champ.value =
                     `${prenom} ${nom}`;
+                champ.dispatchEvent(
+                    new Event("change", { bubbles: true })
+                );
             }
             message.textContent =
                 `Pilote : ${prenom} ${nom}`;
@@ -2423,6 +2424,9 @@ function ouvrirScannerQr(type) {
             if (champ) {
                 champ.value =
                     `${prenom} ${nom}`;
+                champ.dispatchEvent(
+                    new Event("change", { bubbles: true })
+                );
             }
             message.textContent =
                 `Copilote : ${prenom} ${nom}`;
@@ -2453,6 +2457,12 @@ function ouvrirScannerQr(type) {
             }
             message.textContent =
                 `${prenom} ${nom} — Adhérent·e`;
+
+            const boutonAjouter =
+                $("#btn-ajouter-participant");
+            if (boutonAjouter) {
+                boutonAjouter.click();
+            }
         }
         /*
          * --------------------------------------------------------
