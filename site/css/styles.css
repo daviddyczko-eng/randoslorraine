@@ -1323,5 +1323,71 @@ select.participant-input {
 .reset-modal__buttons .btn {
 
     min-width: 100px;
+}
 
+/* Fenêtre de transmission */
+.transmission-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.transmission-modal {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    max-width: 90%;
+    max-height: 90%;
+    overflow-y: auto;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+.transmission-title {
+    font-size: 1.5em;
+    font-weight: bold;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.transmission-info {
+    margin-bottom: 15px;
+}
+
+.transmission-info p {
+    margin: 5px 0;
+}
+
+.transmission-liste {
+    margin-bottom: 15px;
+}
+
+.transmission-liste-header, .transmission-liste-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 5px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.transmission-liste-participant {
+    flex: 1;
+    text-align: left;
+}
+
+.transmission-liste-statut {
+    flex: 1;
+    text-align: left;
+}
+
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 15px;
 }
