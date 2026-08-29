@@ -839,34 +839,9 @@ function ouvrirFenetreTransmission() {
     }
     // Créer le CSV
     const csv = creerCsvParticipants();
-    // Extraire les informations pour l'affichage
+    // Extraire la date pour le nom du fichier
     const date = participants.length > 0 ? participants[0].date : "";
-    const lieu = participants.length > 0 ? participants[0].lieu : "";
-    const nombreParticipants = participants.length;
-    // Calculer la somme perçue
-    const tarifs = {
-        "Pilote": 0,
-        "Copilote": 0,
-        "Adhérent·e": 0,
-        "Invité·e 2 €": 2,
-        "Alsarando 2 €": 2,
-        "Adhésion 24 €": 24,
-        "Demi-tarif 12 €": 12
-    };
-    const sommePerçue = participants.reduce(
-        (acc, participant) => acc + (tarifs[participant.statut] ?? 0),
-        0
-    );
-    // Créer la liste des participants pour l'affichage
-    const listeParticipantsAffichage = participants.map(participant => {
-        const prenomFormate = formatName(participant.prenom);
-        const nomFormate = formatName(participant.nom);
-        const nomComplet = `${prenomFormate} ${nomFormate}`;
-        return {
-            nom: nomComplet,
-            statut: participant.statut
-        };
-    });
+    const dateForFilename = date.split(/\s+/).slice(0, 3).join("-"); // Format "DD-MMM-AAAA" → "DD-MMM-AAAA"
     // Créer la fenêtre modale
     const overlay = document.createElement("div");
     overlay.className = "transmission-overlay";
@@ -874,24 +849,8 @@ function ouvrirFenetreTransmission() {
         <div class="transmission-modal">
             <div class="transmission-title">Liste à transmettre</div>
             <div class="transmission-info">
-                <p><strong>Date :</strong> ${escapeHtml(date)}</p>
-                <p><strong>Lieu :</strong> ${escapeHtml(lieu)}</p>
-                <p><strong>Nombre de participant·e·s :</strong> ${nombreParticipants}</p>
-                <p><strong>Somme perçue :</strong> ${sommePerçue} €</p>
-                <p><strong>Commentaire :</strong> ${escapeHtml(commentaire)}</p>
-            </div>
-            <div class="transmission-liste">
-                <h3>Liste complète :</h3>
-                <div class="transmission-liste-header">
-                    <span class="transmission-liste-participant">Participant</span>
-                    <span class="transmission-liste-statut">Statut</span>
-                </div>
-                ${listeParticipantsAffichage.map(p => `
-                    <div class="transmission-liste-row">
-                        <span class="transmission-liste-participant">${escapeHtml(p.nom)}</span>
-                        <span class="transmission-liste-statut">${escapeHtml(p.statut)}</span>
-                    </div>
-                `).join("")}
+                <p>Veuillez valider le contenu du fichier CSV avant transmission :</p>
+                <textarea class="transmission-csv-content" readonly>${escapeHtml(csv)}</textarea>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn--cancel" id="transmission-cancel">Annuler</button>
@@ -908,18 +867,20 @@ function ouvrirFenetreTransmission() {
     overlay.querySelector("#transmission-validate").addEventListener("click", () => {
         // Créer un Blob avec le CSV
         const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
-        // Créer un lien pour télécharger le fichier CSV
+        // Créer un lien pour télécharger le fichier CSV (optionnel, pour vérification)
         const url = URL.createObjectURL(blob);
         const link = document.createElement("a");
         link.href = url;
-        link.download = `liste_participants_${date.replace(/\s+/g, "_")}.csv`;
+        link.download = `${dateForFilename}.csv`;
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
         URL.revokeObjectURL(url);
-        // Préparer le message SMS
-        const message = `Bonjour, voici ci-joint la liste de la randonnée du ${date} à ${lieu}.`;
-        // Envoyer le SMS
+        // Préparer le message SMS avec le fichier en pièce jointe
+        const message = `Bonjour, voici ci-joint la liste de la randonnée du ${date}.`;
+        // Envoyer le SMS avec le fichier en pièce jointe
+        // Note : Les SMS ne peuvent pas avoir de pièce jointe directement via `sms:`
+        // On va donc ouvrir le SMS avec le message, et l'utilisateur devra joindre manuellement le fichier.
         sendSMSWithBody(tresorerie, message);
         // Fermer la fenêtre modale
         overlay.remove();
