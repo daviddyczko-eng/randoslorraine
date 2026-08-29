@@ -1391,3 +1391,18 @@ select.participant-input {
     gap: 10px;
     margin-top: 15px;
 }
+
+.transmission-csv-content {
+    width: 100%;
+    min-height: 200px;
+    max-height: 400px;
+    margin: 10px 0;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-family: monospace;
+    white-space: pre;
+    overflow-y: auto;
+    background-color: #f9f9f9;
+    resize: none;
+}
