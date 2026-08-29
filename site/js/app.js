@@ -837,14 +837,16 @@ function ouvrirFenetreTransmission() {
         return;
     }
     const csv = creerCsvParticipants();
-    // Extraire la date pour le nom du fichier
-    const date = participants.length > 0 ? participants[0].date : "";
-    const dateParts = date.split(/\s+/);
-    const day = dateParts[0]; // Ex: "Dimanche" → on veut "26"
-    const month = dateParts[1]; // Ex: "juillet"
-    const year = dateParts[2]; // Ex: "2026"
-    // Dictionnaire pour convertir les mois en numéros
-    const moisEnNumeros = {
+// Extraire la date pour le nom du fichier
+const date = participants.length > 0 ? participants[0].date : "";
+// Exemple de date : "Dimanche 26 juillet 2026"
+const dateParts = date.split(/\s+/);
+// dateParts = ["Dimanche", "26", "juillet", "2026"]
+const day = dateParts[1]; // "26" (et non "Dimanche")
+const month = dateParts[2]; // "juillet"
+const year = dateParts[3]; // "2026"
+// Dictionnaire pour convertir les mois en numéros
+const moisEnNumeros = {
     "janvier": "01",
     "février": "02",
     "fevrier": "02",
@@ -860,11 +862,11 @@ function ouvrirFenetreTransmission() {
     "novembre": "11",
     "décembre": "12",
     "decembre": "12"
-    };
-    // Récupérer le numéro du mois
-    const monthNumber = moisEnNumeros[month.toLowerCase()] || "01"; // Par défaut "01" si le mois n'est pas trouvé
-    // Formater le nom du fichier : DD-MM-AAAA.csv
-    const dateForFilename = `${String(day).padStart(2, '0')}-${monthNumber}-${year}`;
+};
+// Récupérer le numéro du mois
+const monthNumber = moisEnNumeros[month.toLowerCase()] || "01";
+// Formater le nom du fichier : JJ-MM-AAAA.csv
+const dateForFilename = `${String(day).padStart(2, '0')}-${monthNumber}-${year}`;
     // Créer la fenêtre modale
     const overlay = document.createElement("div");
     overlay.className = "transmission-overlay";
