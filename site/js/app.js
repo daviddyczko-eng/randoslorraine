@@ -2014,32 +2014,22 @@ function trierParticipants() {
  */
 function creerCsvParticipants() {
     trierParticipants();
-    const lignes =
-        participants.map(
-            participant => {
-                return [
-                    participant.date,
-                    participant.lieu,
-                    participant.statut,
-                    `${participant.prenom} ${participant.nom}`
-                ]
-                    .map(
-                        valeur =>
-                            String(
-                                valeur ?? ""
-                            )
-                            .replace(
-                                /"/g,
-                                '""'
-                            )
-                    )
-                    .map(
-                        valeur =>
-                            `"${valeur}"`
-                    )
-                    .join(" ; ");
-            }
-        );
+    const lignes = participants.map(participant => {
+        // Appliquer formatName au prénom et au nom
+        const prenomFormate = formatName(participant.prenom);
+        const nomFormate = formatName(participant.nom);
+        const nomComplet = `${prenomFormate} ${nomFormate}`;
+
+        return [
+            participant.date,
+            participant.lieu,
+            participant.statut,
+            nomComplet // Utiliser le nom complet formaté
+        ]
+        .map(valeur => String(valeur ?? "").replace(/"/g, '""'))
+        .map(valeur => `"${valeur}"`)
+        .join(" ; ");
+    });
     return lignes.join("\n");
 }
 
