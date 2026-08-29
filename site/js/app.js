@@ -3482,7 +3482,7 @@ function renderParticipants() {
                     type="button"
                     class="btn btn--danger"
                     id="btn-reset-participants">
-                    Mise à zéro de la liste
+                    Réinitialiser la liste
                 </button>
             </div>
         </div>
