@@ -839,9 +839,13 @@ function ouvrirFenetreTransmission() {
     }
     // Créer le CSV
     const csv = creerCsvParticipants();
-    // Extraire la date pour le nom du fichier
+    // Extraire la date pour le nom du fichier (format DD-MM-AAAA)
     const date = participants.length > 0 ? participants[0].date : "";
-    const dateForFilename = date.split(/\s+/)[0] + "-" + date.split(/\s+/)[1].substring(0, 2) + "-" + date.split(/\s+/)[2].substring(2);
+    const dateParts = date.split(/\s+/);
+    const day = dateParts[0];
+    const month = dateParts[1];
+    const year = dateParts[2];
+    const dateForFilename = `${day}-${month.substring(0, 2)}-${year}`; // Ex: "29-08-2026"
     // Créer la fenêtre modale
     const overlay = document.createElement("div");
     overlay.className = "transmission-overlay";
@@ -849,19 +853,8 @@ function ouvrirFenetreTransmission() {
         <div class="transmission-modal">
             <div class="transmission-title">Liste à transmettre</div>
             <div class="transmission-info">
-                <p><strong>Date :</strong> ${escapeHtml(date)}</p>
-                <p><strong>Lieu :</strong> ${escapeHtml(lieu)}</p>
-                <p><strong>Nombre de participant·e·s :</strong> ${nombreParticipants}</p>
-                <p><strong>Commentaire :</strong> ${escapeHtml(commentaire)}</p>
-            </div>
-            <div class="transmission-liste">
-                <h3>Liste complète :</h3>
-                ${listeParticipantsAffichage.map(p => `
-                    <div class="transmission-liste-row">
-                        <span class="transmission-liste-participant">${escapeHtml(p.nom)}</span>
-                        <span class="transmission-liste-statut">${escapeHtml(p.statut)}</span>
-                    </div>
-                `).join("")}
+                <p>Veuillez valider le contenu du fichier CSV avant transmission :</p>
+                <textarea class="transmission-csv-content" readonly>${escapeHtml(csv)}</textarea>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn--cancel" id="transmission-cancel">Annuler</button>
@@ -878,20 +871,18 @@ function ouvrirFenetreTransmission() {
     overlay.querySelector("#transmission-validate").addEventListener("click", () => {
         // Créer un Blob avec le CSV
         const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
-        // Créer un lien pour télécharger le fichier CSV (optionnel, pour vérification)
+        // Créer un lien pour télécharger le fichier CSV
         const url = URL.createObjectURL(blob);
         const link = document.createElement("a");
         link.href = url;
-        link.download = `${dateForFilename}.csv`;
+        link.download = `${dateForFilename}.csv`; // Nom du fichier : DD-MM-AAAA.csv
         document.body.appendChild(link);
-        link.click();
+        link.click(); // Déclencher le téléchargement
         document.body.removeChild(link);
-        URL.revokeObjectURL(url);
-        // Préparer le message SMS avec le fichier en pièce jointe
+        URL.revokeObjectURL(url); // Libérer l'URL
+        // Préparer le message SMS
         const message = `Bonjour, voici ci-joint la liste de la randonnée du ${date}.`;
-        // Envoyer le SMS avec le fichier en pièce jointe
-        // Note : Les SMS ne peuvent pas avoir de pièce jointe directement via `sms:`
-        // On va donc ouvrir le SMS avec le message, et l'utilisateur devra joindre manuellement le fichier.
+        // Ouvrir le SMS avec le message pré-rempli
         sendSMSWithBody(tresorerie, message);
         // Fermer la fenêtre modale
         overlay.remove();
