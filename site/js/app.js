@@ -2357,10 +2357,10 @@ function ouvrirScannerQr(type) {
         );
         /*
          * Vérification du contenu
-         * Le QR généré par storage.js est : "Prénom Nom RandosLorraine"
+         * Le QR généré par storage.js est : "Prénom%20Nom%20RandosLorraine"
          */
         const suffixe =
-            " RandosLorraine";
+            "%20RandosLorraine";
         if (
             typeof decodedText !== "string" ||
             !decodedText.endsWith(suffixe)
