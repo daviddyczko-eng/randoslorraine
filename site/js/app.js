@@ -698,32 +698,25 @@ ${[1, 2, 3, 4, 5, 6].map(n =>
          */
         const btnPropose =
             $("#btn-covoiturage-propose");
-
         if (btnPropose) {
-
             btnPropose.addEventListener(
                 "click",
                 () => {
-
                     /*
                      * Remettre les valeurs mémorisées
                      */
                     const champPlaces =
                         $("#covoiturage-places");
-
                     const champEtape =
                         $("#covoiturage-propose-etape");
-
                     if (champPlaces) {
                         champPlaces.value =
                             String(places);
                     }
-
                     if (champEtape) {
                         champEtape.value =
                             etape;
                     }
-
                     /*
                      * Ouvrir la fenêtre
                      */
@@ -733,32 +726,25 @@ ${[1, 2, 3, 4, 5, 6].map(n =>
                 }
             );
         }
-
-
         /* ============================================================
          * Bouton "Je recherche un covoiturage"
          * ============================================================
          */
         const btnRecherche =
             $("#btn-covoiturage-recherche");
-
         if (btnRecherche) {
-
             btnRecherche.addEventListener(
                 "click",
                 () => {
-
                     /*
                      * Préremplir le lieu avec la dernière valeur utilisée
                      */
                     const champEtape =
                         $("#covoiturage-recherche-etape");
-
                     if (champEtape) {
                         champEtape.value =
                             etape;
                     }
-
                     /*
                      * Ouvrir la fenêtre
                      */
@@ -768,28 +754,20 @@ ${[1, 2, 3, 4, 5, 6].map(n =>
                 }
             );
         }
-
-
         /* ============================================================
          * Bouton "Proposer"
          * ============================================================
          */
         const btnProposer =
             $("#btn-covoiturage-proposer");
-
         if (btnProposer) {
-
             btnProposer.addEventListener(
                 "click",
                 () => {
-
                     const champPlaces =
                         $("#covoiturage-places");
-
                     const champEtape =
                         $("#covoiturage-propose-etape");
-
-
                     /*
                      * Récupération des données
                      */
@@ -797,33 +775,24 @@ ${[1, 2, 3, 4, 5, 6].map(n =>
                         Number(
                             champPlaces?.value
                         ) || 1;
-
                     etape =
                         (
                             champEtape?.value ?? ""
                         ).trim();
-
-
                     /*
                      * Vérification du lieu
                      */
                     if (!etape) {
-
                         alert(
-                            "Veuillez indiquer un lieu de rendez-vous."
+                            "Veuillez indiquer un lieu de rendez-vous souhaité."
                         );
-
                         return;
                     }
-
-
                     /*
                      * Récupération de l'utilisateur
                      */
                     const user =
                         getUser();
-
-
                     /*
                      * Construction du SMS
                      */
@@ -835,16 +804,12 @@ Si cela vous intéresse, merci de me contacter directement au ${user?.telephone 
 ${user?.prenom ?? ""} ${initialeNom(user?.nom)}
 
 Merci`;
-
-
                     /*
                      * Fermer la fenêtre
                      */
                     closeModal(
                         "covoiturage-propose-modal"
                     );
-
-
                     /*
                      * Ouvrir l'application SMS
                      */
@@ -855,25 +820,18 @@ Merci`;
                 }
             );
         }
-
-
         /* ============================================================
          * Bouton "Demander"
          * ============================================================
          */
         const btnDemander =
             $("#btn-covoiturage-demander");
-
         if (btnDemander) {
-
             btnDemander.addEventListener(
                 "click",
                 () => {
-
                     const champEtape =
                         $("#covoiturage-recherche-etape");
-
-
                     /*
                      * Récupération du lieu
                      */
@@ -881,28 +839,20 @@ Merci`;
                         (
                             champEtape?.value ?? ""
                         ).trim();
-
-
                     /*
                      * Vérification du lieu
                      */
                     if (!etape) {
-
                         alert(
-                            "Veuillez indiquer un lieu de rendez-vous."
+                            "Veuillez indiquer un lieu de rendez-vous souhaité."
                         );
-
                         return;
                     }
-
-
                     /*
                      * Récupération de l'utilisateur
                      */
                     const user =
                         getUser();
-
-
                     /*
                      * Construction du SMS
                      */
@@ -912,16 +862,12 @@ Merci`;
 Contact direct au ${user?.telephone ?? ""} ou via l'adresse ${user?.email ?? ""}.
 
 Merci par avance`;
-
-
                     /*
                      * Fermer la fenêtre
                      */
                     closeModal(
                         "covoiturage-recherche-modal"
                     );
-
-
                     /*
                      * Ouvrir l'application SMS
                      */
