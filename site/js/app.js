@@ -3399,17 +3399,14 @@ function renderParticipants() {
                     Transmettre la liste
                 </button>
             </div>
-            <!-- ==================================================
-     MISE À ZÉRO DE LA LISTE
-     ================================================== -->
-<div class="btn-row">
-    <button
-        type="button"
-        class="btn btn--danger"
-        id="btn-reset-participants">
-        Mise à zéro de la liste
-    </button>
-</div>
+            <div class="btn-row">
+                <button
+                    type="button"
+                    class="btn btn--danger"
+                    id="btn-reset-participants">
+                    Mise à zéro de la liste
+                </button>
+            </div>
         </div>
     `;
     /*
@@ -4024,6 +4021,21 @@ $("#btn-scan-qr").addEventListener("click", () => {
                 ouvrirFenetreCommentaire();
             }
         );
+    /*
+     * ============================================================
+     * MISE À ZÉRO DE LA LISTE
+     * ============================================================
+     */
+    const btnResetParticipants =
+        $("#btn-reset-participants");
+        if (btnResetParticipants) {
+            btnResetParticipants.addEventListener(
+                "click",
+                () => {
+                    reinitialiserListeParticipants();
+                }
+            );
+        }
     /*
      * ============================================================
      * TRANSMISSION
