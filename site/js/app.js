@@ -2406,6 +2406,9 @@ function ouvrirScannerQr(type) {
             if (champ) {
                 champ.value =
                     `${prenom} ${nom}`;
+                champ.dispatchEvent(
+                    new Event("change", { bubbles: true })
+                );
             }
             message.textContent =
                 `Pilote : ${prenom} ${nom}`;
@@ -2421,6 +2424,9 @@ function ouvrirScannerQr(type) {
             if (champ) {
                 champ.value =
                     `${prenom} ${nom}`;
+                champ.dispatchEvent(
+                    new Event("change", { bubbles: true })
+                );
             }
             message.textContent =
                 `Copilote : ${prenom} ${nom}`;
@@ -2451,7 +2457,12 @@ function ouvrirScannerQr(type) {
             }
             message.textContent =
                 `${prenom} ${nom} — Adhérent·e`;
-                const prenom =
+
+            const boutonAjouter =
+                $("#btn-ajouter-participant");
+            if (boutonAjouter) {
+                boutonAjouter.click();
+            }
         }
         /*
          * --------------------------------------------------------
