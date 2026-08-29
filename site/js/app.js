@@ -2346,7 +2346,14 @@ function ouvrirScannerQr(type) {
          * Empêche tout traitement d'une lecture ultérieure pendant que la fermeture est en cours (le lecteur
          * continue d'analyser des images tant qu'il n'est pas explicitement arrêté).
          */
-        if (dejaDetecte) {
+            const suffixe = " Rando's Lorraine";
+            const decodedName = decodeURIComponent(decodedText); // Décode les caractères spéciaux
+            if (typeof decodedName !== "string" || !decodedName.endsWith(suffixe)) {
+            message.textContent = "Ce QR code n'est pas une carte Rando's Lorraine.";
+            return;
+            }
+            const nomComplet = decodedName.slice(0, -suffixe.length).trim();
+            if (dejaDetecte) {
             return;
         }
         console.log(
