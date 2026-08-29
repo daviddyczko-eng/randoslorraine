@@ -2451,6 +2451,31 @@ function ouvrirScannerQr(type) {
             }
             message.textContent =
                 `${prenom} ${nom} — Adhérent·e`;
+             {
+                const prenom =
+                    $("#participant-prenom")
+                        ?.value
+                        .trim() ?? "";
+                const nom =
+                    $("#participant-nom")
+                        ?.value
+                        .trim() ?? "";
+                const statut =
+                    $("#participant-statut")
+                        ?.value ?? "";
+                if (!prenom || !nom) {
+                    alert(
+                        "Veuillez renseigner le prénom et le nom."
+                    );
+                    return;
+                }
+                if (!statut) {
+                    alert(
+                        "Veuillez sélectionner un statut."
+                    );
+                    return;
+                }
+
         }
         /*
          * --------------------------------------------------------
