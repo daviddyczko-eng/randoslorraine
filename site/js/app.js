@@ -183,7 +183,7 @@ let prochaineRando = null;
  * ============================================================
  */
 
-const covoiturage = "+33616904093";
+const covoiturage = "+33672997397";
 const tresorerie = "+33689928560";
 let places = 1;
 let etape = "";
@@ -2869,6 +2869,113 @@ function ouvrirScannerQr(type) {
         });
 }
 
+/* ============================================================
+ * Mise à zéro de la liste des participant·e·s
+ * ============================================================ */
+function reinitialiserListeParticipants() {
+
+    /*
+     * ------------------------------------------------------------
+     * Confirmation
+     * ------------------------------------------------------------
+     */
+
+    const confirmation =
+        confirm(
+            "Voulez-vous effacer toutes les données de la liste des participant·e·s ?"
+        );
+
+    if (!confirmation) {
+        return;
+    }
+
+
+    /*
+     * ------------------------------------------------------------
+     * Supprimer toutes les données locales de la liste
+     * ------------------------------------------------------------
+     */
+
+    const clesASupprimer = [];
+
+    for (
+        let i = 0;
+        i < localStorage.length;
+        i++
+    ) {
+
+        const cle =
+            localStorage.key(i);
+
+        if (!cle) continue;
+
+
+        /*
+         * Listes de participants
+         */
+
+        if (
+            cle.startsWith(
+                "participantsListe_"
+            )
+        ) {
+
+            clesASupprimer.push(cle);
+
+        }
+
+    }
+
+
+    clesASupprimer.forEach(
+        cle => {
+            localStorage.removeItem(cle);
+        }
+    );
+
+
+    /*
+     * Supprimer également le CSV mémorisé
+     */
+
+    localStorage.removeItem(
+        "participantsCsv"
+    );
+
+
+    /*
+     * Supprimer le commentaire
+     */
+
+    localStorage.removeItem(
+        "participantsCommentaire"
+    );
+
+    commentaire = "";
+
+
+    /*
+     * ------------------------------------------------------------
+     * Réinitialiser les variables en mémoire
+     * ------------------------------------------------------------
+     */
+
+    participants = [];
+
+
+    /*
+     * ------------------------------------------------------------
+     * Recharger la page participants
+     *
+     * renderParticipants() va alors reconstruire automatiquement
+     * la liste initiale.
+     * ------------------------------------------------------------
+     */
+
+    renderParticipants();
+
+}
+
 /*
  * ============================================================
  * Fonction renderParticipants()
@@ -3292,6 +3399,17 @@ function renderParticipants() {
                     Transmettre la liste
                 </button>
             </div>
+            <!-- ==================================================
+     MISE À ZÉRO DE LA LISTE
+     ================================================== -->
+<div class="btn-row">
+    <button
+        type="button"
+        class="btn btn--danger"
+        id="btn-reset-participants">
+        Mise à zéro de la liste
+    </button>
+</div>
         </div>
     `;
     /*
