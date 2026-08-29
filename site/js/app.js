@@ -2388,8 +2388,8 @@ function ouvrirScannerQr(type) {
          * Séparation Prénom / Nom
          * On considère que le premier mot est le prénom et que tout ce qui suit constitue le nom.
          */
-        const morceaux =
-            nomComplet
+        const nomCompletDecode = decodeURIComponent(nomComplet);
+        const morceaux = nomCompletDecode
                 .split(/\s+/)
                 .filter(Boolean);
         if (morceaux.length < 2) {
