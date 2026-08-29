@@ -841,7 +841,7 @@ function ouvrirFenetreTransmission() {
     const csv = creerCsvParticipants();
     // Extraire la date pour le nom du fichier
     const date = participants.length > 0 ? participants[0].date : "";
-    const dateForFilename = date.split(/\s+/).slice(0, 3).join("-"); // Format "DD-MMM-AAAA" → "DD-MMM-AAAA"
+    const dateForFilename = date.split(/\s+/)[0] + "-" + date.split(/\s+/)[1].substring(0, 2) + "-" + date.split(/\s+/)[2].substring(2);
     // Créer la fenêtre modale
     const overlay = document.createElement("div");
     overlay.className = "transmission-overlay";
