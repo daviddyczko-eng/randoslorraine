@@ -837,36 +837,21 @@ function ouvrirFenetreTransmission() {
         return;
     }
     const csv = creerCsvParticipants();
-// Extraire la date pour le nom du fichier
-const date = participants.length > 0 ? participants[0].date : "";
-// Exemple de date : "Dimanche 26 juillet 2026"
-const dateParts = date.split(/\s+/);
-// dateParts = ["Dimanche", "26", "juillet", "2026"]
-const day = dateParts[1]; // "26" (et non "Dimanche")
-const month = dateParts[2]; // "juillet"
-const year = dateParts[3]; // "2026"
-// Dictionnaire pour convertir les mois en numéros
-const moisEnNumeros = {
-    "janvier": "01",
-    "février": "02",
-    "fevrier": "02",
-    "mars": "03",
-    "avril": "04",
-    "mai": "05",
-    "juin": "06",
-    "juillet": "07",
-    "août": "08",
-    "aout": "08",
-    "septembre": "09",
-    "octobre": "10",
-    "novembre": "11",
-    "décembre": "12",
-    "decembre": "12"
-};
-// Récupérer le numéro du mois
-const monthNumber = moisEnNumeros[month.toLowerCase()] || "01";
-// Formater le nom du fichier : JJ-MM-AAAA.csv
-const dateForFilename = `${String(day).padStart(2, '0')}-${monthNumber}-${year}`;
+    const date = participants.length > 0 ? participants[0].date : "";
+    // Extraire jour, mois, année pour le nom du fichier
+    const dateParts = date.split(/\s+/);
+    const day = dateParts[1]; // "26"
+    const month = dateParts[2]; // "juillet"
+    const year = dateParts[3]; // "2026"
+    // Dictionnaire pour convertir les mois en numéros
+    const moisEnNumeros = {
+        "janvier": "01", "février": "02", "fevrier": "02", "mars": "03",
+        "avril": "04", "mai": "05", "juin": "06", "juillet": "07",
+        "août": "08", "aout": "08", "septembre": "09", "octobre": "10",
+        "novembre": "11", "décembre": "12", "decembre": "12"
+    };
+    const monthNumber = moisEnNumeros[month.toLowerCase()] || "01";
+    const dateForFilename = `${String(day).padStart(2, '0')}-${monthNumber}-${year}`;
     // Créer la fenêtre modale
     const overlay = document.createElement("div");
     overlay.className = "transmission-overlay";
@@ -907,19 +892,21 @@ const dateForFilename = `${String(day).padStart(2, '0')}-${monthNumber}-${year}`
     });
     // Gérer le bouton Valider
     overlay.querySelector("#transmission-validate").addEventListener("click", () => {
-        // Télécharger automatiquement le CSV (fonctionne sur ordinateur, pas toujours sur mobile)
-        const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement("a");
-        link.href = url;
-        link.download = `${dateForFilename}.csv`;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        URL.revokeObjectURL(url);
-        // Ouvrir le SMS
+        // Ouvrir le SMS en premier
         const message = `Bonjour, voici ci-joint la liste de la randonnée du ${date} à ${lieu}.`;
         sendSMSWithBody(tresorerie, message);
+        // Télécharger le CSV après un léger délai (pour éviter les blocages)
+        setTimeout(() => {
+            const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.href = url;
+            link.download = `${dateForFilename}.csv`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+        }, 500); // Délai de 500 ms
         overlay.remove();
     });
     // Fermer la fenêtre en cliquant en dehors
