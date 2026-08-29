@@ -2873,107 +2873,67 @@ function ouvrirScannerQr(type) {
  * Mise à zéro de la liste des participant·e·s
  * ============================================================ */
 function reinitialiserListeParticipants() {
-
     /*
-     * ------------------------------------------------------------
      * Confirmation
-     * ------------------------------------------------------------
      */
-
     const confirmation =
         confirm(
             "Voulez-vous effacer toutes les données de la liste des participant·e·s ?"
         );
-
     if (!confirmation) {
         return;
     }
-
-
     /*
-     * ------------------------------------------------------------
      * Supprimer toutes les données locales de la liste
-     * ------------------------------------------------------------
      */
-
     const clesASupprimer = [];
-
     for (
         let i = 0;
         i < localStorage.length;
         i++
     ) {
-
         const cle =
             localStorage.key(i);
-
         if (!cle) continue;
-
-
         /*
          * Listes de participants
          */
-
         if (
             cle.startsWith(
                 "participantsListe_"
             )
         ) {
-
             clesASupprimer.push(cle);
-
         }
-
     }
-
-
     clesASupprimer.forEach(
         cle => {
             localStorage.removeItem(cle);
         }
     );
-
-
     /*
      * Supprimer également le CSV mémorisé
      */
-
     localStorage.removeItem(
         "participantsCsv"
     );
-
-
     /*
      * Supprimer le commentaire
      */
-
     localStorage.removeItem(
         "participantsCommentaire"
     );
-
     commentaire = "";
-
-
     /*
-     * ------------------------------------------------------------
      * Réinitialiser les variables en mémoire
-     * ------------------------------------------------------------
      */
-
     participants = [];
-
-
     /*
-     * ------------------------------------------------------------
      * Recharger la page participants
-     *
      * renderParticipants() va alors reconstruire automatiquement
      * la liste initiale.
-     * ------------------------------------------------------------
      */
-
     renderParticipants();
-
 }
 
 /*
