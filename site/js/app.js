@@ -2019,18 +2019,55 @@ function creerCsvParticipants() {
         const prenomFormate = formatName(participant.prenom);
         const nomFormate = formatName(participant.nom);
         const nomComplet = `${prenomFormate} ${nomFormate}`;
-
         return [
             participant.date,
             participant.lieu,
             participant.statut,
-            nomComplet // Utiliser le nom complet formaté
+            nomComplet
         ]
         .map(valeur => String(valeur ?? "").replace(/"/g, '""'))
         .map(valeur => `"${valeur}"`)
         .join(" ; ");
     });
-    return lignes.join("\n");
+    const date = participants.length > 0 ? participants[0].date : "";
+    const lieu = participants.length > 0 ? participants[0].lieu : "";
+    const ligneNombreParticipants = [
+        `"Date"`,
+        `"Lieu"`,
+        `"Nombre de Participant·e·s"`,
+        `"${participants.length}"`
+    ].join(" ; ");
+    const tarifs = {
+        "Pilote": 0,
+        "Copilote": 0,
+        "Adhérent·e": 0,
+        "Invité·e 2 €": 2,
+        "Alsarando 2 €": 2,
+        "Adhésion 24 €": 24,
+        "Demi-tarif 12 €": 12
+    };
+    const sommePerçue = participants.reduce(
+        (acc, participant) => acc + (tarifs[participant.statut] ?? 0),
+        0
+    );
+    const ligneSommePerçue = [
+        `"Date"`,
+        `"Lieu"`,
+        `"Somme perçue"`,
+        `"${sommePerçue} €"`
+    ].join(" ; ");
+    const ligneCommentaire = [
+        `"Date"`,
+        `"Lieu"`,
+        `"Commentaire"`,
+        `"${commentaire.replace(/"/g, '""')}"`
+    ].join(" ; ");
+    return [
+        ...lignes,
+        ligneNombreParticipants,
+        ligneSommePerçue,
+        ligneCommentaire
+    ].join("\n");
 }
 
 /*
