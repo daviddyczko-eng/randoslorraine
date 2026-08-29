@@ -618,8 +618,11 @@ title="Téléphoner">
 </div>
 `;
         });
-        if (!isToday(rando.date)) {
         html += `
+</div>
+`;
+        if (!isToday(rando.date)) {
+            html += `
 </div>
 <div class="btn-row">
 <button
@@ -660,7 +663,11 @@ ${[1, 2, 3, 4, 5, 6].map(n =>
 </div>
 </div>
 </div>
-}
+`;
+        }
+        html += `
+</div>
+`;
 <div class="modal hidden" id="covoiturage-recherche-modal" aria-hidden="true">
 <div class="modal-content">
 <div class="modal-header">Je recherche un covoiturage</div>
