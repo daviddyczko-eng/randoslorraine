@@ -850,6 +850,7 @@ function ouvrirFenetreTransmission() {
         "Adhérent·e": 0,
         "Invité·e 2 €": 2,
         "Alsarando 2 €": 2,
+        "Payant 6 €": 6,
         "Adhésion 24 €": 24,
         "Demi-tarif 12 €": 12
     };
