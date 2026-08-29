@@ -2290,6 +2290,7 @@ function ouvrirScannerQr(type) {
      * ------------------------------------------------------------
      */
     let fermetureEnCours = false;
+    let dejaDetecte = false;
     async function fermerScanner() {
         if (fermetureEnCours)
             return;
@@ -2341,6 +2342,15 @@ function ouvrirScannerQr(type) {
      * ------------------------------------------------------------
      */
     async function qrCodeDetecte(decodedText) {
+        /*
+         * Empêche tout traitement d'une lecture ultérieure
+         * pendant que la fermeture est en cours (le lecteur
+         * continue d'analyser des images tant qu'il n'est
+         * pas explicitement arrêté).
+         */
+        if (dejaDetecte) {
+            return;
+        }
         console.log(
             "QR code détecté :",
             decodedText
@@ -2386,6 +2396,23 @@ function ouvrirScannerQr(type) {
             message.textContent =
                 "Le QR code ne contient pas un prénom et un nom valides.";
             return;
+        }
+        /*
+         * Lecture valide : on verrouille immédiatement pour
+         * ignorer toute nouvelle image du même QR code, et on
+         * fige la caméra (image gelée) pendant la fermeture.
+         */
+        dejaDetecte = true;
+        if (qrScannerActif) {
+            try {
+                await qrScannerActif.pause(true);
+            }
+            catch (e) {
+                console.warn(
+                    "Impossible de figer la caméra :",
+                    e
+                );
+            }
         }
         const prenom =
             formatName(morceaux[0]);
