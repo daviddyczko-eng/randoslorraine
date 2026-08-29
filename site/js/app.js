@@ -843,6 +843,20 @@ function ouvrirFenetreTransmission() {
     const date = participants.length > 0 ? participants[0].date : "";
     const lieu = participants.length > 0 ? participants[0].lieu : "";
     const nombreParticipants = participants.length;
+    // Calculer la somme perçue
+    const tarifs = {
+        "Pilote": 0,
+        "Copilote": 0,
+        "Adhérent·e": 0,
+        "Invité·e 2 €": 2,
+        "Alsarando 2 €": 2,
+        "Adhésion 24 €": 24,
+        "Demi-tarif 12 €": 12
+    };
+    const sommePerçue = participants.reduce(
+        (acc, participant) => acc + (tarifs[participant.statut] ?? 0),
+        0
+    );
     // Créer la liste des participants pour l'affichage
     const listeParticipantsAffichage = participants.map(participant => {
         const prenomFormate = formatName(participant.prenom);
@@ -863,6 +877,7 @@ function ouvrirFenetreTransmission() {
                 <p><strong>Date :</strong> ${escapeHtml(date)}</p>
                 <p><strong>Lieu :</strong> ${escapeHtml(lieu)}</p>
                 <p><strong>Nombre de participant·e·s :</strong> ${nombreParticipants}</p>
+                <p><strong>Somme perçue :</strong> ${sommePerçue} €</p>
                 <p><strong>Commentaire :</strong> ${escapeHtml(commentaire)}</p>
             </div>
             <div class="transmission-liste">
@@ -904,7 +919,7 @@ function ouvrirFenetreTransmission() {
         URL.revokeObjectURL(url);
         // Préparer le message SMS
         const message = `Bonjour, voici ci-joint la liste de la randonnée du ${date} à ${lieu}.`;
-        // Envoyer le SMS 
+        // Envoyer le SMS
         sendSMSWithBody(tresorerie, message);
         // Fermer la fenêtre modale
         overlay.remove();
