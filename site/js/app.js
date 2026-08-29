@@ -2343,10 +2343,8 @@ function ouvrirScannerQr(type) {
      */
     async function qrCodeDetecte(decodedText) {
         /*
-         * Empêche tout traitement d'une lecture ultérieure
-         * pendant que la fermeture est en cours (le lecteur
-         * continue d'analyser des images tant qu'il n'est
-         * pas explicitement arrêté).
+         * Empêche tout traitement d'une lecture ultérieure pendant que la fermeture est en cours (le lecteur
+         * continue d'analyser des images tant qu'il n'est pas explicitement arrêté).
          */
         if (dejaDetecte) {
             return;
@@ -2398,9 +2396,7 @@ function ouvrirScannerQr(type) {
             return;
         }
         /*
-         * Lecture valide : on verrouille immédiatement pour
-         * ignorer toute nouvelle image du même QR code, et on
-         * fige la caméra (image gelée) pendant la fermeture.
+         * Lecture valide : on verrouille immédiatement pour ignorer toute nouvelle image du même QR code, et on fige la caméra (image gelée) pendant la fermeture.
          */
         dejaDetecte = true;
         if (qrScannerActif) {
@@ -2532,8 +2528,7 @@ function ouvrirScannerQr(type) {
             qrCodeDetecte,
             () => {
                 /*
-                 * Les erreurs de lecture sont normales pendant le scan.
-                 * On ne les affiche donc pas.
+                 * Les erreurs de lecture sont normales pendant le scan. On ne les affiche donc pas.
                  */
             }
         )
