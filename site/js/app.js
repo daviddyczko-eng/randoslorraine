@@ -2098,8 +2098,8 @@ function creerCsvParticipants() {
     const date = participants.length > 0 ? participants[0].date : "";
     const lieu = participants.length > 0 ? participants[0].lieu : "";
     const ligneNombreParticipants = [
-        `"Date"`,
-        `"Lieu"`,
+        `"${date.replace(/"/g, '""')}"`,
+        `"${lieu.replace(/"/g, '""')}"`,
         `"Nombre de Participant·e·s"`,
         `"${participants.length}"`
     ].join(" ; ");
@@ -2109,6 +2109,7 @@ function creerCsvParticipants() {
         "Adhérent·e": 0,
         "Invité·e 2 €": 2,
         "Alsarando 2 €": 2,
+        "Payant 6 €": 6,
         "Adhésion 24 €": 24,
         "Demi-tarif 12 €": 12
     };
@@ -2117,14 +2118,14 @@ function creerCsvParticipants() {
         0
     );
     const ligneSommePerçue = [
-        `"Date"`,
-        `"Lieu"`,
+        `"${date.replace(/"/g, '""')}"`,
+        `"${lieu.replace(/"/g, '""')}"`,
         `"Somme perçue"`,
         `"${sommePerçue} €"`
     ].join(" ; ");
     const ligneCommentaire = [
-        `"Date"`,
-        `"Lieu"`,
+        `"${date.replace(/"/g, '""')}"`,
+        `"${lieu.replace(/"/g, '""')}"`,
         `"Commentaire"`,
         `"${commentaire.replace(/"/g, '""')}"`
     ].join(" ; ");
