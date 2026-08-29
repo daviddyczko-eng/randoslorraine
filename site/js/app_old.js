@@ -882,10 +882,6 @@ function ouvrirFenetreTransmission() {
             </div>
             <div class="transmission-liste">
                 <h3>Liste complète :</h3>
-                <div class="transmission-liste-header">
-                    <span class="transmission-liste-participant">Participant</span>
-                    <span class="transmission-liste-statut">Statut</span>
-                </div>
                 ${listeParticipantsAffichage.map(p => `
                     <div class="transmission-liste-row">
                         <span class="transmission-liste-participant">${escapeHtml(p.nom)}</span>
