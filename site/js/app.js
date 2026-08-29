@@ -9,6 +9,7 @@ import {
     needsCotisation,
     qrData
 } from "./storage.js";
+console.log("Html5Qrcode est défini :", typeof Html5Qrcode !== "undefined");
 /* ============================================================
  * Désactivation du Service Worker (développement)
  * ============================================================
