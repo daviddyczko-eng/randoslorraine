@@ -845,7 +845,8 @@ function ouvrirFenetreTransmission() {
     const day = dateParts[0];
     const month = dateParts[1];
     const year = dateParts[2];
-    const dateForFilename = `${day}-${month.substring(0, 2)}-${year}`; // Ex: "29-08-2026"
+    const monthNumber = new Date(`${day} ${month} ${year}`).getMonth() + 1;
+    const dateForFilename = `${String(day).padStart(2, '0')}-${String(monthNumber).padStart(2, '0')}-${year}`;
     // Créer la fenêtre modale
     const overlay = document.createElement("div");
     overlay.className = "transmission-overlay";
