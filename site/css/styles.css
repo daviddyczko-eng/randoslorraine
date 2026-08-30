@@ -571,6 +571,15 @@ svg path {
   background-color: var(--brand-deeper);
 }
 
+/* ============================================================
+ *  Texte de chargement
+ * ============================================================ */
+
+.loading-text {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
 @media (min-width: 481px) {
   body {
     background: linear-gradient(180deg, var(--brand-pale) 0%, var(--brand-bg) 160px);
@@ -818,7 +827,6 @@ select.participant-input {
  * Boutons supprimer / QR
  * ============================================================ */
 
-.participant-delete-button,
 .qr-scan-button {
     flex: 0 0 auto;
     width: 40px;
@@ -830,9 +838,6 @@ select.participant-input {
     border-radius: 8px;
     background-color: #ffffff;
     cursor: pointer;
-}
-
-.qr-scan-button {
     border: 1px solid var(--brand-darker);
     color: var(--brand-darker);
     font-size: 25px;
@@ -843,10 +848,15 @@ select.participant-input {
 }
 
 .participant-delete-button {
-    border: 1px solid var(--danger);
+    grid-column: 3;
+    justify-self: end;
+    width: 34px;
+    height: 34px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    font-size: 18px;
     color: var(--danger);
-    font-size: 22px;
-    font-weight: bold;
 }
 
 .participant-delete-button:active {
@@ -898,8 +908,6 @@ select.participant-input {
     max-width: 430px;
 
     padding: 22px;
-
-    box-sizing: border-box;
 
     background: var(--surface);
 
@@ -1046,17 +1054,14 @@ select.participant-input {
     width: 34px;
     height: 34px;
 
+    border: none;
+
     background: transparent;
 
     cursor: pointer;
 
     font-size: 18px;
 
-    border: 1px solid var(--danger);
-
-    color: var(--danger);
-
-    font-weight: bold;
 }
 /* ============================================================
  * Fenêtre commentaire
@@ -1123,7 +1128,7 @@ select.participant-input {
 
     resize: vertical;
 
-    border: 1px solid var(--brand-darker);
+    border: 1px solid #4a9025;
 
     border-radius: 6px;
 
@@ -1145,7 +1150,7 @@ select.participant-input {
 
     border-radius: 6px;
 
-    background: var(--brand-pale);
+    background: var(--brand-darker);
 
 }
 
@@ -1164,245 +1169,5 @@ select.participant-input {
     margin: 0;
 
     white-space: pre-wrap;
-}
 
-/* ============================================================
- * Scanner QR code
- * ============================================================
- */
-
-.qr-scanner-overlay {
-
-    position: fixed;
-
-    inset: 0;
-
-    z-index: 9999;
-
-    display: flex;
-
-    align-items: center;
-
-    justify-content: center;
-
-    padding: 20px;
-
-    background: rgba(0, 0, 0, 0.75);
-
-}
-
-
-.qr-scanner-modal {
-
-    width: min(100%, 420px);
-
-    background: white;
-
-    border-radius: 16px;
-
-    padding: 20px;
-
-    box-sizing: border-box;
-
-    text-align: center;
-
-}
-
-
-.qr-scanner-title {
-
-    font-size: 1.25rem;
-
-    font-weight: 700;
-
-    margin-bottom: 15px;
-
-}
-
-
-.qr-reader {
-
-    width: 100%;
-
-    overflow: hidden;
-
-    border-radius: 12px;
-
-}
-
-
-.qr-scanner-message {
-
-    margin: 15px 0;
-
-    font-size: 0.95rem;
-
-}
-
-
-.qr-scanner-modal .btn {
-
-    margin-top: 10px;
-
-}
-
-/* ============================================================
- * Fenêtre de confirmation de réinitialisation
- * ============================================================
- */
-
-.reset-overlay {
-
-    position: fixed;
-
-    inset: 0;
-
-    z-index: 10000;
-
-    display: flex;
-
-    align-items: center;
-
-    justify-content: center;
-
-    padding: 20px;
-
-    background: rgba(0, 0, 0, 0.65);
-
-}
-
-
-.reset-modal {
-
-    width: min(100%, 400px);
-
-    box-sizing: border-box;
-
-    padding: 24px;
-
-    background: white;
-
-    border-radius: 16px;
-
-    text-align: center;
-
-}
-
-
-.reset-modal__title {
-
-    font-size: 1.25rem;
-
-    font-weight: 700;
-
-    margin-bottom: 20px;
-
-}
-
-
-.reset-modal__message {
-
-    line-height: 1.5;
-
-    margin-bottom: 25px;
-
-}
-
-
-.reset-modal__buttons {
-
-    display: flex;
-
-    justify-content: center;
-
-    gap: 15px;
-
-}
-
-
-.reset-modal__buttons .btn {
-
-    min-width: 100px;
-}
-
-/* Fenêtre de transmission */
-.transmission-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-}
-
-.transmission-modal {
-    background-color: white;
-    padding: 20px;
-    border-radius: 8px;
-    max-width: 90%;
-    max-height: 90%;
-    overflow-y: auto;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-}
-
-.transmission-title {
-    font-size: 1.5em;
-    font-weight: bold;
-    margin-bottom: 15px;
-    text-align: center;
-}
-
-.transmission-info {
-    margin-bottom: 15px;
-}
-
-.transmission-info p {
-    margin: 5px 0;
-}
-
-.transmission-liste {
-    margin-bottom: 15px;
-}
-
-.transmission-liste-header, .transmission-liste-row {
-    display: flex;
-    justify-content: space-between;
-    padding: 5px 0;
-    border-bottom: 1px solid #eee;
-}
-
-.transmission-liste-participant {
-    flex: 1;
-    text-align: left;
-}
-
-.transmission-liste-statut {
-    flex: 1;
-    text-align: left;
-}
-
-.modal-footer {
-    display: flex;
-    justify-content: flex-end;
-    gap: 10px;
-    margin-top: 15px;
-}
-
-.transmission-csv-content {
-    width: 100%;
-    min-height: 200px;
-    max-height: 400px;
-    margin: 10px 0;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    font-family: monospace;
-    white-space: pre;
-    overflow-y: auto;
-    background-color: #f9f9f9;
-    resize: none;
 }
