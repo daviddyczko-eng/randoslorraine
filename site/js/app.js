@@ -307,25 +307,12 @@ function renderQr(container,text,size=120){
         ?"qr-box qr-box--lg"
         :"qr-box";
     container.appendChild(qr);
-    /*
-     * Couleurs lues depuis les variables CSS définies dans
-     * :root (styles.css), pour rester cohérent avec le reste
-     * de la charte graphique.
-     */
-    const rootStyles =
-        getComputedStyle(document.documentElement);
-    const colorDark =
-        rootStyles.getPropertyValue("--brand-darker").trim() ||
-        "#3d7820";
-    const colorLight =
-        rootStyles.getPropertyValue("--surface").trim() ||
-        "#ffffff";
     new QRCode(qr,{
         text,
         width:size,
         height:size,
-        colorDark,
-        colorLight,
+        colorDark:"#3d7820",
+        colorLight:"#ffffff",
         correctLevel:QRCode.CorrectLevel.M
     });
 }
