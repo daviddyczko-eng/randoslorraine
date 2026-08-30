@@ -486,8 +486,6 @@ svg path {
   font-size: 0.9rem;
 }
 
-/* Style pour les fenêtres modales */
-
 .modal-content {
   background-color: var(--surface);
   padding: 20px;
@@ -531,7 +529,6 @@ svg path {
   border-radius: 4px;
 }
 
-/* Boutons pour les modales */
 .btn--success {
   background-color: var(--brand);
   color: white;
@@ -611,17 +608,12 @@ svg path {
     width: 100%;
     min-height: 40px;
     height: 40px;
-
     padding: 8px 12px;
-
     box-sizing: border-box;
-
     font-size: 15px;
     line-height: 1.3;
-
     border: 1px solid var(--border);
     border-radius: 8px;
-
     background-color: #fff;
 }
 
@@ -654,57 +646,41 @@ select.participant-input {
  * ============================================================ */
 
 /* Labels */
-
 .participant-field label {
     display: block;
-
     margin-bottom: 6px;
-
     font-size: 15px;
     font-weight: 600;
 }
 
 /* Champs */
-
 .participant-add-box .participant-input {
     width: 100%;
     min-height: 40px;
     height: 40px;
-
     padding: 9px 12px;
-
     box-sizing: border-box;
-
     font-size: 15px;
     line-height: 1.3;
-
     border: 1px solid var(--border);
     border-radius: 8px;
-
     background-color: #ffffff;
 }
 
 /* Focus */
-
 .participant-add-box .participant-input:focus {
     outline: none;
-
     border-color: var(--brand-darker);
-
     box-shadow:
         0 0 0 2px var(--brand-darker-tint);
 }
 
 /* Prénom + QR */
-
 .participant-add-box .participant-input-wrapper {
     display: flex;
-
     align-items: center;
-
     gap: 8px;
 }
-
 
 .participant-add-box
 .participant-input-wrapper
@@ -718,7 +694,6 @@ select.participant-input {
  * ============================================================ */
 
 /* Champ Pilote / Copilote */
-
 #participants-pilote,
 #participants-copilote {
     cursor: default;
@@ -731,19 +706,13 @@ select.participant-input {
 
 .calendar-button {
     flex: 0 0 40px;
-
     width: 40px;
     height: 40px;
-
     border: 1px solid var(--brand-darker);
     border-radius: 8px;
-
     background-color: #ffffff;
-
     color: var(--brand-darker);
-
     font-size: 23px;
-
     cursor: pointer;
 }
 
@@ -881,7 +850,6 @@ select.participant-input {
         padding-left: 12px;
         padding-right: 12px;
     }
-
 }
 
 /* ============================================================
@@ -891,123 +859,86 @@ select.participant-input {
 .calendar-overlay {
     position: fixed;
     inset: 0;
-
     display: flex;
     align-items: center;
     justify-content: center;
-
     padding: 20px;
-
     background: rgba(0, 0, 0, 0.45);
-
     z-index: 9999;
 }
 
 .calendar-modal {
     width: 100%;
     max-width: 430px;
-
     padding: 22px;
-
     background: var(--surface);
-
     border-radius: 14px;
-
     box-shadow:
         0 8px 30px rgba(0, 0, 0, 0.25);
 }
 
 .calendar-title {
     margin-bottom: 22px;
-
     text-align: center;
-
     font-size: 20px;
     font-weight: 700;
 }
 
 .calendar-wheels {
     display: grid;
-
     grid-template-columns:
         1fr 1.5fr 1fr;
-
     gap: 10px;
 }
 
 .calendar-wheel label {
     display: block;
-
     margin-bottom: 6px;
-
     text-align: center;
-
     font-size: 15px;
     font-weight: 600;
 }
 
 .calendar-wheel select {
     width: 100%;
-
     min-height: 48px;
-
     padding: 8px;
-
     box-sizing: border-box;
-
     font-size: 17px;
-
     text-align: center;
-
     border: 1px solid var(--border);
-
     border-radius: 8px;
-
     background: #fff;
 }
 
 .calendar-selected-date {
     margin-top: 20px;
-
     padding: 10px;
-
     text-align: center;
-
     font-size: 17px;
     font-weight: 600;
-
     background: var(--brand-bg);
-
     border-radius: 8px;
 }
 
 .calendar-buttons {
     display: flex;
-
     justify-content: flex-end;
-
     gap: 10px;
-
     margin-top: 20px;
 }
+
 /* ============================================================
  * Liste des participant·e·s
  * ============================================================ */
 
 .participant-list-row {
-
     display: grid;
-
     grid-template-columns: 1fr 140px 40px;
-
     align-items: center;
-
     width: 100%;
-
     min-height: 44px;
-
     border-bottom: 1px solid #ddd;
-
 }
 
 
@@ -1016,13 +947,9 @@ select.participant-input {
  * ------------------------------------------------------------ */
 
 .participant-list-name {
-
     grid-column: 1;
-
     justify-self: start;
-
     text-align: left;
-
 }
 
 
@@ -1031,13 +958,9 @@ select.participant-input {
  * ------------------------------------------------------------ */
 
 .participant-list-status {
-
     grid-column: 2;
-
     text-align: left;
-  
     padding-left: 10px;
-
 }
 
 
@@ -1046,20 +969,13 @@ select.participant-input {
  * ------------------------------------------------------------ */
 
 .participant-delete-button {
-
     grid-column: 3;
-
     justify-self: end;
-
     width: 34px;
     height: 34px;
-
     border: none;
-
     background: transparent;
-
     cursor: pointer;
-
     font-size: 18px;
 
 }
@@ -1068,106 +984,65 @@ select.participant-input {
  * ============================================================ */
 
 .commentaire-overlay {
-
     position: fixed;
-
     inset: 0;
-
     display: flex;
-
     align-items: center;
-
     justify-content: center;
-
     background: rgba(0, 0, 0, 0.45);
-
     z-index: 1000;
-
 }
 
 
 .commentaire-modal {
-
     width: min(90%, 500px);
-
     background: white;
-
     border-radius: 12px;
-
     padding: 20px;
-
     box-sizing: border-box;
-
 }
 
 
 .commentaire-title {
-
     font-size: 1.3rem;
-
     font-weight: bold;
-
     margin-bottom: 15px;
-
 }
 
 
 .commentaire-input {
-
     width: 100%;
-
     min-height: 140px;
-
     box-sizing: border-box;
-
     padding: 10px;
-
     font-family: inherit;
-
     font-size: 1rem;
-
     resize: vertical;
-
     border: 1px solid #4a9025;
-
     border-radius: 6px;
-
 }
 
 
 .participants-commentaire {
-
     margin-top: 10px;
-
 }
 
 
 .participants-commentaire-box {
-
     margin-top: 10px;
-
     padding: 10px;
-
     border-radius: 6px;
-
     background: var(--brand-darker);
-
 }
 
 
 .participants-commentaire-box strong {
-
     display: block;
-
     margin-bottom: 5px;
-
 }
 
 
 .participants-commentaire-box p {
-
     margin: 0;
-
     white-space: pre-wrap;
-
 }
