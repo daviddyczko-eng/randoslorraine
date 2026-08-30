@@ -244,6 +244,25 @@ function formatName(name="") {
         })
         .join(" ");
 }
+function normaliserTelephone(telephone) {
+    if (!telephone) {
+        return "";
+    }
+    // Suppression des espaces
+    const numero =
+        telephone
+            .trim()
+            .replace(/\s/g, "");
+    // Format international français
+    if (/^\+33[1-9]\d{8}$/.test(numero)) {
+        return numero;
+    }
+    // Format français national
+    if (/^0[1-9]\d{8}$/.test(numero)) {
+        return "+33" + numero.substring(1);
+    }
+    return null;
+}
 
 /* ============================================================
  * Affichage principal
@@ -698,32 +717,25 @@ ${[1, 2, 3, 4, 5, 6].map(n =>
          */
         const btnPropose =
             $("#btn-covoiturage-propose");
-
         if (btnPropose) {
-
             btnPropose.addEventListener(
                 "click",
                 () => {
-
                     /*
                      * Remettre les valeurs mémorisées
                      */
                     const champPlaces =
                         $("#covoiturage-places");
-
                     const champEtape =
                         $("#covoiturage-propose-etape");
-
                     if (champPlaces) {
                         champPlaces.value =
                             String(places);
                     }
-
                     if (champEtape) {
                         champEtape.value =
                             etape;
                     }
-
                     /*
                      * Ouvrir la fenêtre
                      */
@@ -733,32 +745,25 @@ ${[1, 2, 3, 4, 5, 6].map(n =>
                 }
             );
         }
-
-
         /* ============================================================
          * Bouton "Je recherche un covoiturage"
          * ============================================================
          */
         const btnRecherche =
             $("#btn-covoiturage-recherche");
-
         if (btnRecherche) {
-
             btnRecherche.addEventListener(
                 "click",
                 () => {
-
                     /*
                      * Préremplir le lieu avec la dernière valeur utilisée
                      */
                     const champEtape =
                         $("#covoiturage-recherche-etape");
-
                     if (champEtape) {
                         champEtape.value =
                             etape;
                     }
-
                     /*
                      * Ouvrir la fenêtre
                      */
@@ -768,28 +773,20 @@ ${[1, 2, 3, 4, 5, 6].map(n =>
                 }
             );
         }
-
-
         /* ============================================================
          * Bouton "Proposer"
          * ============================================================
          */
         const btnProposer =
             $("#btn-covoiturage-proposer");
-
         if (btnProposer) {
-
             btnProposer.addEventListener(
                 "click",
                 () => {
-
                     const champPlaces =
                         $("#covoiturage-places");
-
                     const champEtape =
                         $("#covoiturage-propose-etape");
-
-
                     /*
                      * Récupération des données
                      */
@@ -797,33 +794,24 @@ ${[1, 2, 3, 4, 5, 6].map(n =>
                         Number(
                             champPlaces?.value
                         ) || 1;
-
                     etape =
                         (
                             champEtape?.value ?? ""
                         ).trim();
-
-
                     /*
                      * Vérification du lieu
                      */
                     if (!etape) {
-
                         alert(
-                            "Veuillez indiquer un lieu de rendez-vous."
+                            "Veuillez indiquer un lieu de rendez-vous souhaité."
                         );
-
                         return;
                     }
-
-
                     /*
                      * Récupération de l'utilisateur
                      */
                     const user =
                         getUser();
-
-
                     /*
                      * Construction du SMS
                      */
@@ -835,16 +823,12 @@ Si cela vous intéresse, merci de me contacter directement au ${user?.telephone 
 ${user?.prenom ?? ""} ${initialeNom(user?.nom)}
 
 Merci`;
-
-
                     /*
                      * Fermer la fenêtre
                      */
                     closeModal(
                         "covoiturage-propose-modal"
                     );
-
-
                     /*
                      * Ouvrir l'application SMS
                      */
@@ -855,25 +839,18 @@ Merci`;
                 }
             );
         }
-
-
         /* ============================================================
          * Bouton "Demander"
          * ============================================================
          */
         const btnDemander =
             $("#btn-covoiturage-demander");
-
         if (btnDemander) {
-
             btnDemander.addEventListener(
                 "click",
                 () => {
-
                     const champEtape =
                         $("#covoiturage-recherche-etape");
-
-
                     /*
                      * Récupération du lieu
                      */
@@ -881,28 +858,20 @@ Merci`;
                         (
                             champEtape?.value ?? ""
                         ).trim();
-
-
                     /*
                      * Vérification du lieu
                      */
                     if (!etape) {
-
                         alert(
-                            "Veuillez indiquer un lieu de rendez-vous."
+                            "Veuillez indiquer un lieu de rendez-vous souhaité."
                         );
-
                         return;
                     }
-
-
                     /*
                      * Récupération de l'utilisateur
                      */
                     const user =
                         getUser();
-
-
                     /*
                      * Construction du SMS
                      */
@@ -912,16 +881,12 @@ Merci`;
 Contact direct au ${user?.telephone ?? ""} ou via l'adresse ${user?.email ?? ""}.
 
 Merci par avance`;
-
-
                     /*
                      * Fermer la fenêtre
                      */
                     closeModal(
                         "covoiturage-recherche-modal"
                     );
-
-
                     /*
                      * Ouvrir l'application SMS
                      */
@@ -3534,9 +3499,9 @@ function renderParticipants() {
             <div class="btn-row">
                 <button
                     type="button"
-                    class="btn btn--danger"
+                    class="alert alert--danger"
                     id="btn-reset-participants">
-                    Mise à zéro de la liste
+                    Réinitialiser la liste
                 </button>
             </div>
         </div>
@@ -4280,66 +4245,186 @@ afficherCommentaire();
 * ============================================================
 */
 function renderInscription() {
-  screenRoot.innerHTML = `
-    <div class="screen">
-      <p class="alert alert--danger">
-        Tu dois être à jour de ta cotisation pour pouvoir utiliser cette application.
-      </p>
-      <form id="form-inscription" class="form">
-        <div class="field">
-          <label for="prenom">Prénom</label>
-          <input id="prenom" required autocomplete="given-name">
+    screenRoot.innerHTML = `
+        <div class="screen">
+            <p class="alert alert--danger">
+                Tu dois être à jour de ta cotisation pour pouvoir utiliser cette application.
+            </p>
+            <form id="form-inscription" class="form">
+                <div class="field">
+                    <label for="prenom">
+                        Prénom
+                    </label>
+                    <input
+                        id="prenom"
+                        required
+                        autocomplete="given-name">
+                </div>
+                <div class="field">
+                    <label for="nom">
+                        Nom
+                    </label>
+                    <input
+                        id="nom"
+                        required
+                        autocomplete="family-name">
+                </div>
+                <div class="field">
+                    <label for="email">
+                        Adresse de messagerie électronique
+                    </label>
+                    <input
+                        id="email"
+                        type="email"
+                        required
+                        autocomplete="email"
+                        placeholder="ex: votre@email.com">
+                </div>
+                <div class="field">
+                    <label for="telephone">
+                        Numéro de téléphone
+                    </label>
+                    <input
+                        id="telephone"
+                        type="tel"
+                        required
+                        autocomplete="tel"
+                        placeholder="ex: 0612345678 ou +33612345678">
+                </div>
+                <div class="btn-row">
+                    <button
+                        type="button"
+                        class="btn btn--ghost"
+                        id="btn-quit">
+                        Quitter l'application
+                    </button>
+                    <button
+                        type="submit"
+                        class="btn btn--primary">
+                        Valider mon inscription
+                    </button>
+                </div>
+            </form>
         </div>
-        <div class="field">
-          <label for="nom">Nom</label>
-          <input id="nom" required autocomplete="family-name">
-        </div>
-        <div class="field">
-          <label for="email">Adresse de messagerie électronique</label>
-          <input id="email" type="email" required autocomplete="email" placeholder="ex: votre@email.com">
-        </div>
-        <div class="field">
-          <label for="telephone">Numéro de téléphone (format international)</label>
-          <input id="telephone" type="tel" required autocomplete="tel" placeholder="ex: +33612345678">
-        </div>
-        <div class="btn-row">
-          <button type="button" class="btn btn--ghost" id="btn-quit">Quitter l'application</button>
-          <button type="submit" class="btn btn--primary">Valider mon inscription</button>
-        </div>
-      </form>
-    </div>
-  `;
-  $("#btn-quit").addEventListener("click", () => {
-    alert("Fermez l'onglet pour quitter.");
-  });
-  $("#form-inscription").addEventListener("submit", (e) => {
-    e.preventDefault();
-    console.log("Formulaire d'inscription soumis");
-    const prenom = formatName($("#prenom").value);
-    const nom = formatName($("#nom").value);
-    const email = $("#email").value.trim();
-    const telephone = $("#telephone").value.trim();
-    const dateInscription = new Date().toISOString();
-    // Validation du format du téléphone (optionnel)
-    if (telephone && !/^\+\d{10,15}$/.test(telephone)) {
-      alert("Le numéro de téléphone doit être au format international (ex: +33612345678).");
-      return;
-    }
-    // Validation du format de l'email (optionnel)
-    if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      alert("L'adresse e-mail n'est pas valide.");
-      return;
-    }
-    console.log(`Prénom: ${prenom}, Nom: ${nom}, Email: ${email}, Téléphone: ${telephone}, Date: ${dateInscription}`);
-    const success = saveUser({ prenom, nom, email, telephone, dateInscription });
-    if (!success) {
-      console.error("Échec de la sauvegarde de l'utilisateur.");
-      alert("Une erreur est survenue. Veuillez réessayer.");
-      return;
-    }
-    console.log("Navigation vers l'accueil...");
-    navigate("accueil", { prenom, nom });
-  });
+    `;
+    /*
+     * Bouton Quitter
+     */
+    $("#btn-quit").addEventListener(
+        "click",
+        () => {
+            alert(
+                "N'hésite pas à te renseigner sur notre association. À bientôt"
+            );
+        }
+    );
+    /*
+     * Validation du formulaire
+     */
+    $("#form-inscription").addEventListener(
+        "submit",
+        (e) => {
+            e.preventDefault();
+            console.log(
+                "Formulaire d'inscription soumis"
+            );
+            /*
+             * Prénom et nom
+             */
+            const prenom =
+                formatName(
+                    $("#prenom").value
+                );
+            const nom =
+                formatName(
+                    $("#nom").value
+                );
+            /*
+             * Adresse e-mail
+             */
+            const email =
+                $("#email").value.trim();
+            /*
+             * Téléphone
+             */
+            const telephoneSaisi =
+                $("#telephone").value.trim();
+            const telephone =
+                normaliserTelephone(
+                    telephoneSaisi
+                );
+            /*
+             * Vérification du téléphone
+             */
+            if (!telephone) {
+                alert(
+                    "Le numéro de téléphone doit être au format 0612345678 ou +33612345678."
+                );
+                $("#telephone").focus();
+                return;
+            }
+            /*
+             * Vérification de l'e-mail
+             */
+            if (
+                email &&
+                !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(
+                    email
+                )
+            ) {
+                alert(
+                    "L'adresse e-mail n'est pas valide."
+                );
+                $("#email").focus();
+                return;
+            }
+            /*
+             * Date d'inscription
+             */
+            const dateInscription =
+                new Date().toISOString();
+            console.log(
+                `Prénom: ${prenom}, ` +
+                `Nom: ${nom}, ` +
+                `Email: ${email}, ` +
+                `Téléphone: ${telephone}, ` +
+                `Date: ${dateInscription}`
+            );
+            /*
+             * Sauvegarde
+             */
+            const success =
+                saveUser({
+                    prenom,
+                    nom,
+                    email,
+                    telephone,
+                    dateInscription
+                });
+            if (!success) {
+                console.error(
+                    "Échec de la sauvegarde de l'utilisateur."
+                );
+                alert(
+                    "Une erreur est survenue. Veuillez réessayer."
+                );
+                return;
+            }
+            /*
+             * Navigation vers l'accueil
+             */
+            console.log(
+                "Navigation vers l'accueil..."
+            );
+            navigate(
+                "accueil",
+                {
+                    prenom,
+                    nom
+                }
+            );
+        }
+    );
 }
 
 /*
@@ -4405,52 +4490,177 @@ function renderCarte(prenom, nom) {
 * CORRECTION DE LA CARTE
 * ============================================================
 */
-function renderCorrection(prenom, nom, email = "", telephone = "") {
-  screenRoot.innerHTML = `
-    <div class="screen">
-      <form id="form-correction" class="form">
-        <div class="field">
-          <label for="prenom">Prénom</label>
-          <input id="prenom" value="${escapeHtml(prenom)}" required>
+function renderCorrection(
+    prenom,
+    nom,
+    email = "",
+    telephone = ""
+) {
+    screenRoot.innerHTML = `
+        <div class="screen">
+            <form
+                id="form-correction"
+                class="form">
+                <div class="field">
+                    <label for="prenom">
+                        Prénom
+                    </label>
+                    <input
+                        id="prenom"
+                        value="${escapeHtml(prenom)}"
+                        required>
+                </div>
+                <div class="field">
+                    <label for="nom">
+                        Nom
+                    </label>
+                    <input
+                        id="nom"
+                        value="${escapeHtml(nom)}"
+                        required>
+                </div>
+                <div class="field">
+                    <label for="email">
+                        Adresse e-mail
+                    </label>
+                    <input
+                        id="email"
+                        type="email"
+                        value="${escapeHtml(email)}"
+                        required>
+                </div>
+                <div class="field">
+                    <label for="telephone">
+                        Numéro de téléphone
+                    </label>
+                    <input
+                        id="telephone"
+                        type="tel"
+                        value="${escapeHtml(telephone)}"
+                        required
+                        placeholder="0612345678 ou +33612345678">
+                </div>
+                <button
+                    type="submit"
+                    class="btn btn--primary">
+                    Valider
+                </button>
+            </form>
         </div>
-        <div class="field">
-          <label for="nom">Nom</label>
-          <input id="nom" value="${escapeHtml(nom)}" required>
-        </div>
-        <div class="field">
-          <label for="email">Adresse e-mail</label>
-          <input id="email" type="email" value="${escapeHtml(email)}" required>
-        </div>
-        <div class="field">
-          <label for="telephone">Numéro de téléphone (format international)</label>
-          <input id="telephone" type="tel" value="${escapeHtml(telephone)}" required placeholder="+33612345678">
-        </div>
-        <button class="btn btn--primary btn--block">Valider</button>
-      </form>
-    </div>
-  `;
-  $("#form-correction").addEventListener("submit", (e) => {
-    e.preventDefault();
-    const newPrenom = formatName($("#prenom").value);
-    const newNom = formatName($("#nom").value);
-    const newEmail = $("#email").value.trim();
-    const newTelephone = $("#telephone").value.trim();
-    const user = getUser();
-    saveUser({
-      prenom: newPrenom,
-      nom: newNom,
-      email: newEmail,
-      telephone: newTelephone,
-      dateInscription: user?.dateInscription ?? new Date().toISOString(),
-    });
-    navigate("carte", {
-      prenom: newPrenom,
-      nom: newNom,
-      title: "Ma carte Rando's Lorraine",
-      showBack: true,
-      onBack: () => navigate("accueil", { prenom: newPrenom, nom: newNom }),
-    });
-  });
+    `;
+    /*
+     * Validation du formulaire
+     */
+    $("#form-correction").addEventListener(
+        "submit",
+        (e) => {
+            e.preventDefault();
+            /*
+             * Prénom
+             */
+            const newPrenom =
+                formatName(
+                    $("#prenom").value
+                );
+            /*
+             * Nom
+             */
+            const newNom =
+                formatName(
+                    $("#nom").value
+                );
+            /*
+             * E-mail
+             */
+            const newEmail =
+                $("#email").value.trim();
+            /*
+             * Téléphone saisi
+             */
+            const telephoneSaisi =
+                $("#telephone").value.trim();
+            /*
+             * Normalisation du téléphone
+             */
+            const newTelephone =
+                normaliserTelephone(
+                    telephoneSaisi
+                );
+            /*
+             * Vérification du téléphone
+             */
+            if (!newTelephone) {
+                alert(
+                    "Le numéro de téléphone doit être au format 0612345678 ou +33612345678."
+                );
+                $("#telephone").focus();
+                return;
+            }
+            /*
+             * Vérification de l'e-mail
+             */
+            if (
+                newEmail &&
+                !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(
+                    newEmail
+                )
+            ) {
+                alert(
+                    "L'adresse e-mail n'est pas valide."
+                );
+                $("#email").focus();
+                return;
+            }
+            /*
+             * Récupération des données existantes
+             */
+            const user =
+                getUser();
+            /*
+             * Sauvegarde
+             */
+            saveUser({
+                prenom:
+                    newPrenom,
+                nom:
+                    newNom,
+                email:
+                    newEmail,
+                telephone:
+                    newTelephone,
+                dateInscription:
+                    user?.dateInscription ??
+                    new Date().toISOString()
+            });
+            /*
+             * Retour vers la carte
+             */
+            navigate(
+                "carte",
+                {
+                    prenom:
+                        newPrenom,
+                    nom:
+                        newNom,
+                    title:
+                        "Ma carte Rando's Lorraine",
+                    showBack:
+                        true,
+                    onBack:
+                        () =>
+                            navigate(
+                                "accueil",
+                                {
+                                    prenom:
+                                        newPrenom,
+                                    nom:
+                                        newNom
+                                }
+                            )
+                }
+            );
+        }
+    );
 }
 
 /* ============================================================
