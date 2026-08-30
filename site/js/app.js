@@ -4244,50 +4244,35 @@ afficherCommentaire();
 * INSCRIPTION A L'APPLICATION
 * ============================================================
 */
-/* ============================================================
- * INSCRIPTION A L'APPLICATION
- * ============================================================
- */
 function renderInscription() {
-
     screenRoot.innerHTML = `
         <div class="screen">
-
             <p class="alert alert--danger">
                 Tu dois être à jour de ta cotisation pour pouvoir utiliser cette application.
             </p>
-
             <form id="form-inscription" class="form">
-
                 <div class="field">
                     <label for="prenom">
                         Prénom
                     </label>
-
                     <input
                         id="prenom"
                         required
                         autocomplete="given-name">
                 </div>
-
-
                 <div class="field">
                     <label for="nom">
                         Nom
                     </label>
-
                     <input
                         id="nom"
                         required
                         autocomplete="family-name">
                 </div>
-
-
                 <div class="field">
                     <label for="email">
                         Adresse de messagerie électronique
                     </label>
-
                     <input
                         id="email"
                         type="email"
@@ -4295,13 +4280,10 @@ function renderInscription() {
                         autocomplete="email"
                         placeholder="ex: votre@email.com">
                 </div>
-
-
                 <div class="field">
                     <label for="telephone">
                         Numéro de téléphone
                     </label>
-
                     <input
                         id="telephone"
                         type="tel"
@@ -4309,148 +4291,98 @@ function renderInscription() {
                         autocomplete="tel"
                         placeholder="ex: 0612345678 ou +33612345678">
                 </div>
-
-
                 <div class="btn-row">
-
                     <button
                         type="button"
                         class="btn btn--ghost"
                         id="btn-quit">
                         Quitter l'application
                     </button>
-
                     <button
                         type="submit"
                         class="btn btn--primary">
                         Valider mon inscription
                     </button>
-
                 </div>
-
             </form>
-
         </div>
     `;
-
-
     /*
-     * ------------------------------------------------------------
      * Bouton Quitter
-     * ------------------------------------------------------------
      */
-
     $("#btn-quit").addEventListener(
         "click",
         () => {
-
             alert(
-                "Fermez l'onglet pour quitter."
+                "N'hésite pas à te renseigner sur notre association. À bientôt"
             );
-
         }
     );
-
-
     /*
-     * ------------------------------------------------------------
      * Validation du formulaire
-     * ------------------------------------------------------------
      */
-
     $("#form-inscription").addEventListener(
         "submit",
         (e) => {
-
             e.preventDefault();
-
             console.log(
                 "Formulaire d'inscription soumis"
             );
-
-
             /*
              * Prénom et nom
              */
-
             const prenom =
                 formatName(
                     $("#prenom").value
                 );
-
             const nom =
                 formatName(
                     $("#nom").value
                 );
-
-
             /*
              * Adresse e-mail
              */
-
             const email =
                 $("#email").value.trim();
-
-
             /*
              * Téléphone
              */
-
             const telephoneSaisi =
                 $("#telephone").value.trim();
-
-
             const telephone =
                 normaliserTelephone(
                     telephoneSaisi
                 );
-
-
             /*
              * Vérification du téléphone
              */
-
             if (!telephone) {
-
                 alert(
                     "Le numéro de téléphone doit être au format 0612345678 ou +33612345678."
                 );
-
                 $("#telephone").focus();
-
                 return;
             }
-
-
             /*
              * Vérification de l'e-mail
              */
-
             if (
                 email &&
                 !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(
                     email
                 )
             ) {
-
                 alert(
                     "L'adresse e-mail n'est pas valide."
                 );
-
                 $("#email").focus();
-
                 return;
             }
-
-
             /*
              * Date d'inscription
              */
-
             const dateInscription =
                 new Date().toISOString();
-
-
             console.log(
                 `Prénom: ${prenom}, ` +
                 `Nom: ${nom}, ` +
@@ -4458,12 +4390,9 @@ function renderInscription() {
                 `Téléphone: ${telephone}, ` +
                 `Date: ${dateInscription}`
             );
-
-
             /*
              * Sauvegarde
              */
-
             const success =
                 saveUser({
                     prenom,
@@ -4472,30 +4401,21 @@ function renderInscription() {
                     telephone,
                     dateInscription
                 });
-
-
             if (!success) {
-
                 console.error(
                     "Échec de la sauvegarde de l'utilisateur."
                 );
-
                 alert(
                     "Une erreur est survenue. Veuillez réessayer."
                 );
-
                 return;
             }
-
-
             /*
              * Navigation vers l'accueil
              */
-
             console.log(
                 "Navigation vers l'accueil..."
             );
-
             navigate(
                 "accueil",
                 {
@@ -4503,10 +4423,10 @@ function renderInscription() {
                     nom
                 }
             );
-
         }
     );
 }
+
 /*
 * ============================================================
 * NOUVELLE COTISATION CHAQUE ANNEE
@@ -4570,245 +4490,162 @@ function renderCarte(prenom, nom) {
 * CORRECTION DE LA CARTE
 * ============================================================
 */
-/* ============================================================
- * CORRECTION DE LA CARTE
- * ============================================================
- */
 function renderCorrection(
     prenom,
     nom,
     email = "",
     telephone = ""
 ) {
-
     screenRoot.innerHTML = `
         <div class="screen">
-
             <form
                 id="form-correction"
                 class="form">
-
                 <div class="field">
-
                     <label for="prenom">
                         Prénom
                     </label>
-
                     <input
                         id="prenom"
                         value="${escapeHtml(prenom)}"
                         required>
-
                 </div>
-
-
                 <div class="field">
-
                     <label for="nom">
                         Nom
                     </label>
-
                     <input
                         id="nom"
                         value="${escapeHtml(nom)}"
                         required>
-
                 </div>
-
-
                 <div class="field">
-
                     <label for="email">
                         Adresse e-mail
                     </label>
-
                     <input
                         id="email"
                         type="email"
                         value="${escapeHtml(email)}"
                         required>
-
                 </div>
-
-
                 <div class="field">
-
                     <label for="telephone">
                         Numéro de téléphone
                     </label>
-
                     <input
                         id="telephone"
                         type="tel"
                         value="${escapeHtml(telephone)}"
                         required
                         placeholder="0612345678 ou +33612345678">
-
                 </div>
-
-
                 <button
                     type="submit"
                     class="btn btn--primary btn--block">
-
                     Valider
-
                 </button>
-
             </form>
-
         </div>
     `;
-
-
     /*
-     * ------------------------------------------------------------
      * Validation du formulaire
-     * ------------------------------------------------------------
      */
-
     $("#form-correction").addEventListener(
         "submit",
         (e) => {
-
             e.preventDefault();
-
-
             /*
              * Prénom
              */
-
             const newPrenom =
                 formatName(
                     $("#prenom").value
                 );
-
-
             /*
              * Nom
              */
-
             const newNom =
                 formatName(
                     $("#nom").value
                 );
-
-
             /*
              * E-mail
              */
-
             const newEmail =
                 $("#email").value.trim();
-
-
             /*
              * Téléphone saisi
              */
-
             const telephoneSaisi =
                 $("#telephone").value.trim();
-
-
             /*
              * Normalisation du téléphone
              */
-
             const newTelephone =
                 normaliserTelephone(
                     telephoneSaisi
                 );
-
-
             /*
              * Vérification du téléphone
              */
-
             if (!newTelephone) {
-
                 alert(
                     "Le numéro de téléphone doit être au format 0612345678 ou +33612345678."
                 );
-
                 $("#telephone").focus();
-
                 return;
             }
-
-
             /*
              * Vérification de l'e-mail
              */
-
             if (
                 newEmail &&
                 !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(
                     newEmail
                 )
             ) {
-
                 alert(
                     "L'adresse e-mail n'est pas valide."
                 );
-
                 $("#email").focus();
-
                 return;
             }
-
-
             /*
              * Récupération des données existantes
              */
-
             const user =
                 getUser();
-
-
             /*
              * Sauvegarde
              */
-
             saveUser({
-
                 prenom:
                     newPrenom,
-
                 nom:
                     newNom,
-
                 email:
                     newEmail,
-
                 telephone:
                     newTelephone,
-
                 dateInscription:
                     user?.dateInscription ??
                     new Date().toISOString()
-
             });
-
-
             /*
              * Retour vers la carte
              */
-
             navigate(
                 "carte",
                 {
                     prenom:
                         newPrenom,
-
                     nom:
                         newNom,
-
                     title:
                         "Ma carte Rando's Lorraine",
-
                     showBack:
                         true,
-
                     onBack:
                         () =>
                             navigate(
@@ -4816,14 +4653,12 @@ function renderCorrection(
                                 {
                                     prenom:
                                         newPrenom,
-
                                     nom:
                                         newNom
                                 }
                             )
                 }
             );
-
         }
     );
 }
