@@ -16,6 +16,13 @@
   --danger: #c0392b;
   --border: #cfe6c4;
   --shadow: 0 2px 12px rgba(99, 182, 50, 0.12);
+  --brand-glow: rgba(99, 182, 50, 0.15);
+  --overlay-light: rgba(255, 255, 255, 0.15);
+  --overlay-dark: rgba(0, 0, 0, 0.45);
+  --shadow-color-strong: rgba(0, 0, 0, 0.25);
+  --danger-bg: #fdecea;
+  --danger-border: #f5c6cb;
+  --divider: #dddddd;
   --radius: 14px;
   --safe-bottom: env(safe-area-inset-bottom, 0px);
   --safe-top: env(safe-area-inset-top, 0px);
@@ -65,7 +72,7 @@ svg path {
   gap: 12px;
   padding: calc(12px + var(--safe-top)) 16px 12px;
   background: var(--brand);
-  color: #fff;
+  color: var(--surface);
   position: sticky;
   top: 0;
   z-index: 50;
@@ -78,8 +85,8 @@ svg path {
   height: 40px;
   border: none;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.15);
-  color: #fff;
+  background: var(--overlay-light);
+  color: var(--surface);
   cursor: pointer;
   flex-shrink: 0;
 }
@@ -180,9 +187,9 @@ svg path {
 }
 
 .alert--danger {
-  background: #fdecea;
+  background: var(--danger-bg);
   color: var(--danger);
-  border: 1px solid #f5c6cb;
+  border: 1px solid var(--danger-border);
 }
 
 .form {
@@ -237,7 +244,7 @@ svg path {
 
 .btn--primary {
   background: var(--brand);
-  color: #fff;
+  color: var(--surface);
 }
 
 .btn--primary:active {
@@ -310,7 +317,7 @@ svg path {
 .qr-box {
   display: inline-block;
   padding: 6px;
-  background: #fff;
+  background: var(--surface);
   border-radius: 8px;
   border: 1px solid var(--border);
 }
@@ -452,7 +459,7 @@ svg path {
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.45);
+  background: var(--overlay-dark);
   display: grid;
   place-items: center;
   padding: 20px;
@@ -531,7 +538,7 @@ svg path {
 
 .btn--success {
   background-color: var(--brand);
-  color: white;
+  color: var(--surface);
   border: none;
   padding: 10px 16px;
   border-radius: 4px;
@@ -544,7 +551,7 @@ svg path {
 
 .btn--confirm {
   background-color: var(--brand);
-  color: white;
+  color: var(--surface);
   border: none;
   padding: 10px 16px;
   border-radius: 4px;
@@ -557,7 +564,7 @@ svg path {
 
 .btn--cancel {
   background-color: var(--brand-darker);
-  color: white;
+  color: var(--surface);
   border: none;
   padding: 10px 16px;
   border-radius: 4px;
@@ -583,7 +590,7 @@ svg path {
   }
 
   #app {
-    box-shadow: 0 0 40px rgba(99, 182, 50, 0.15);
+    box-shadow: 0 0 40px var(--brand-glow);
   }
 }
 
@@ -614,7 +621,7 @@ svg path {
     line-height: 1.3;
     border: 1px solid var(--border);
     border-radius: 8px;
-    background-color: #fff;
+    background-color: var(--surface);
 }
 
 /* Champ sélectionné */
@@ -628,7 +635,7 @@ svg path {
 select.participant-input {
     min-height: 44px;
     font-size: 15px;
-    background-color: #fff;
+    background-color: var(--surface);
 }
 
 /* Icônes à droite des champs */
@@ -664,7 +671,7 @@ select.participant-input {
     line-height: 1.3;
     border: 1px solid var(--border);
     border-radius: 8px;
-    background-color: #ffffff;
+    background-color: var(--surface);
 }
 
 /* Focus */
@@ -697,7 +704,7 @@ select.participant-input {
 #participants-pilote,
 #participants-copilote {
     cursor: default;
-    background-color: #ffffff;
+    background-color: var(--surface);
 }
 
 /* ============================================================
@@ -710,7 +717,7 @@ select.participant-input {
     height: 40px;
     border: 1px solid var(--brand-darker);
     border-radius: 8px;
-    background-color: #ffffff;
+    background-color: var(--surface);
     color: var(--brand-darker);
     font-size: 23px;
     cursor: pointer;
@@ -805,7 +812,7 @@ select.participant-input {
     align-items: center;
     justify-content: center;
     border-radius: 8px;
-    background-color: #ffffff;
+    background-color: var(--surface);
     cursor: pointer;
     border: 1px solid var(--brand-darker);
     color: var(--brand-darker);
@@ -863,7 +870,7 @@ select.participant-input {
     align-items: center;
     justify-content: center;
     padding: 20px;
-    background: rgba(0, 0, 0, 0.45);
+    background: var(--overlay-dark);
     z-index: 9999;
 }
 
@@ -874,7 +881,7 @@ select.participant-input {
     background: var(--surface);
     border-radius: 14px;
     box-shadow:
-        0 8px 30px rgba(0, 0, 0, 0.25);
+        0 8px 30px var(--shadow-color-strong);
 }
 
 .calendar-title {
@@ -908,7 +915,7 @@ select.participant-input {
     text-align: center;
     border: 1px solid var(--border);
     border-radius: 8px;
-    background: #fff;
+    background: var(--surface);
 }
 
 .calendar-selected-date {
@@ -938,7 +945,7 @@ select.participant-input {
     align-items: center;
     width: 100%;
     min-height: 44px;
-    border-bottom: 1px solid #ddd;
+    border-bottom: 1px solid var(--divider);
 }
 
 
@@ -989,14 +996,14 @@ select.participant-input {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(0, 0, 0, 0.45);
+    background: var(--overlay-dark);
     z-index: 1000;
 }
 
 
 .commentaire-modal {
     width: min(90%, 500px);
-    background: white;
+    background: var(--surface);
     border-radius: 12px;
     padding: 20px;
     box-sizing: border-box;
@@ -1018,7 +1025,7 @@ select.participant-input {
     font-family: inherit;
     font-size: 1rem;
     resize: vertical;
-    border: 1px solid #4a9025;
+    border: 1px solid var(--brand-dark);
     border-radius: 6px;
 }
 
