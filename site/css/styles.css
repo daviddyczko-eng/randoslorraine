@@ -1053,3 +1053,47 @@ select.participant-input {
     margin: 0;
     white-space: pre-wrap;
 }
+
+/* ============================================================
+ * Fenêtre de réinitialisation de l'application
+ * ============================================================ */
+
+.reset-overlay {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: var(--overlay-dark);
+    z-index: 3000;
+}
+
+.reset-modal {
+    width: 100%;
+    max-width: 380px;
+    padding: 22px;
+    box-sizing: border-box;
+    background: var(--surface);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    text-align: center;
+}
+
+.reset-modal__title {
+    margin-bottom: 14px;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--brand-darker);
+}
+
+.reset-modal__message {
+    margin-bottom: 20px;
+    color: var(--text);
+}
+
+.reset-modal__buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
