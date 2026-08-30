@@ -1097,3 +1097,110 @@ select.participant-input {
     justify-content: center;
     gap: 10px;
 }
+
+/* ============================================================
+ * Fenêtre de transmission de la liste
+ * ============================================================ */
+
+.transmission-overlay {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: var(--overlay-dark);
+    z-index: 3000;
+}
+
+.transmission-modal {
+    width: 100%;
+    max-width: 480px;
+    max-height: 90vh;
+    padding: 22px;
+    box-sizing: border-box;
+    background: var(--surface);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    overflow-y: auto;
+}
+
+.transmission-title {
+    margin-bottom: 16px;
+    text-align: center;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--brand-darker);
+}
+
+.transmission-info p {
+    margin: 0 0 10px;
+    color: var(--text);
+}
+
+.transmission-csv-content {
+    width: 100%;
+    min-height: 140px;
+    box-sizing: border-box;
+    padding: 10px;
+    font-family: monospace;
+    font-size: 0.85rem;
+    resize: vertical;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--brand-bg);
+    color: var(--text);
+}
+
+.transmission-actions {
+    display: flex;
+    justify-content: center;
+    margin: 16px 0;
+}
+
+/* ============================================================
+ * Scanner de QR code
+ * ============================================================ */
+
+.qr-scanner-overlay {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: var(--overlay-dark);
+    z-index: 3000;
+}
+
+.qr-scanner-modal {
+    width: 100%;
+    max-width: 380px;
+    padding: 22px;
+    box-sizing: border-box;
+    background: var(--surface);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    text-align: center;
+}
+
+.qr-scanner-title {
+    margin-bottom: 16px;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--brand-darker);
+}
+
+.qr-reader {
+    width: 100%;
+    overflow: hidden;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    margin-bottom: 14px;
+}
+
+.qr-scanner-message {
+    margin: 0 0 16px;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
