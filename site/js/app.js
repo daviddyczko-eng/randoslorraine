@@ -4542,7 +4542,7 @@ function renderCorrection(
                 </div>
                 <button
                     type="submit"
-                    class="btn btn--primary btn--block">
+                    class="btn btn--primary">
                     Valider
                 </button>
             </form>
