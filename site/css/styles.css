@@ -496,7 +496,7 @@ svg path {
 .modal-content {
   background-color: var(--surface);
   padding: 20px;
-  border-radius: 8px;
+  border-radius: 14px;
   width: 90%;
   max-width: 500px;
   box-shadow: var(--shadow);
@@ -541,7 +541,7 @@ svg path {
   color: var(--surface);
   border: none;
   padding: 10px 16px;
-  border-radius: 4px;
+  border-radius: 14px;
   cursor: pointer;
 }
 
@@ -554,7 +554,7 @@ svg path {
   color: var(--surface);
   border: none;
   padding: 10px 16px;
-  border-radius: 4px;
+  border-radius: 14px;
   cursor: pointer;
 }
 
@@ -567,7 +567,7 @@ svg path {
   color: var(--surface);
   border: none;
   padding: 10px 16px;
-  border-radius: 4px;
+  border-radius: 14px;
   cursor: pointer;
 }
 
@@ -737,7 +737,7 @@ select.participant-input {
     gap: 14px;
     margin-top: 12px;
     padding: 16px;
-    border-radius: 12px;
+    border-radius: 8px;
     background: var(--brand-pale);
 }
 
@@ -1004,7 +1004,7 @@ select.participant-input {
 .commentaire-modal {
     width: min(90%, 500px);
     background: var(--surface);
-    border-radius: 12px;
+    border-radius: 8px;
     padding: 20px;
     box-sizing: border-box;
 }
@@ -1026,7 +1026,7 @@ select.participant-input {
     font-size: 1rem;
     resize: vertical;
     border: 1px solid var(--brand-dark);
-    border-radius: 6px;
+    border-radius: 8px;
 }
 
 
@@ -1038,7 +1038,7 @@ select.participant-input {
 .participants-commentaire-box {
     margin-top: 10px;
     padding: 10px;
-    border-radius: 6px;
+    border-radius: 8px;
     background: var(--brand-darker);
 }
 
@@ -1147,7 +1147,7 @@ select.participant-input {
     font-size: 0.85rem;
     resize: vertical;
     border: 1px solid var(--border);
-    border-radius: 6px;
+    border-radius: 8px;
     background: var(--brand-bg);
     color: var(--text);
 }
