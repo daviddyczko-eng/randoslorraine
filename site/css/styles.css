@@ -262,10 +262,6 @@ svg path {
   border: 1px solid var(--border);
 }
 
-.btn--block {
-  width: 100%;
-}
-
 .card-list {
   display: flex;
   flex-direction: column;
