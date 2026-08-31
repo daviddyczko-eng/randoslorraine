@@ -708,9 +708,6 @@ ${[1, 2, 3, 4, 5, 6].map(n =>
             "afterbegin",
             html
         );
-        if (typeof initCovoiturageModals === "function") {
-            initCovoiturageModals();
-        }
         /* ============================================================
          * Bouton "Je propose un covoiturage"
          * ============================================================
