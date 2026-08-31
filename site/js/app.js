@@ -770,49 +770,170 @@ ${[1, 2, 3, 4, 5, 6].map(n =>
                 }
             );
         }
-        /* ============================================================
-         * Bouton "Proposer"
-         * ============================================================
+/*
+ * ============================================================
+ * GESTION DU COVOITURAGE
+ * ============================================================
+ *
+ * Un seul gestionnaire sur screenRoot.
+ * Cela évite les problèmes liés au HTML reconstruit
+ * dynamiquement par renderRandoDetails().
+ * ============================================================
+ */
+
+screenRoot.addEventListener(
+    "click",
+    async event => {
+
+        const bouton =
+            event.target.closest("button");
+
+        if (!bouton) {
+            return;
+        }
+
+        /*
+         * ========================================================
+         * OUVRIR : JE PROPOSE UN COVOITURAGE
+         * ========================================================
          */
-        const btnProposer =
-            $("#btn-covoiturage-proposer");
-        if (btnProposer) {
-            btnProposer.addEventListener(
-                "click",
-                () => {
-                    const champPlaces =
-                        $("#covoiturage-places");
-                    const champEtape =
-                        $("#covoiturage-propose-etape");
-                    /*
-                     * Récupération des données
-                     */
-                    places =
-                        Number(
-                            champPlaces?.value
-                        ) || 1;
-                    etape =
-                        (
-                            champEtape?.value ?? ""
-                        ).trim();
-                    /*
-                     * Vérification du lieu
-                     */
-                    if (!etape) {
-                        alert(
-                            "Veuillez indiquer un lieu de rendez-vous souhaité."
-                        );
-                        return;
-                    }
-                    /*
-                     * Récupération de l'utilisateur
-                     */
-                    const user =
-                        getUser();
-                    /*
-                     * Construction du SMS
-                     */
-                    const message =
+
+        if (
+            bouton.id ===
+            "btn-covoiturage-propose"
+        ) {
+
+            const champPlaces =
+                document.getElementById(
+                    "covoiturage-places"
+                );
+
+            const champEtape =
+                document.getElementById(
+                    "covoiturage-propose-etape"
+                );
+
+            if (champPlaces) {
+                champPlaces.value =
+                    String(places);
+            }
+
+            if (champEtape) {
+                champEtape.value =
+                    etape;
+            }
+
+            openModal(
+                "covoiturage-propose-modal"
+            );
+
+            return;
+        }
+
+
+        /*
+         * ========================================================
+         * OUVRIR : JE RECHERCHE UN COVOITURAGE
+         * ========================================================
+         */
+
+        if (
+            bouton.id ===
+            "btn-covoiturage-recherche"
+        ) {
+
+            const champEtape =
+                document.getElementById(
+                    "covoiturage-recherche-etape"
+                );
+
+            if (champEtape) {
+                champEtape.value =
+                    etape;
+            }
+
+            openModal(
+                "covoiturage-recherche-modal"
+            );
+
+            return;
+        }
+
+
+        /*
+         * ========================================================
+         * PROPOSER LE COVOITURAGE
+         * ========================================================
+         */
+
+        if (
+            bouton.id ===
+            "btn-covoiturage-proposer"
+        ) {
+
+            const champPlaces =
+                document.getElementById(
+                    "covoiturage-places"
+                );
+
+            const champEtape =
+                document.getElementById(
+                    "covoiturage-propose-etape"
+                );
+
+            /*
+             * Récupération des valeurs
+             */
+
+            places =
+                Number(
+                    champPlaces?.value
+                ) || 1;
+
+            etape =
+                (
+                    champEtape?.value || ""
+                ).trim();
+
+            /*
+             * Vérification
+             */
+
+            if (!etape) {
+
+                alert(
+                    "Veuillez indiquer un lieu de rendez-vous souhaité."
+                );
+
+                return;
+            }
+
+            /*
+             * Mémorisation
+             */
+
+            localStorage.setItem(
+                "covoiturage_places",
+                String(places)
+            );
+
+            localStorage.setItem(
+                "covoiturage_etape",
+                etape
+            );
+
+            /*
+             * Récupération de l'utilisateur
+             */
+
+            const user =
+                getUser();
+
+            /*
+             * Construction du SMS
+             */
+
+            const message =
 `Je vous propose ${places} place(s) pour un covoiturage au départ de ${etape} pour la randonnée du ${rando?.date ?? ""} à ${commune}.
 
 Si cela vous intéresse, merci de me contacter directement au ${user?.telephone ?? ""} ou via l'adresse ${user?.email ?? ""} pour nous mettre d'accord sur les détails (lieu précis du rendez-vous, heure, tarif).
@@ -820,81 +941,137 @@ Si cela vous intéresse, merci de me contacter directement au ${user?.telephone 
 ${user?.prenom ?? ""} ${initialeNom(user?.nom)}
 
 Merci`;
-                    /*
-                     * Fermer la fenêtre
-                     */
-                    closeModal(
-                        "covoiturage-propose-modal"
-                    );
-                    /*
-                     * Ouvrir l'application SMS
-                     */
-                    sendSMSWithBody(
-                        covoiturage,
-                        message
-                    );
-                }
+
+            /*
+             * Fermeture de la fenêtre
+             */
+
+            closeModal(
+                "covoiturage-propose-modal"
             );
+
+            /*
+             * Ouverture de l'application SMS
+             */
+
+            sendSMSWithBody(
+                covoiturage,
+                message
+            );
+
+            return;
         }
-        /* ============================================================
-         * Bouton "Demander"
-         * ============================================================
+
+
+        /*
+         * ========================================================
+         * DEMANDER UN COVOITURAGE
+         * ========================================================
          */
-        const btnDemander =
-            $("#btn-covoiturage-demander");
-        if (btnDemander) {
-            btnDemander.addEventListener(
-                "click",
-                () => {
-                    const champEtape =
-                        $("#covoiturage-recherche-etape");
-                    /*
-                     * Récupération du lieu
-                     */
-                    etape =
-                        (
-                            champEtape?.value ?? ""
-                        ).trim();
-                    /*
-                     * Vérification du lieu
-                     */
-                    if (!etape) {
-                        alert(
-                            "Veuillez indiquer un lieu de rendez-vous souhaité."
-                        );
-                        return;
-                    }
-                    /*
-                     * Récupération de l'utilisateur
-                     */
-                    const user =
-                        getUser();
-                    /*
-                     * Construction du SMS
-                     */
-                    const message =
+
+        if (
+            bouton.id ===
+            "btn-covoiturage-demander"
+        ) {
+
+            const champEtape =
+                document.getElementById(
+                    "covoiturage-recherche-etape"
+                );
+
+            /*
+             * Récupération du lieu
+             */
+
+            etape =
+                (
+                    champEtape?.value || ""
+                ).trim();
+
+            /*
+             * Vérification
+             */
+
+            if (!etape) {
+
+                alert(
+                    "Veuillez indiquer un lieu de rendez-vous souhaité."
+                );
+
+                return;
+            }
+
+            /*
+             * Mémorisation
+             */
+
+            localStorage.setItem(
+                "covoiturage_etape",
+                etape
+            );
+
+            /*
+             * Récupération de l'utilisateur
+             */
+
+            const user =
+                getUser();
+
+            /*
+             * Construction du SMS
+             */
+
+            const message =
 `${user?.prenom ?? ""} ${initialeNom(user?.nom)} souhaite un covoiturage depuis ${etape} pour la randonnée du ${rando?.date ?? ""} à ${commune}.
 
 Contact direct au ${user?.telephone ?? ""} ou via l'adresse ${user?.email ?? ""}.
 
 Merci par avance`;
-                    /*
-                     * Fermer la fenêtre
-                     */
-                    closeModal(
-                        "covoiturage-recherche-modal"
-                    );
-                    /*
-                     * Ouvrir l'application SMS
-                     */
-                    sendSMSWithBody(
-                        covoiturage,
-                        message
-                    );
-                }
+
+            /*
+             * Fermeture de la fenêtre
+             */
+
+            closeModal(
+                "covoiturage-recherche-modal"
             );
+
+            /*
+             * Ouverture de l'application SMS
+             */
+
+            sendSMSWithBody(
+                covoiturage,
+                message
+            );
+
+            return;
+        }
+
+
+        /*
+         * ========================================================
+         * FERMETURE DES MODALES
+         * ========================================================
+         */
+
+        if (
+            bouton.hasAttribute(
+                "data-close-modal"
+            )
+        ) {
+
+            const modal =
+                bouton.closest(".modal");
+
+            if (modal) {
+                closeModal(modal.id);
+            }
+
+            return;
         }
     }
+);
     /* ============================================================
      * Gestion des erreurs
      * ============================================================ */
