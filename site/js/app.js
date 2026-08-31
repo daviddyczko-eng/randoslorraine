@@ -1395,102 +1395,95 @@ ${escapeHtml(section.footer)}
 }
 
 /* ============================================================
- * Gestion des modales de covoiturage
- * ============================================================ */
+ * Gestion des fenêtres de covoiturage
+ * ============================================================
+ */
 function openModal(id) {
-    const modal = document.getElementById(id);
+    const modal =
+        document.getElementById(id);
     if (!modal) {
-        console.warn(`Modal "${id}" introuvable.`);
+        console.warn(
+            `Modal "${id}" introuvable.`
+        );
         return;
     }
     modal.classList.remove("hidden");
-    modal.setAttribute("aria-hidden", "false");
+    modal.setAttribute(
+        "aria-hidden",
+        "false"
+    );
 }
+
 function closeModal(id) {
-    const modal = document.getElementById(id);
+    const modal =
+        document.getElementById(id);
     if (!modal) {
         return;
     }
     modal.classList.add("hidden");
-    modal.setAttribute("aria-hidden", "true");
+    modal.setAttribute(
+        "aria-hidden",
+        "true"
+    );
 }
+
 /* ============================================================
- * Gestion des fenêtres de covoiturage
- * ============================================================
- *
- * Ne gère que le comportement générique des modales
- * (fermeture par "Annuler", clic à l'extérieur, touche Échap).
- * La logique métier des boutons "Proposer" / "Demander" est
- * déjà entièrement gérée dans renderRandoDetails(), elle ne
- * doit pas être redéfinie ici (cela crée des doublons de
- * gestionnaires de clic sur les mêmes boutons).
+ * Initialisation des fenêtres de covoiturage
  * ============================================================
  */
-function initCovoiturageModals() {
 
+function initCovoiturageModals() {
     /*
-     * ------------------------------------------------------------
-     * Boutons Annuler (data-close-modal)
-     * ------------------------------------------------------------
+     * Boutons "Annuler"
      */
     document
-        .querySelectorAll("[data-close-modal]")
+        .querySelectorAll(
+            "[data-close-modal]"
+        )
         .forEach(button => {
-
             button.onclick = () => {
-
                 const modal =
                     button.closest(".modal");
-
                 if (modal) {
-                    closeModal(modal.id);
-                }
-            };
-        });
-
-
-    /*
-     * ------------------------------------------------------------
-     * Clic à l'extérieur d'une fenêtre
-     * ------------------------------------------------------------
-     */
-    document
-        .querySelectorAll(".modal")
-        .forEach(modal => {
-
-            modal.onclick = event => {
-
-                if (event.target === modal) {
-
                     closeModal(
                         modal.id
                     );
                 }
             };
         });
-
-
     /*
-     * ------------------------------------------------------------
+     * Fermeture en cliquant à l'extérieur
+     */
+    document
+        .querySelectorAll(".modal")
+        .forEach(modal => {
+            modal.onclick = event => {
+                if (
+                    event.target === modal
+                ) {
+                    closeModal(
+                        modal.id
+                    );
+                }
+            };
+        });
+    /*
      * Touche Échap
-     * ------------------------------------------------------------
      */
     document.onkeydown = event => {
-
-        if (event.key !== "Escape") {
+        if (
+            event.key !== "Escape"
+        ) {
             return;
         }
-
         document
             .querySelectorAll(".modal")
             .forEach(modal => {
-
                 if (
                     !modal.classList.contains(
                         "hidden"
                     )
                 ) {
-
                     closeModal(
                         modal.id
                     );
@@ -1498,6 +1491,7 @@ function initCovoiturageModals() {
             });
     };
 }
+
 /* ============================================================
  * Fonctions utilitaires
  * ============================================================ */
