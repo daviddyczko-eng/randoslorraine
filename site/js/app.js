@@ -524,6 +524,27 @@ function renderRandoDetails(r = null) {
                 .filter(Boolean);
         const telephones =
             rando.telephones ?? [];
+
+        /*
+         * ============================================================
+         * Construction du HTML
+         * ============================================================
+         *
+         * Structure :
+         *
+         * <div class="screen">
+         *   <div class="detail-list"> ...lignes... </div>
+         *   [si !isToday] <div class="btn-row"> ...boutons... </div>
+         *   [si !isToday] <div class="modal" id="covoiturage-propose-modal">...</div>
+         *   [si !isToday] <div class="modal" id="covoiturage-recherche-modal">...</div>
+         * </div>
+         *
+         * Les deux fenêtres de covoiturage restent groupées avec
+         * les boutons qui les déclenchent, dans le même bloc
+         * conditionnel : le jour de la randonnée, ni les boutons
+         * ni les fenêtres ne sont générés.
+         */
+
         let html = `
 <div class="screen">
 <div class="detail-list">
@@ -596,7 +617,7 @@ title="Voir la randonnée">
 </span>
 </div>
 `;
-                if (rando.rendezVous) {
+        if (rando.rendezVous) {
             html += `
 <div class="detail-row">
 <span class="detail-row__label">
@@ -622,9 +643,9 @@ title="Ouvrir dans Google Maps">
 </div>
 `;
         }
-        telephones.forEach((tel,index)=>{
+        telephones.forEach((tel, index) => {
             const label =
-                index===0
+                index === 0
                 ? (pilotes[0]
                     ? `Proposée par ${escapeHtml(pilotes[0])}`
                     : "Contact")
@@ -650,12 +671,20 @@ title="Téléphoner">
 </div>
 `;
         });
+
+        /*
+         * Fermeture de .detail-list
+         */
         html += `
 </div>
 `;
+
+        /*
+         * Boutons + fenêtres de covoiturage — uniquement si la
+         * randonnée n'a pas lieu aujourd'hui.
+         */
         if (!isToday(rando.date)) {
             html += `
-</div>
 <div class="btn-row">
 <button
 class="btn btn--primary"
@@ -695,10 +724,6 @@ ${[1, 2, 3, 4, 5, 6].map(n =>
 </div>
 </div>
 </div>
-`;
-        }
-        html += `
-</div>
 <div class="modal hidden" id="covoiturage-recherche-modal" aria-hidden="true">
 <div class="modal-content">
 <div class="modal-header">Je recherche un covoiturage</div>
@@ -714,8 +739,16 @@ ${[1, 2, 3, 4, 5, 6].map(n =>
 </div>
 </div>
 </div>
+`;
+        }
+
+        /*
+         * Fermeture de .screen
+         */
+        html += `
 </div>
 `;
+
         screenRoot.replaceChildren();
         screenRoot.insertAdjacentHTML(
             "afterbegin",
@@ -725,7 +758,7 @@ ${[1, 2, 3, 4, 5, 6].map(n =>
             initCovoiturageModals();
         }
         /* ============================================================
-         * Bouton "Je propose un covoiturage"
+         * Bouton "Je propose un covoiturage" (ouverture)
          * ============================================================
          */
         const btnPropose =
@@ -759,7 +792,7 @@ ${[1, 2, 3, 4, 5, 6].map(n =>
             );
         }
         /* ============================================================
-         * Bouton "Je recherche un covoiturage"
+         * Bouton "Je recherche un covoiturage" (ouverture)
          * ============================================================
          */
         const btnRecherche =
@@ -787,7 +820,7 @@ ${[1, 2, 3, 4, 5, 6].map(n =>
             );
         }
         /* ============================================================
-         * Bouton "Proposer"
+         * Bouton "Proposer" (confirmation)
          * ============================================================
          */
         const btnProposer =
@@ -853,7 +886,7 @@ Merci`;
             );
         }
         /* ============================================================
-         * Bouton "Demander"
+         * Bouton "Demander" (confirmation)
          * ============================================================
          */
         const btnDemander =
