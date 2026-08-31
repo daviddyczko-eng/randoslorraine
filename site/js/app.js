@@ -380,47 +380,29 @@ function navigate(screen, options = {}) {
         options.onBack
     );
     screenRoot.replaceChildren();
+
     switch (screen) {
         case "inscription":
             return renderInscription();
         case "cotisation":
-            return renderCotisation(
-                options.prenom,
-                options.nom,
-                options.dateInscription
-            );
+            return renderCotisation(options.prenom, options.nom, options.dateInscription);
         case "accueil":
-            return renderAccueil(
-                options.prenom,
-                options.nom
-            );
+            return renderAccueil(options.prenom, options.nom);
         case "carte":
-            return renderCarte(
-                options.prenom,
-                options.nom
-            );
+            return renderCarte(options.prenom, options.nom);
         case "correction":
-            return renderCorrection(
-                options.prenom,
-                options.nom,
-                options.email,
-                options.telephone
-            );
+            return renderCorrection(options.prenom, options.nom, options.email, options.telephone);
         case "rando":
             return renderRandoDetails(options.rando ?? prochaineRando);
         case "participants-warning":
-    renderParticipantsWarning();
-    break;         
+            return renderParticipantsWarning();
         case "participants":
             return renderParticipants();
         case "info":
             return renderInfoPage(options.infoKey);
         default:
             console.warn("Écran inconnu :", screen);
-            return renderAccueil(
-                currentUser?.prenom,
-                currentUser?.nom
-            );
+            return renderAccueil(currentUser?.prenom, currentUser?.nom);
     }
 }
 
