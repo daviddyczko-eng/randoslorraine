@@ -734,68 +734,64 @@ svg path {
  * pour afficher la fenêtre.
  * ============================================================ */
 
+/* ============================================================
+ * Fenêtres modales
+ * ============================================================ */
+
 .modal {
   position: fixed;
-
   inset: 0;
+  z-index: 2000;
 
   display: flex;
-
   align-items: center;
   justify-content: center;
 
   padding: 20px;
 
   background: var(--overlay-dark);
-
-  z-index: 2000;
 }
 
+/*
+ * Une modale masquée reste totalement invisible
+ * et ne bloque pas les clics.
+ */
+.modal.hidden {
+  display: none !important;
+}
 
-/* ============================================================
- * CONTENU DES MODALES
- * ============================================================ */
-
+/* Contenu de la fenêtre */
 .modal-content {
-  width: 90%;
-
+  width: 100%;
   max-width: 500px;
-
   max-height: 90vh;
-
-  overflow-y: auto;
 
   padding: 20px;
 
   background: var(--surface);
-
   border-radius: var(--radius);
 
   box-shadow: var(--shadow);
+
+  overflow-y: auto;
 }
 
+/* Titre */
 .modal-header {
   margin-bottom: 16px;
 
   text-align: center;
 
-  font-weight: bold;
-
+  font-weight: 700;
   color: var(--brand-darker);
 }
 
+/* Corps */
 .modal-body {
   margin-bottom: 20px;
 }
 
-.modal-footer {
-  display: flex;
-
-  justify-content: space-between;
-
-  gap: 10px;
-}
-
+/* Champs */
 .modal-field {
   margin-bottom: 12px;
 }
@@ -803,35 +799,48 @@ svg path {
 .modal-field label {
   display: block;
 
-  margin-bottom: 4px;
+  margin-bottom: 6px;
 
-  font-weight: bold;
+  font-weight: 600;
+  color: var(--text);
 }
 
 .modal-field input,
-.modal-field textarea,
-.modal-field select {
+.modal-field select,
+.modal-field textarea {
   width: 100%;
 
-  padding: 8px;
+  padding: 10px;
 
   border: 1px solid var(--border);
-
-  border-radius: 4px;
-
-  font: inherit;
+  border-radius: 8px;
 
   background: var(--surface);
+  color: var(--text);
+
+  font: inherit;
 }
 
 .modal-field input:focus,
-.modal-field textarea:focus,
-.modal-field select:focus {
+.modal-field select:focus,
+.modal-field textarea:focus {
   outline: 2px solid var(--brand-lighter);
-
   border-color: var(--brand);
 }
 
+/* Pied de fenêtre */
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+
+  margin-top: 16px;
+}
+
+/* Boutons des modales */
+.modal-footer .btn {
+  flex: 0 0 auto;
+}
 
 /* ============================================================
  * TEXTE DE CHARGEMENT
