@@ -542,22 +542,36 @@ function sendSMSWithBody(number, body) {
 
 function openModal(id) {
 
+    /*
+     * Fermer toutes les autres modales
+     */
+    document
+        .querySelectorAll(".modal")
+        .forEach(modal => {
+
+            if (modal.id !== id) {
+
+                modal.classList.add("hidden");
+
+                modal.setAttribute(
+                    "aria-hidden",
+                    "true"
+                );
+            }
+        });
+
+    /*
+     * Modale demandée
+     */
     const modal =
         document.getElementById(id);
 
     if (!modal) {
-
         console.warn(
             `openModal() : modale "${id}" introuvable.`
         );
-
         return;
     }
-
-    /*
-     * La classe "hidden" est la seule responsable
-     * de cacher / afficher la modale.
-     */
 
     modal.classList.remove("hidden");
 
@@ -566,16 +580,10 @@ function openModal(id) {
         "false"
     );
 
-    /*
-     * Empêche le défilement de la page derrière
-     * la fenêtre.
-     */
-
     document.body.classList.add(
         "modal-open"
     );
 }
-
 
 /* ============================================================
  * FERMETURE D'UNE MODALE
@@ -588,11 +596,9 @@ function closeModal(id) {
         document.getElementById(id);
 
     if (!modal) {
-
         console.warn(
             `closeModal() : modale "${id}" introuvable.`
         );
-
         return;
     }
 
@@ -604,14 +610,19 @@ function closeModal(id) {
     );
 
     /*
-     * Réactivation du défilement.
+     * Vérifier s'il reste une modale ouverte
      */
+    const modalOuverte =
+        document.querySelector(
+            ".modal:not(.hidden)"
+        );
 
-    document.body.classList.remove(
-        "modal-open"
-    );
+    if (!modalOuverte) {
+        document.body.classList.remove(
+            "modal-open"
+        );
+    }
 }
-
 
 /* ============================================================
  * INITIALISATION DES MODALES
