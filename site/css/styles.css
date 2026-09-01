@@ -735,7 +735,7 @@ svg path {
  * ============================================================ */
 
 /* ============================================================
- * Fenêtres modales
+ * MODALES
  * ============================================================ */
 
 .modal {
@@ -753,14 +753,16 @@ svg path {
 }
 
 /*
- * Une modale masquée reste totalement invisible
- * et ne bloque pas les clics.
+ * Une modale masquée est réellement absente de l'affichage.
+ *
+ * IMPORTANT :
+ * Le JavaScript ouvre/ferme les modales en ajoutant ou retirant
+ * la classe .hidden.
  */
 .modal.hidden {
   display: none !important;
 }
 
-/* Contenu de la fenêtre */
 .modal-content {
   width: 100%;
   max-width: 500px;
@@ -768,78 +770,61 @@ svg path {
 
   padding: 20px;
 
+  overflow-y: auto;
+
   background: var(--surface);
   border-radius: var(--radius);
-
   box-shadow: var(--shadow);
-
-  overflow-y: auto;
 }
 
-/* Titre */
 .modal-header {
   margin-bottom: 16px;
 
   text-align: center;
-
   font-weight: 700;
   color: var(--brand-darker);
 }
 
-/* Corps */
 .modal-body {
   margin-bottom: 20px;
 }
 
-/* Champs */
+.modal-footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
 .modal-field {
   margin-bottom: 12px;
 }
 
 .modal-field label {
   display: block;
-
-  margin-bottom: 6px;
-
+  margin-bottom: 4px;
   font-weight: 600;
-  color: var(--text);
 }
 
 .modal-field input,
-.modal-field select,
-.modal-field textarea {
+.modal-field textarea,
+.modal-field select {
   width: 100%;
+  padding: 10px 12px;
 
-  padding: 10px;
+  font: inherit;
 
   border: 1px solid var(--border);
   border-radius: 8px;
 
   background: var(--surface);
   color: var(--text);
-
-  font: inherit;
 }
 
 .modal-field input:focus,
-.modal-field select:focus,
-.modal-field textarea:focus {
+.modal-field textarea:focus,
+.modal-field select:focus {
   outline: 2px solid var(--brand-lighter);
   border-color: var(--brand);
-}
-
-/* Pied de fenêtre */
-.modal-footer {
-  display: flex;
-  justify-content: flex-end;
-  gap: 10px;
-
-  margin-top: 16px;
-}
-
-/* Boutons des modales */
-.modal-footer .btn {
-  flex: 0 0 auto;
 }
 
 /* ============================================================
