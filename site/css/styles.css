@@ -717,25 +717,6 @@ svg path {
 
 /* ============================================================
  * MODALES
- *
- * IMPORTANT :
- * .modal NE DOIT PAS avoir display:none.
- *
- * Le masquage est assuré par :
- *
- * .hidden {
- *     display: none !important;
- * }
- *
- * Le JavaScript fait :
- *
- * modal.classList.remove("hidden");
- *
- * pour afficher la fenêtre.
- * ============================================================ */
-
-/* ============================================================
- * MODALES
  * ============================================================ */
 
 .modal {
@@ -748,13 +729,6 @@ svg path {
   background: var(--overlay-dark);
 }
 
-/*
- * Une modale masquée est réellement absente de l'affichage.
- *
- * IMPORTANT :
- * Le JavaScript ouvre/ferme les modales en ajoutant ou retirant
- * la classe .hidden.
- */
 .modal.hidden {
   display: none !important;
 }
