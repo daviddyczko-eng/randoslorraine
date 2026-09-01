@@ -35,6 +35,17 @@
   --safe-top: env(safe-area-inset-top, 0px);
 }
 
+@font-face {
+  font-family: 'MaPolicePersonnalisée';
+  src: url('/QRcode.ttf') format('ttf');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap; 
+}
+
+body {
+  font-family: 'MaPolicePersonnalisée', sans-serif;
+}
 
 /* ============================================================
  * RESET
