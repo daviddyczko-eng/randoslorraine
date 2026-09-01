@@ -183,7 +183,6 @@ let prochaineRando = null;
  * ============================================================
  */
 
-const covoiturage = "+33672997397";
 const tresorerie = "+33689928560";
 let places = 1;
 let etape = "";
