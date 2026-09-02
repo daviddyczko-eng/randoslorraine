@@ -2209,7 +2209,8 @@ function preparerListeParticipants() {
                 nom: user.nom,
                 statut: "Pilote",
                 date: dateAujourdHui,
-                lieu: ""
+                lieu: "",
+                commentaire: ""
             }];
             enregistrerParticipants();
             console.log(
