@@ -4072,7 +4072,28 @@ function renderParticipants() {
                         class="qr-scan-button"
                         id="btn-scan-pilote"
                         title="Scanner le QR code du pilote">
-                        ▣
+                        <svg width="20" height="20" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    <rect x="10" y="10" width="10" height="10" fill="black"/>
+    <rect x="30" y="10" width="10" height="10" fill="black"/>
+    <rect x="50" y="10" width="10" height="10" fill="black"/>
+    <rect x="70" y="10" width="10" height="10" fill="black"/>
+    <rect x="90" y="10" width="10" height="10" fill="black"/>
+    <rect x="10" y="30" width="10" height="10" fill="black"/>
+    <rect x="50" y="30" width="10" height="10" fill="black"/>
+    <rect x="90" y="30" width="10" height="10" fill="black"/>
+    <rect x="10" y="50" width="10" height="10" fill="black"/>
+    <rect x="30" y="50" width="10" height="10" fill="black"/>
+    <rect x="70" y="50" width="10" height="10" fill="black"/>
+    <rect x="90" y="50" width="10" height="10" fill="black"/>
+    <rect x="10" y="70" width="10" height="10" fill="black"/>
+    <rect x="50" y="70" width="10" height="10" fill="black"/>
+    <rect x="90" y="70" width="10" height="10" fill="black"/>
+    <rect x="10" y="90" width="10" height="10" fill="black"/>
+    <rect x="30" y="90" width="10" height="10" fill="black"/>
+    <rect x="50" y="90" width="10" height="10" fill="black"/>
+    <rect x="70" y="90" width="10" height="10" fill="black"/>
+    <rect x="90" y="90" width="10" height="10" fill="black"/>
+  </svg>
                     </button>
                 </span>
             </div>
