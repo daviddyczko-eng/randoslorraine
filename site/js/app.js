@@ -4075,18 +4075,18 @@ function renderParticipants() {
                         <svg width="200" height="200" viewBox="-25 -25 250 250" xmlns="http://www.w3.org/2000/svg">
   <!-- Carrés de positionnement (coins) -->
   <!-- Coin supérieur gauche -->
-  <rect x="10" y="10" width="70" height="70" />
+  <rect x="10" y="10" width="70" height="70" fill=var(--brand-dark) />
   <rect x="20" y="20" width="50" height="50" fill=var(--surface) />
   <rect x="30" y="30" width="30" height="30" />
 
   <!-- Coin supérieur droit -->
   <rect x="120" y="10" width="70" height="70" />
-  <rect x="130" y="20" width="50" height="50" fill="white" />
+  <rect x="130" y="20" width="50" height="50" fill=var(--surface) />
   <rect x="140" y="30" width="30" height="30" />
 
   <!-- Coin inférieur gauche -->
   <rect x="10" y="120" width="70" height="70" />
-  <rect x="20" y="130" width="50" height="50" fill="white" />
+  <rect x="20" y="130" width="50" height="50" fill=var(--surface) />
   <rect x="30" y="140" width="30" height="30" />
 
   <!-- Motif central (similaire à votre image) -->
@@ -4116,23 +4116,23 @@ function renderParticipants() {
 
   <!-- Ajout de motifs aléatoires pour imiter un QR code -->
   <rect x="60" y="60" width="10" height="10" />
-  <rect x="80" y="60" width="10" height="10" fill="white" />
+  <rect x="80" y="60" width="10" height="10" fill=var(--surface) />
   <rect x="100" y="60" width="10" height="10" />
-  <rect x="120" y="60" width="10" height="10" fill="white" />
+  <rect x="120" y="60" width="10" height="10" fill=var(--surface) />
 
-  <rect x="60" y="80" width="10" height="10" fill="white" />
+  <rect x="60" y="80" width="10" height="10" fill=var(--surface) />
   <rect x="80" y="80" width="10" height="10" />
-  <rect x="100" y="80" width="10" height="10" fill="white" />
+  <rect x="100" y="80" width="10" height="10" fill=var(--surface) />
   <rect x="120" y="80" width="10" height="10" />
 
   <rect x="60" y="100" width="10" height="10" />
-  <rect x="80" y="100" width="10" height="10" fill="white" />
+  <rect x="80" y="100" width="10" height="10" fill=var(--surface) />
   <rect x="100" y="100" width="10" height="10" />
-  <rect x="120" y="100" width="10" height="10" fill="white" />
+  <rect x="120" y="100" width="10" height="10" fill=var(--surface) />
 
-  <rect x="60" y="120" width="10" height="10" fill="white" />
+  <rect x="60" y="120" width="10" height="10" fill=var(--surface) />
   <rect x="80" y="120" width="10" height="10" />
-  <rect x="100" y="120" width="10" height="10" fill="white" />
+  <rect x="100" y="120" width="10" height="10" fill=var(--surface) />
   <rect x="120" y="120" width="10" height="10" />
 </svg>
                     </button>
