@@ -4072,73 +4072,73 @@ function renderParticipants() {
                         class="qr-scan-button"
                         id="btn-scan-pilote"
                         title="Scanner le QR code du pilote">
-<svg width="200" height="200" viewBox="-25 -25 250 250" xmlns="http://www.w3.org/2000/svg">
-  <!-- Quadrillage aléatoire de points verts sur toute la surface -->
-  <!-- Points aléatoires (simulés) -->
-  <rect x="10" y="10" width="5" height="5" fill="var(--brand-darker)" />
-  <rect x="20" y="30" width="5" height="5" fill="var(--brand-darker)" />
-  <rect x="30" y="10" width="5" height="5" fill="var(--brand-darker)" />
-  <rect x="40" y="40" width="5" height="5" fill="var(--brand-darker)" />
-  <rect x="50" y="20" width="5" height="5" fill="var(--brand-darker)" />
-  <rect x="60" y="50" width="5" height="5" fill="var(--brand-darker)" />
-  <rect x="70" y="30" width="5" height="5" fill="var(--brand-darker)" />
-  <rect x="80" y="10" width="5" height="5" fill="var(--brand-darker)" />
-  <rect x="90" y="40" width="5" height="5" fill="var(--brand-darker)" />
-  <rect x="100" y="20" width="5" height="5" fill="var(--brand-darker)" />
-  <rect x="110" y="50" width="5" height="5" fill="var(--brand-darker)" />
-  <rect x="120" y="30" width="5" height="5" fill="var(--brand-darker)" />
-  <rect x="130" y="10" width="5" height="5" fill="var(--brand-darker)" />
-  <rect x="140" y="40" width="5" height="5" fill="var(--brand-darker)" />
-  <rect x="150" y="20" width="5" height="5" fill="var(--brand-darker)" />
-  <rect x="160" y="50" width="5" height="5" fill="var(--brand-darker)" />
-  <rect x="170" y="30" width="5" height="5" fill="var(--brand-darker)" />
-  <rect x="180" y="10" width="5" height="5" fill="var(--brand-darker)" />
-  <rect x="190" y="40" width="5" height="5" fill="var(--brand-darker)" />
+<svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <!-- Quadrillage dense de points verts dans la zone centrale (hors carrés de positionnement) -->
+  <!-- Points aléatoires dans la zone centrale (10-190 en x et y) -->
+  <rect x="15" y="15" width="3" height="3" fill="var(--brand-darker)" />
+  <rect x="25" y="35" width="3" height="3" fill="var(--brand-darker)" />
+  <rect x="35" y="15" width="3" height="3" fill="var(--brand-darker)" />
+  <rect x="45" y="45" width="3" height="3" fill="var(--brand-darker)" />
+  <rect x="55" y="25" width="3" height="3" fill="var(--brand-darker)" />
+  <rect x="65" y="55" width="3" height="3" fill="var(--brand-darker)" />
+  <rect x="75" y="35" width="3" height="3" fill="var(--brand-darker)" />
+  <rect x="85" y="15" width="3" height="3" fill="var(--brand-darker)" />
+  <rect x="95" y="45" width="3" height="3" fill="var(--brand-darker)" />
+  <rect x="105" y="25" width="3" height="3" fill="var(--brand-darker)" />
+  <rect x="115" y="55" width="3" height="3" fill="var(--brand-darker)" />
+  <rect x="125" y="35" width="3" height="3" fill="var(--brand-darker)" />
+  <rect x="135" y="15" width="3" height="3" fill="var(--brand-darker)" />
+  <rect x="145" y="45" width="3" height="3" fill="var(--brand-darker)" />
+  <rect x="155" y="25" width="3" height="3" fill="var(--brand-darker)" />
+  <rect x="165" y="55" width="3" height="3" fill="var(--brand-darker)" />
+  <rect x="175" y="35" width="3" height="3" fill="var(--brand-darker)" />
+  <rect x="185" y="15" width="3" height="3" fill="var(--brand-darker)" />
 
-  <rect x="10" y="60" width="5" height="5" fill="var(--brand-darker)" />
-  <rect x="20" y="80" width="5" height="5" fill="var(--brand-darker)" />
-  <rect x="30" y="60" width="5" height="5" fill="var(--brand-darker)" />
-  <rect x="40" y="90" width="5" height="5" fill="var(--brand-darker)" />
-  <rect x="50" y="70" width="5" height="5" fill="var(--brand-darker)" />
-  <rect x="60" y="100" width="5" height="5" fill="var(--brand-darker)" />
-  <rect x="70" y="80" width="5" height="5" fill="var(--brand-darker)" />
-  <rect x="80" y="60" width="5" height="5" fill="var(--brand-darker)" />
-  <rect x="90" y="90" width="5" height="5" fill="var(--brand-darker)" />
-  <rect x="100" y="70" width="5" height="5" fill="var(--brand-darker)" />
-  <rect x="110" y="100" width="5" height="5" fill="var(--brand-darker)" />
-  <rect x="120" y="80" width="5" height="5" fill="var(--brand-darker)" />
-  <rect x="130" y="60" width="5" height="5" fill="var(--brand-darker)" />
-  <rect x="140" y="90" width="5" height="5" fill="var(--brand-darker)" />
-  <rect x="150" y="70" width="5" height="5" fill="var(--brand-darker)" />
-  <rect x="160" y="100" width="5" height="5" fill="var(--brand-darker)" />
-  <rect x="170" y="80" width="5" height="5" fill="var(--brand-darker)" />
-  <rect x="180" y="60" width="5" height="5" fill="var(--brand-darker)" />
-  <rect x="190" y="90" width="5" height="5" fill="var(--brand-darker)" />
+  <!-- Deuxième ligne de points -->
+  <rect x="15" y="65" width="3" height="3" fill="var(--brand-darker)" />
+  <rect x="25" y="85" width="3" height="3" fill="var(--brand-darker)" />
+  <rect x="35" y="65" width="3" height="3" fill="var(--brand-darker)" />
+  <rect x="45" y="95" width="3" height="3" fill="var(--brand-darker)" />
+  <rect x="55" y="75" width="3" height="3" fill="var(--brand-darker)" />
+  <rect x="65" y="105" width="3" height="3" fill="var(--brand-darker)" />
+  <rect x="75" y="85" width="3" height="3" fill="var(--brand-darker)" />
+  <rect x="85" y="65" width="3" height="3" fill="var(--brand-darker)" />
+  <rect x="95" y="95" width="3" height="3" fill="var(--brand-darker)" />
+  <rect x="105" y="75" width="3" height="3" fill="var(--brand-darker)" />
+  <rect x="115" y="105" width="3" height="3" fill="var(--brand-darker)" />
+  <rect x="125" y="85" width="3" height="3" fill="var(--brand-darker)" />
+  <rect x="135" y="65" width="3" height="3" fill="var(--brand-darker)" />
+  <rect x="145" y="95" width="3" height="3" fill="var(--brand-darker)" />
+  <rect x="155" y="75" width="3" height="3" fill="var(--brand-darker)" />
+  <rect x="165" y="105" width="3" height="3" fill="var(--brand-darker)" />
+  <rect x="175" y="85" width="3" height="3" fill="var(--brand-darker)" />
+  <rect x="185" y="65" width="3" height="3" fill="var(--brand-darker)" />
 
-  <rect x="10" y="110" width="5" height="5" fill="var(--brand-darker)" />
-  <rect x="20" y="130" width="5" height="5" fill="var(--brand-darker)" />
-  <rect x="30" y="110" width="5" height="5" fill="var(--brand-darker)" />
-  <rect x="40" y="140" width="5" height="5" fill="var(--brand-darker)" />
-  <rect x="50" y="120" width="5" height="5" fill="var(--brand-darker)" />
-  <rect x="60" y="150" width="5" height="5" fill="var(--brand-darker)" />
-  <rect x="70" y="130" width="5" height="5" fill="var(--brand-darker)" />
-  <rect x="80" y="110" width="5" height="5" fill="var(--brand-darker)" />
-  <rect x="90" y="140" width="5" height="5" fill="var(--brand-darker)" />
-  <rect x="100" y="120" width="5" height="5" fill="var(--brand-darker)" />
-  <rect x="110" y="150" width="5" height="5" fill="var(--brand-darker)" />
-  <rect x="120" y="130" width="5" height="5" fill="var(--brand-darker)" />
-  <rect x="130" y="110" width="5" height="5" fill="var(--brand-darker)" />
-  <rect x="140" y="140" width="5" height="5" fill="var(--brand-darker)" />
-  <rect x="150" y="120" width="5" height="5" fill="var(--brand-darker)" />
-  <rect x="160" y="150" width="5" height="5" fill="var(--brand-darker)" />
-  <rect x="170" y="130" width="5" height="5" fill="var(--brand-darker)" />
-  <rect x="180" y="110" width="5" height="5" fill="var(--brand-darker)" />
-  <rect x="190" y="140" width="5" height="5" fill="var(--brand-darker)" />
+  <!-- Troisième ligne de points -->
+  <rect x="15" y="115" width="3" height="3" fill="var(--brand-darker)" />
+  <rect x="25" y="135" width="3" height="3" fill="var(--brand-darker)" />
+  <rect x="35" y="115" width="3" height="3" fill="var(--brand-darker)" />
+  <rect x="45" y="145" width="3" height="3" fill="var(--brand-darker)" />
+  <rect x="55" y="125" width="3" height="3" fill="var(--brand-darker)" />
+  <rect x="65" y="155" width="3" height="3" fill="var(--brand-darker)" />
+  <rect x="75" y="135" width="3" height="3" fill="var(--brand-darker)" />
+  <rect x="85" y="115" width="3" height="3" fill="var(--brand-darker)" />
+  <rect x="95" y="145" width="3" height="3" fill="var(--brand-darker)" />
+  <rect x="105" y="125" width="3" height="3" fill="var(--brand-darker)" />
+  <rect x="115" y="155" width="3" height="3" fill="var(--brand-darker)" />
+  <rect x="125" y="135" width="3" height="3" fill="var(--brand-darker)" />
+  <rect x="135" y="115" width="3" height="3" fill="var(--brand-darker)" />
+  <rect x="145" y="145" width="3" height="3" fill="var(--brand-darker)" />
+  <rect x="155" y="125" width="3" height="3" fill="var(--brand-darker)" />
+  <rect x="165" y="155" width="3" height="3" fill="var(--brand-darker)" />
+  <rect x="175" y="135" width="3" height="3" fill="var(--brand-darker)" />
+  <rect x="185" y="115" width="3" height="3" fill="var(--brand-darker)" />
 
-  <rect x="10" y="160" width="5" height="5" fill="var(--brand-darker)" />
-  <rect x="20" y="180" width="5" height="5" fill="var(--brand-darker)" />
-  <rect x="30" y="160" width="5" height="5" fill="var(--brand-darker)" />
-  <rect x="40" y="190" width="5" height="5" fill="var(--brand-darker)" />
+  <!-- Quatrième ligne de points -->
+  <rect x="15" y="165" width="3" height="3" fill="var(--brand-darker)" />
+  <rect x="25" y="185" width="3" height="3" fill="var(--brand-darker)" />
+  <rect x="35" y="165" width="3" height="3" fill="var(--brand-darker)" />
+  <rect x="45" y="195" width="3" height="3" fill="var(--brand-darker)" />
 
   <!-- Superposition des trois carrés de positionnement -->
   <!-- Coin supérieur gauche -->
@@ -4155,7 +4155,8 @@ function renderParticipants() {
   <rect x="10" y="120" width="70" height="70" fill="var(--brand-darker)" />
   <rect x="20" y="130" width="50" height="50" fill="var(--surface)" />
   <rect x="30" y="140" width="30" height="30" fill="var(--brand-darker)" />
-</svg>                    </button>
+</svg>
+        </button>
                 </span>
             </div>
             <!-- ==================================================
