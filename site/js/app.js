@@ -4075,7 +4075,7 @@ function renderParticipants() {
                         <svg width="200" height="200" viewBox="-25 -25 250 250" xmlns="http://www.w3.org/2000/svg">
   <!-- Carrés de positionnement (coins) -->
   <!-- Coin supérieur gauche -->
-  <rect x="10" y="10" width="70" height="70" fill=var(--brand-dark) />
+  <rect x="10" y="10" width="70" height="70" fill=var(--brand-darker) />
   <rect x="20" y="20" width="50" height="50" fill=var(--surface) />
   <rect x="30" y="30" width="30" height="30" />
 
