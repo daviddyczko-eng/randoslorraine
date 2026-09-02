@@ -4072,70 +4072,90 @@ function renderParticipants() {
                         class="qr-scan-button"
                         id="btn-scan-pilote"
                         title="Scanner le QR code du pilote">
-                        <svg width="200" height="200" viewBox="-25 -25 250 250" xmlns="http://www.w3.org/2000/svg">
-  <!-- Carrés de positionnement (coins) -->
+<svg width="200" height="200" viewBox="-25 -25 250 250" xmlns="http://www.w3.org/2000/svg">
+  <!-- Quadrillage aléatoire de points verts sur toute la surface -->
+  <!-- Points aléatoires (simulés) -->
+  <rect x="10" y="10" width="5" height="5" fill="var(--brand-darker)" />
+  <rect x="20" y="30" width="5" height="5" fill="var(--brand-darker)" />
+  <rect x="30" y="10" width="5" height="5" fill="var(--brand-darker)" />
+  <rect x="40" y="40" width="5" height="5" fill="var(--brand-darker)" />
+  <rect x="50" y="20" width="5" height="5" fill="var(--brand-darker)" />
+  <rect x="60" y="50" width="5" height="5" fill="var(--brand-darker)" />
+  <rect x="70" y="30" width="5" height="5" fill="var(--brand-darker)" />
+  <rect x="80" y="10" width="5" height="5" fill="var(--brand-darker)" />
+  <rect x="90" y="40" width="5" height="5" fill="var(--brand-darker)" />
+  <rect x="100" y="20" width="5" height="5" fill="var(--brand-darker)" />
+  <rect x="110" y="50" width="5" height="5" fill="var(--brand-darker)" />
+  <rect x="120" y="30" width="5" height="5" fill="var(--brand-darker)" />
+  <rect x="130" y="10" width="5" height="5" fill="var(--brand-darker)" />
+  <rect x="140" y="40" width="5" height="5" fill="var(--brand-darker)" />
+  <rect x="150" y="20" width="5" height="5" fill="var(--brand-darker)" />
+  <rect x="160" y="50" width="5" height="5" fill="var(--brand-darker)" />
+  <rect x="170" y="30" width="5" height="5" fill="var(--brand-darker)" />
+  <rect x="180" y="10" width="5" height="5" fill="var(--brand-darker)" />
+  <rect x="190" y="40" width="5" height="5" fill="var(--brand-darker)" />
+
+  <rect x="10" y="60" width="5" height="5" fill="var(--brand-darker)" />
+  <rect x="20" y="80" width="5" height="5" fill="var(--brand-darker)" />
+  <rect x="30" y="60" width="5" height="5" fill="var(--brand-darker)" />
+  <rect x="40" y="90" width="5" height="5" fill="var(--brand-darker)" />
+  <rect x="50" y="70" width="5" height="5" fill="var(--brand-darker)" />
+  <rect x="60" y="100" width="5" height="5" fill="var(--brand-darker)" />
+  <rect x="70" y="80" width="5" height="5" fill="var(--brand-darker)" />
+  <rect x="80" y="60" width="5" height="5" fill="var(--brand-darker)" />
+  <rect x="90" y="90" width="5" height="5" fill="var(--brand-darker)" />
+  <rect x="100" y="70" width="5" height="5" fill="var(--brand-darker)" />
+  <rect x="110" y="100" width="5" height="5" fill="var(--brand-darker)" />
+  <rect x="120" y="80" width="5" height="5" fill="var(--brand-darker)" />
+  <rect x="130" y="60" width="5" height="5" fill="var(--brand-darker)" />
+  <rect x="140" y="90" width="5" height="5" fill="var(--brand-darker)" />
+  <rect x="150" y="70" width="5" height="5" fill="var(--brand-darker)" />
+  <rect x="160" y="100" width="5" height="5" fill="var(--brand-darker)" />
+  <rect x="170" y="80" width="5" height="5" fill="var(--brand-darker)" />
+  <rect x="180" y="60" width="5" height="5" fill="var(--brand-darker)" />
+  <rect x="190" y="90" width="5" height="5" fill="var(--brand-darker)" />
+
+  <rect x="10" y="110" width="5" height="5" fill="var(--brand-darker)" />
+  <rect x="20" y="130" width="5" height="5" fill="var(--brand-darker)" />
+  <rect x="30" y="110" width="5" height="5" fill="var(--brand-darker)" />
+  <rect x="40" y="140" width="5" height="5" fill="var(--brand-darker)" />
+  <rect x="50" y="120" width="5" height="5" fill="var(--brand-darker)" />
+  <rect x="60" y="150" width="5" height="5" fill="var(--brand-darker)" />
+  <rect x="70" y="130" width="5" height="5" fill="var(--brand-darker)" />
+  <rect x="80" y="110" width="5" height="5" fill="var(--brand-darker)" />
+  <rect x="90" y="140" width="5" height="5" fill="var(--brand-darker)" />
+  <rect x="100" y="120" width="5" height="5" fill="var(--brand-darker)" />
+  <rect x="110" y="150" width="5" height="5" fill="var(--brand-darker)" />
+  <rect x="120" y="130" width="5" height="5" fill="var(--brand-darker)" />
+  <rect x="130" y="110" width="5" height="5" fill="var(--brand-darker)" />
+  <rect x="140" y="140" width="5" height="5" fill="var(--brand-darker)" />
+  <rect x="150" y="120" width="5" height="5" fill="var(--brand-darker)" />
+  <rect x="160" y="150" width="5" height="5" fill="var(--brand-darker)" />
+  <rect x="170" y="130" width="5" height="5" fill="var(--brand-darker)" />
+  <rect x="180" y="110" width="5" height="5" fill="var(--brand-darker)" />
+  <rect x="190" y="140" width="5" height="5" fill="var(--brand-darker)" />
+
+  <rect x="10" y="160" width="5" height="5" fill="var(--brand-darker)" />
+  <rect x="20" y="180" width="5" height="5" fill="var(--brand-darker)" />
+  <rect x="30" y="160" width="5" height="5" fill="var(--brand-darker)" />
+  <rect x="40" y="190" width="5" height="5" fill="var(--brand-darker)" />
+
+  <!-- Superposition des trois carrés de positionnement -->
   <!-- Coin supérieur gauche -->
-  <rect x="10" y="10" width="70" height="70" fill=var(--brand-darker) />
-  <rect x="20" y="20" width="50" height="50" fill=var(--surface) />
-  <rect x="30" y="30" width="30" height="30" fill=var(--brand-darker) />
+  <rect x="10" y="10" width="70" height="70" fill="var(--brand-darker)" />
+  <rect x="20" y="20" width="50" height="50" fill="var(--surface)" />
+  <rect x="30" y="30" width="30" height="30" fill="var(--brand-darker)" />
 
   <!-- Coin supérieur droit -->
-  <rect x="120" y="10" width="70" height="70" fill=var(--brand-darker) />
-  <rect x="130" y="20" width="50" height="50" fill=var(--surface) />
-  <rect x="140" y="30" width="30" height="30" fill=var(--brand-darker) />
+  <rect x="120" y="10" width="70" height="70" fill="var(--brand-darker)" />
+  <rect x="130" y="20" width="50" height="50" fill="var(--surface)" />
+  <rect x="140" y="30" width="30" height="30" fill="var(--brand-darker)" />
 
   <!-- Coin inférieur gauche -->
-  <rect x="10" y="120" width="70" height="70" fill=var(--brand-darker) />
-  <rect x="20" y="130" width="50" height="50" fill=var(--surface) />
-  <rect x="30" y="140" width="30" height="30" fill=var(--brand-darker) />
-
-  <!-- Motif central (similaire à votre image) -->
-  <rect x="50" y="50" width="10" height="10" fill=var(--brand-darker) />
-  <rect x="70" y="50" width="10" height="10" fill=var(--brand-darker) />
-  <rect x="90" y="50" width="10" height="10" fill=var(--brand-darker) />
-  <rect x="110" y="50" width="10" height="10" fill=var(--brand-darker) />
-  <rect x="130" y="50" width="10" height="10" fill=var(--brand-darker) />
-
-  <rect x="50" y="70" width="10" height="10" fill=var(--brand-darker) />
-  <rect x="90" y="70" width="10" height="10" fill=var(--brand-darker) />
-  <rect x="130" y="70" width="10" height="10" fill=var(--brand-darker) />
-
-  <rect x="50" y="90" width="10" height="10" fill=var(--brand-darker) />
-  <rect x="70" y="90" width="10" height="10" fill=var(--brand-darker) />
-  <rect x="110" y="90" width="10" height="10" fill=var(--brand-darker) />
-  <rect x="130" y="90" width="10" height="10" fill=var(--brand-darker) />
-
-  <rect x="50" y="110" width="10" height="10" fill=var(--brand-darker) />
-  <rect x="90" y="110" width="10" height="10" fill=var(--brand-darker) />
-  <rect x="130" y="110" width="10" height="10" fill=var(--brand-darker) />
-
-  <rect x="50" y="130" width="10" height="10" fill=var(--brand-darker) />
-  <rect x="70" y="130" width="10" height="10" fill=var(--brand-darker) />
-  <rect x="110" y="130" width="10" height="10" fill=var(--brand-darker) />
-  <rect x="130" y="130" width="10" height="10" fill=var(--brand-darker) />
-
-  <!-- Ajout de motifs aléatoires pour imiter un QR code -->
-  <rect x="60" y="60" width="10" height="10" fill=var(--brand-darker) />
-  <rect x="80" y="60" width="10" height="10" fill=var(--surface) />
-  <rect x="100" y="60" width="10" height="10" fill=var(--brand-darker) />
-  <rect x="120" y="60" width="10" height="10" fill=var(--surface) />
-
-  <rect x="60" y="80" width="10" height="10" fill=var(--surface) />
-  <rect x="80" y="80" width="10" height="10" fill=var(--brand-darker) />
-  <rect x="100" y="80" width="10" height="10" fill=var(--surface) />
-  <rect x="120" y="80" width="10" height="10" fill=var(--brand-darker) />
-
-  <rect x="60" y="100" width="10" height="10" fill=var(--brand-darker) />
-  <rect x="80" y="100" width="10" height="10" fill=var(--surface) />
-  <rect x="100" y="100" width="10" height="10" fill=var(--brand-darker) />
-  <rect x="120" y="100" width="10" height="10" fill=var(--surface) />
-
-  <rect x="60" y="120" width="10" height="10" fill=var(--surface) />
-  <rect x="80" y="120" width="10" height="10" fill=var(--brand-darker) />
-  <rect x="100" y="120" width="10" height="10" fill=var(--surface) />
-  <rect x="120" y="120" width="10" height="10" fill=var(--brand-darker) />
-</svg>
-                    </button>
+  <rect x="10" y="120" width="70" height="70" fill="var(--brand-darker)" />
+  <rect x="20" y="130" width="50" height="50" fill="var(--surface)" />
+  <rect x="30" y="140" width="30" height="30" fill="var(--brand-darker)" />
+</svg>                    </button>
                 </span>
             </div>
             <!-- ==================================================
