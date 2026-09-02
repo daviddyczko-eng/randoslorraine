@@ -1260,9 +1260,38 @@ initCovoiturageModals();
                      * Vérification.
                      */
                     if (!etape) {
-                        alert(
-                            "Veuillez indiquer un lieu de rendez-vous."
-                        );
+        const modal = document.createElement("div");
+        modal.className = "modal";
+        modal.innerHTML = `
+            <div class="modal-content">
+                <h2>À renseigner !</h2>
+                <p>
+                    Veuillez indiquer un lieu de rendez-vous. Merci
+                </p>
+                <div class="modal-footer">
+                    <button
+                        type="button"
+                        class="btn btn--cancel"
+                        data-close-quit-modal>
+                        Fermer
+                    </button>
+                </div>
+            </div>
+        `;
+
+        document.body.appendChild(modal);
+
+        modal
+            .querySelector("[data-close-quit-modal]")
+            .addEventListener("click", () => {
+                modal.remove();
+            });
+
+        modal.addEventListener("click", (event) => {
+            if (event.target === modal) {
+                modal.remove();
+            }
+        });
                         return;
                     }
                     /*
@@ -1343,9 +1372,38 @@ Merci`;
                      * Vérification.
                      */
                     if (!etape) {
-                        alert(
-                            "Veuillez indiquer un lieu de rendez-vous."
-                        );
+        const modal = document.createElement("div");
+        modal.className = "modal";
+        modal.innerHTML = `
+            <div class="modal-content">
+                <h2>À renseigner !</h2>
+                <p>
+                    Veuillez indiquer un lieu de rendez-vous. Merci
+                </p>
+                <div class="modal-footer">
+                    <button
+                        type="button"
+                        class="btn btn--cancel"
+                        data-close-quit-modal>
+                        Fermer
+                    </button>
+                </div>
+            </div>
+        `;
+
+        document.body.appendChild(modal);
+
+        modal
+            .querySelector("[data-close-quit-modal]")
+            .addEventListener("click", () => {
+                modal.remove();
+            });
+
+        modal.addEventListener("click", (event) => {
+            if (event.target === modal) {
+                modal.remove();
+            }
+        });
                         return;
                     }
                     /*
@@ -4967,7 +5025,8 @@ $("#btn-quit").addEventListener(
             }
         });
     }
-);    /*
+);
+    /*
      * Validation du formulaire
      */
     $("#form-inscription").addEventListener(
