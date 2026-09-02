@@ -871,29 +871,6 @@ svg path {
     background: var(--brand-dark);
 }
 
-/*
- * Bouton annuler
- */
-.btn--cancel {
-    background: var(--brand-darker);
-    color: var(--surface);
-
-    border: none;
-
-    padding: 10px 16px;
-
-    border-radius: var(--radius);
-
-    font: inherit;
-    font-weight: 600;
-
-    cursor: pointer;
-}
-
-.btn--cancel:hover {
-    background: var(--brand-deeper);
-}
-
 /* ============================================================
  * TEXTE DE CHARGEMENT
  * ============================================================ */
