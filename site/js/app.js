@@ -4072,28 +4072,69 @@ function renderParticipants() {
                         class="qr-scan-button"
                         id="btn-scan-pilote"
                         title="Scanner le QR code du pilote">
-                        <svg width="20" height="20" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-    <rect x="10" y="10" width="10" height="10" fill="black"/>
-    <rect x="30" y="10" width="10" height="10" fill="black"/>
-    <rect x="50" y="10" width="10" height="10" fill="black"/>
-    <rect x="70" y="10" width="10" height="10" fill="black"/>
-    <rect x="90" y="10" width="10" height="10" fill="black"/>
-    <rect x="10" y="30" width="10" height="10" fill="black"/>
-    <rect x="50" y="30" width="10" height="10" fill="black"/>
-    <rect x="90" y="30" width="10" height="10" fill="black"/>
-    <rect x="10" y="50" width="10" height="10" fill="black"/>
-    <rect x="30" y="50" width="10" height="10" fill="black"/>
-    <rect x="70" y="50" width="10" height="10" fill="black"/>
-    <rect x="90" y="50" width="10" height="10" fill="black"/>
-    <rect x="10" y="70" width="10" height="10" fill="black"/>
-    <rect x="50" y="70" width="10" height="10" fill="black"/>
-    <rect x="90" y="70" width="10" height="10" fill="black"/>
-    <rect x="10" y="90" width="10" height="10" fill="black"/>
-    <rect x="30" y="90" width="10" height="10" fill="black"/>
-    <rect x="50" y="90" width="10" height="10" fill="black"/>
-    <rect x="70" y="90" width="10" height="10" fill="black"/>
-    <rect x="90" y="90" width="10" height="10" fill="black"/>
-  </svg>
+                        <svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <!-- Carrés de positionnement (coins) -->
+  <!-- Coin supérieur gauche -->
+  <rect x="10" y="10" width="70" height="70" fill="black" />
+  <rect x="20" y="20" width="50" height="50" fill="white" />
+  <rect x="30" y="30" width="30" height="30" fill="black" />
+
+  <!-- Coin supérieur droit -->
+  <rect x="120" y="10" width="70" height="70" fill="black" />
+  <rect x="130" y="20" width="50" height="50" fill="white" />
+  <rect x="140" y="30" width="30" height="30" fill="black" />
+
+  <!-- Coin inférieur gauche -->
+  <rect x="10" y="120" width="70" height="70" fill="black" />
+  <rect x="20" y="130" width="50" height="50" fill="white" />
+  <rect x="30" y="140" width="30" height="30" fill="black" />
+
+  <!-- Motif central (similaire à votre image) -->
+  <rect x="50" y="50" width="10" height="10" fill="black" />
+  <rect x="70" y="50" width="10" height="10" fill="black" />
+  <rect x="90" y="50" width="10" height="10" fill="black" />
+  <rect x="110" y="50" width="10" height="10" fill="black" />
+  <rect x="130" y="50" width="10" height="10" fill="black" />
+
+  <rect x="50" y="70" width="10" height="10" fill="black" />
+  <rect x="90" y="70" width="10" height="10" fill="black" />
+  <rect x="130" y="70" width="10" height="10" fill="black" />
+
+  <rect x="50" y="90" width="10" height="10" fill="black" />
+  <rect x="70" y="90" width="10" height="10" fill="black" />
+  <rect x="110" y="90" width="10" height="10" fill="black" />
+  <rect x="130" y="90" width="10" height="10" fill="black" />
+
+  <rect x="50" y="110" width="10" height="10" fill="black" />
+  <rect x="90" y="110" width="10" height="10" fill="black" />
+  <rect x="130" y="110" width="10" height="10" fill="black" />
+
+  <rect x="50" y="130" width="10" height="10" fill="black" />
+  <rect x="70" y="130" width="10" height="10" fill="black" />
+  <rect x="110" y="130" width="10" height="10" fill="black" />
+  <rect x="130" y="130" width="10" height="10" fill="black" />
+
+  <!-- Ajout de motifs aléatoires pour imiter un QR code -->
+  <rect x="60" y="60" width="10" height="10" fill="black" />
+  <rect x="80" y="60" width="10" height="10" fill="white" />
+  <rect x="100" y="60" width="10" height="10" fill="black" />
+  <rect x="120" y="60" width="10" height="10" fill="white" />
+
+  <rect x="60" y="80" width="10" height="10" fill="white" />
+  <rect x="80" y="80" width="10" height="10" fill="black" />
+  <rect x="100" y="80" width="10" height="10" fill="white" />
+  <rect x="120" y="80" width="10" height="10" fill="black" />
+
+  <rect x="60" y="100" width="10" height="10" fill="black" />
+  <rect x="80" y="100" width="10" height="10" fill="white" />
+  <rect x="100" y="100" width="10" height="10" fill="black" />
+  <rect x="120" y="100" width="10" height="10" fill="white" />
+
+  <rect x="60" y="120" width="10" height="10" fill="white" />
+  <rect x="80" y="120" width="10" height="10" fill="black" />
+  <rect x="100" y="120" width="10" height="10" fill="white" />
+  <rect x="120" y="120" width="10" height="10" fill="black" />
+</svg>
                     </button>
                 </span>
             </div>
