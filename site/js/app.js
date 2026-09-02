@@ -2608,7 +2608,7 @@ function ouvrirCalendrierParticipants(dateActuelle, onValidate) {
             <div class="calendar-buttons">
                 <button
                     type="button"
-                    class="btn btn--ghost"
+                    class="btn btn--cancel"
                     id="calendar-cancel">
                     Annuler
                 </button>
@@ -3252,7 +3252,7 @@ function ouvrirFenetreCommentaire() {
             <div class="calendar-buttons">
                 <button
                     type="button"
-                    class="btn btn--ghost"
+                    class="btn btn--cancel"
                     id="commentaire-cancel">
                     Annuler
                 </button>
@@ -3391,7 +3391,7 @@ function ouvrirScannerQr(type) {
             </p>
             <button
                 type="button"
-                class="btn btn--ghost"
+                class="btn btn--cancel"
                 id="qr-scanner-cancel">
                 Annuler
             </button>
@@ -4912,7 +4912,7 @@ function renderInscription() {
                 <div class="btn-row">
                     <button
                         type="button"
-                        class="btn btn--ghost"
+                        class="btn btn--cancel"
                         id="btn-quit">
                         Quitter l'application
                     </button>
