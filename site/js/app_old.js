@@ -2032,6 +2032,206 @@ function openMaps(lat, lng) {
 }
 
 /* ============================================================
+ * Préparation de la liste des participant·e·s
+ * ============================================================
+ */
+function preparerListeParticipants() {
+    console.log(
+        "Préparation de la liste des participant·e·s"
+    );
+    /*
+     * Date d'aujourd'hui
+     */
+    const aujourdHui = new Date();
+    aujourdHui.setHours(0, 0, 0, 0);
+    const dateAujourdHui =
+        formaterDateParticipant(aujourdHui);
+    /*
+     * Prochaine randonnée
+     */
+    const rando =
+        prochaineRando;
+    const randoDuJour =
+        rando &&
+        typeof rando === "object" &&
+        isToday(rando.date);
+    console.log(
+        "Prochaine randonnée :",
+        rando
+    );
+    console.log(
+        "Randonnée du jour :",
+        randoDuJour
+    );
+    /*
+     * CAS 1 :
+     * La randonnée du JSON est aujourd'hui
+     * Le JSON devient prioritaire.
+     */
+    if (randoDuJour) {
+        console.log(
+            "Initialisation depuis la randonnée du jour."
+        );
+        const nouvelleListe = [];
+        /*
+         * Lieu
+         */
+        const lieu =
+            rando?.lieu?.commune ?? "";
+        /*
+         * Pilotes du JSON
+         */
+        const pilotesText =
+            String(rando?.pilotes ?? "")
+                .replace(/&amp;/g, "&")
+                .replace(/^Proposé par\s*/i, "")
+                .replace(/&/g, ",")
+                .split(",")
+                .map(p => p.trim())
+                .filter(Boolean);
+        /*
+         * Premier pilote
+         */
+        if (pilotesText[0]) {
+            const morceaux =
+                pilotesText[0]
+                    .split(/\s+/);
+            if (morceaux.length >= 2) {
+                nouvelleListe.push({
+                    prenom: morceaux.shift(),
+                    nom: morceaux.join(" "),
+                    statut: "Pilote",
+                    date: dateAujourdHui,
+                    lieu: lieu
+                });
+            }
+        }
+        /*
+         * Deuxième pilote → copilote
+         */
+        if (pilotesText[1]) {
+            const morceaux =
+                pilotesText[1]
+                    .split(/\s+/);
+            if (morceaux.length >= 2) {
+                nouvelleListe.push({
+                    prenom: morceaux.shift(),
+                    nom: morceaux.join(" "),
+                    statut: "Copilote",
+                    date: dateAujourdHui,
+                    lieu: lieu
+                });
+            }
+        }
+        /*
+         * Sauvegarde
+         */
+        participants =
+            nouvelleListe;
+        enregistrerParticipants();
+        console.log(
+            "Liste initialisée depuis le JSON :",
+            participants
+        );
+        return;
+    }
+    /*
+     * CAS 2 :
+     * Pas de randonnée aujourd'hui
+     * On récupère la liste locale.
+     */
+    const listeLocale =
+        chargerParticipants();
+    /*
+     * CAS 2a :
+     * Aucune liste locale
+     * → utilisateur = pilote
+     */
+    if (!listeLocale.length) {
+        const user =
+            getUser();
+        if (
+            user?.prenom &&
+            user?.nom
+        ) {
+            participants = [{
+                prenom: user.prenom,
+                nom: user.nom,
+                statut: "Pilote",
+                date: dateAujourdHui,
+                lieu: ""
+            }];
+            enregistrerParticipants();
+            console.log(
+                "Nouvelle liste créée avec l'utilisateur comme pilote."
+            );
+        }
+        else {
+            participants = [];
+        }
+        return;
+    }
+    /*
+     * CAS 2b :
+     * Une liste locale existe.
+     */
+    participants =
+        listeLocale;
+    /*
+     * Déterminer si la liste est une simple consultation.
+     * Une liste de consultation est ici définie comme :
+     * - un seul participant
+     * - ce participant est pilote
+     * - pas de copilote
+     * - aucun autre participant
+     * Dans ce cas, on considère que l'ancienne liste ne
+     * correspond plus à une randonnée en cours.
+     */
+    const estListeConsultation =
+        participants.length === 1 &&
+        participants[0]?.statut === "Pilote";
+    if (estListeConsultation) {
+        console.log(
+            "Ancienne liste considérée comme une simple consultation."
+        );
+        const user =
+            getUser();
+        if (
+            user?.prenom &&
+            user?.nom
+        ) {
+            /*
+             * Nouvelle liste :
+             * aujourd'hui + utilisateur = pilote
+             */
+            participants = [{
+                prenom: user.prenom,
+                nom: user.nom,
+                statut: "Pilote",
+                date: dateAujourdHui,
+                lieu: "",
+                commentaire: ""
+            }];
+            enregistrerParticipants();
+            console.log(
+                "Nouvelle liste créée pour aujourd'hui :",
+                participants
+            );
+        }
+        return;
+    }
+    /*
+     * CAS 2c :
+     * Une véritable liste existe déjà.
+     * On la conserve telle quelle.
+     */
+    console.log(
+        "Liste locale existante conservée :",
+        participants
+    );
+}
+
+/* ============================================================
  * Fonction Page d'Accueil
  * ============================================================ */
 function renderAccueil(prenom, nom) {
@@ -2097,34 +2297,64 @@ function renderAccueil(prenom, nom) {
       }
     });
   });
-$("#btn-participants").addEventListener("click", () => {
-  if (participantsWarningDisabled) {
-    navigate("participants", {
-      title: "Liste des participant·e·s",
-      showBack: true,
-      onBack: () => {
-        const user = getUser();
-        navigate("accueil", {
-          prenom: user.prenom,
-          nom: user.nom
-        });
-      }
-    });
-  } else {
-    navigate("participants-warning", {
-      title: "Important",
-      showBack: true,
-      onBack: () => {
-        const user = getUser();
-        navigate("accueil", {
-          prenom: user.prenom,
-          nom: user.nom
-        });
-      }
-    });
-  }
-});
-  $("#btn-info-avant").addEventListener("click", () => {
+$("#btn-participants").addEventListener(
+    "click",
+    () => {
+        /*
+         * Préparer la liste avant de l'afficher
+         */
+        preparerListeParticipants();
+        /*
+         * Afficher l'avertissement si nécessaire
+         */
+        if (participantsWarningDisabled) {
+            navigate(
+                "participants",
+                {
+                    title:
+                        "Liste des participant·e·s",
+                    showBack: true,
+                    onBack: () => {
+                        const user =
+                            getUser();
+                        navigate(
+                            "accueil",
+                            {
+                                prenom:
+                                    user.prenom,
+                                nom:
+                                    user.nom
+                            }
+                        );
+                    }
+                }
+            );
+        }
+        else {
+            navigate(
+                "participants-warning",
+                {
+                    title: "Important",
+                    showBack: true,
+                    onBack: () => {
+                        const user =
+                            getUser();
+                        navigate(
+                            "accueil",
+                            {
+                                prenom:
+                                    user.prenom,
+                                nom:
+                                    user.nom
+                            }
+                        );
+                    }
+                }
+            );
+        }
+    }
+);
+    $("#btn-info-avant").addEventListener("click", () => {
     navigate("info", {
       infoKey: "avant-depart",
       title: "Avant le départ",
