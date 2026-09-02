@@ -874,7 +874,7 @@ function renderRandoDetails(
                                     class="info-button"
                                     onclick="window.open('${randoUrl}','_blank')"
                                     title="Voir la randonnée">
-                                    ⓘ
+                                    ⓘŻ¢
                                 </button>`
                                 :
                                 ""
