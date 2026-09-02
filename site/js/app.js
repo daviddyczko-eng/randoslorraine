@@ -4928,15 +4928,46 @@ function renderInscription() {
     /*
      * Bouton Quitter
      */
-    $("#btn-quit").addEventListener(
-        "click",
-        () => {
-            alert(
-                "N'hésite pas à te renseigner sur notre association. À bientôt"
-            );
-        }
-    );
-    /*
+$("#btn-quit").addEventListener(
+    "click",
+    () => {
+        const modal = document.createElement("div");
+
+        modal.className = "modal";
+        modal.innerHTML = `
+            <div class="modal-content">
+                <h2>À bientôt !</h2>
+
+                <p>
+                    N'hésite pas à te renseigner sur notre association.
+                </p>
+
+                <div class="modal-footer">
+                    <button
+                        type="button"
+                        class="btn btn--cancel"
+                        data-close-quit-modal>
+                        Fermer
+                    </button>
+                </div>
+            </div>
+        `;
+
+        document.body.appendChild(modal);
+
+        modal
+            .querySelector("[data-close-quit-modal]")
+            .addEventListener("click", () => {
+                modal.remove();
+            });
+
+        modal.addEventListener("click", (event) => {
+            if (event.target === modal) {
+                modal.remove();
+            }
+        });
+    }
+);    /*
      * Validation du formulaire
      */
     $("#form-inscription").addEventListener(
