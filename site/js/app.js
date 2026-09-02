@@ -3725,29 +3725,85 @@ function ouvrirScannerQr(type) {
  * Mise à zéro de la liste des participant·e·s
  * ============================================================ */
 function reinitialiserListeParticipants() {
-    /*
-     * Confirmation
-     */
-    const confirmation =
-        confirm(
-            "Voulez-vous effacer toutes les données de la liste des participant·e·s ?"
-        );
-    if (!confirmation) {
-        return;
+// Création de la modale de confirmation
+const modal = document.createElement("div");
+modal.className = "modal"; // Classe de base pour les modales
+modal.id = "confirm-clear-participants-modal"; // ID unique pour la modale
+
+modal.innerHTML = `
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 id="confirm-clear-title">Effacer les données</h2>
+        </div>
+        <div class="modal-body">
+            <p>Voulez-vous effacer toutes les données de la liste des participant·e·s ?</p>
+        </div>
+        <div class="modal-footer">
+            <button
+                type="button"
+                class="btn btn--cancel"
+                data-close-modal>
+                Annuler
+            </button>
+            <button
+                type="button"
+                class="btn btn--confirm"
+                id="btn-confirm-clear">
+                Confirmer
+            </button>
+        </div>
+    </div>
+`;
+
+// Ajout de la classe `hidden` pour masquer la modale par défaut
+modal.classList.add("hidden");
+
+// Ajout de la modale au DOM
+document.body.appendChild(modal);
+
+// Gestion des boutons
+const btnConfirm = modal.querySelector("#btn-confirm-clear");
+const btnCancel = modal.querySelector("[data-close-modal]");
+
+// Afficher la modale
+modal.classList.remove("hidden");
+modal.setAttribute("aria-hidden", "false");
+
+// Fermer la modale si on clique sur "Annuler"
+btnCancel.addEventListener("click", () => {
+    modal.classList.add("hidden");
+    modal.setAttribute("aria-hidden", "true");
+    modal.remove(); // Supprime la modale du DOM
+});
+
+// Fermer la modale si on clique en dehors
+modal.addEventListener("click", (event) => {
+    if (event.target === modal) {
+        modal.classList.add("hidden");
+        modal.setAttribute("aria-hidden", "true");
+        modal.remove();
     }
-    localStorage.removeItem(
-        PARTICIPANTS_STORAGE_KEY
-    );
-    localStorage.removeItem(
-        "participantsCsv"
-    );
-    localStorage.removeItem(
-        "participantsCommentaire"
-    );
+});
+
+// Action à effectuer si on clique sur "Confirmer"
+btnConfirm.addEventListener("click", () => {
+    // Supprimer les données
+    localStorage.removeItem(PARTICIPANTS_STORAGE_KEY);
+    localStorage.removeItem("participantsCsv");
+    localStorage.removeItem("participantsCommentaire");
+
+    // Réinitialiser les variables
     commentaire = "";
     participants = [];
+
+    // Fermer la modale
+    modal.classList.add("hidden");
+    modal.setAttribute("aria-hidden", "true");
+    modal.remove();
+
+    // Rafraîchir l'affichage
     renderParticipants();
-}
+});
 
 /*
  * ============================================================
