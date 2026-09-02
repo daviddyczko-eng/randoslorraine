@@ -2209,9 +2209,9 @@ function preparerListeParticipants() {
                 nom: user.nom,
                 statut: "Pilote",
                 date: dateAujourdHui,
-                lieu: "",
-                commentaire: ""
+                lieu: ""
             }];
+            commentaire = "";
             enregistrerParticipants();
             console.log(
                 "Nouvelle liste créée pour aujourd'hui :",
