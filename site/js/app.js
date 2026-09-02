@@ -4072,7 +4072,7 @@ function renderParticipants() {
                         class="qr-scan-button"
                         id="btn-scan-pilote"
                         title="Scanner le QR code du pilote">
-                        <svg width="200" height="200" viewBox="30 30 250 250" xmlns="http://www.w3.org/2000/svg">
+                        <svg width="200" height="200" viewBox="-50 -50 150 150" xmlns="http://www.w3.org/2000/svg">
   <!-- Carrés de positionnement (coins) -->
   <!-- Coin supérieur gauche -->
   <rect x="10" y="10" width="70" height="70" />
