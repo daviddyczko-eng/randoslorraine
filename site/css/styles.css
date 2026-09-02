@@ -10,27 +10,20 @@
   --brand-tint: rgba(99, 182, 50, 0.1);
   --brand-tint-strong: rgba(99, 182, 50, 0.18);
   --brand-darker-tint: rgba(61, 120, 32, 0.15);
-
   --surface: #ffffff;
   --text: #1a1a1a;
   --text-muted: #5a6b52;
-
   --danger: #c0392b;
   --danger-bg: #fdecea;
   --danger-border: #f5c6cb;
-
   --border: #cfe6c4;
   --divider: #dddddd;
-
   --shadow: 0 2px 12px rgba(99, 182, 50, 0.12);
   --brand-glow: rgba(99, 182, 50, 0.15);
-
   --overlay-light: rgba(255, 255, 255, 0.15);
   --overlay-dark: rgba(0, 0, 0, 0.45);
   --shadow-color-strong: rgba(0, 0, 0, 0.25);
-
   --radius: 14px;
-
   --safe-bottom: env(safe-area-inset-bottom, 0px);
   --safe-top: env(safe-area-inset-top, 0px);
 }
@@ -74,7 +67,6 @@ body {
     "Segoe UI",
     Roboto,
     sans-serif;
-
   background: var(--brand-bg);
   color: var(--text);
   line-height: 1.5;
@@ -115,15 +107,12 @@ svg path {
   display: flex;
   align-items: center;
   gap: 12px;
-
   padding:
     calc(12px + var(--safe-top))
     16px
     12px;
-
   background: var(--brand);
   color: var(--surface);
-
   position: sticky;
   top: 0;
   z-index: 50;
@@ -132,16 +121,12 @@ svg path {
 .app-bar__back {
   display: grid;
   place-items: center;
-
   width: 40px;
   height: 40px;
-
   border: none;
   border-radius: 50%;
-
   background: var(--overlay-light);
   color: var(--surface);
-
   cursor: pointer;
   flex-shrink: 0;
 }
@@ -158,20 +143,16 @@ svg path {
 
 .app-bar__title {
   margin: 0;
-
   font-size: 1.1rem;
   font-weight: 700;
-
   flex: 1;
 }
 
 .app-bar__icon {
   display: grid;
   place-items: center;
-
   width: 40px;
   height: 40px;
-
   flex-shrink: 0;
 }
 
@@ -211,7 +192,6 @@ svg path {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-
   min-height:
     calc(
       100dvh -
@@ -230,9 +210,7 @@ svg path {
 .splash {
   display: grid;
   place-items: center;
-
   min-height: 100dvh;
-
   background: var(--brand-bg);
 }
 
@@ -244,9 +222,7 @@ svg path {
 
 .splash__title {
   margin: 0 0 24px;
-
   color: var(--brand-darker);
-
   font-size: 1.4rem;
 }
 
@@ -258,12 +234,9 @@ svg path {
 .spinner {
   width: 40px;
   height: 40px;
-
   border: 4px solid var(--brand-pale);
   border-top-color: var(--brand);
-
   border-radius: 50%;
-
   animation: spin 0.8s linear infinite;
 }
 
@@ -280,9 +253,7 @@ svg path {
 
 .alert {
   padding: 12px 14px;
-
   border-radius: var(--radius);
-
   font-size: 0.95rem;
   text-align: center;
 }
@@ -306,25 +277,18 @@ svg path {
 
 .field label {
   display: block;
-
   margin-bottom: 6px;
-
   font-size: 0.9rem;
   font-weight: 600;
-
   color: var(--brand-darker);
 }
 
 .field input {
   width: 100%;
-
   padding: 12px 14px;
-
   border: 1px solid var(--border);
   border-radius: var(--radius);
-
   font: inherit;
-
   background: var(--brand-bg);
 }
 
@@ -341,32 +305,22 @@ svg path {
 .btn-row {
   display: flex;
   flex-wrap: wrap;
-
   gap: 10px;
-
   justify-content: center;
-
   margin-top: 8px;
 }
 
 .btn {
   padding: 12px 18px;
-
   border: none;
   border-radius: var(--radius);
-
   font: inherit;
   font-weight: 600;
-
   cursor: pointer;
-
   text-decoration: none;
-
   display: inline-flex;
-
   align-items: center;
   justify-content: center;
-
   text-align: center;
 }
 
@@ -387,20 +341,15 @@ svg path {
 .btn--ghost {
   background: transparent;
   color: var(--text-muted);
-
   border: 1px solid var(--border);
 }
 
 .btn--success {
   background-color: var(--brand);
   color: var(--surface);
-
   border: none;
-
   padding: 10px 16px;
-
   border-radius: 14px;
-
   cursor: pointer;
 }
 
@@ -411,13 +360,9 @@ svg path {
 .btn--confirm {
   background-color: var(--brand);
   color: var(--surface);
-
   border: none;
-
   padding: 10px 16px;
-
   border-radius: 14px;
-
   cursor: pointer;
 }
 
@@ -428,13 +373,9 @@ svg path {
 .btn--cancel {
   background-color: var(--brand-darker);
   color: var(--surface);
-
   border: none;
-
   padding: 10px 16px;
-
   border-radius: 14px;
-
   cursor: pointer;
 }
 
@@ -457,25 +398,16 @@ svg path {
   display: flex;
   align-items: center;
   justify-content: space-between;
-
   gap: 12px;
-
   padding: 16px;
-
   background: var(--brand-tint);
-
   border: 1px solid var(--border);
   border-radius: var(--radius);
-
   cursor: pointer;
-
   text-align: left;
-
   width: 100%;
-
   font: inherit;
   color: inherit;
-
   transition: background 0.15s;
 }
 
@@ -491,10 +423,8 @@ svg path {
 
 .home-card__preview {
   flex-shrink: 0;
-
   font-size: 0.85rem;
   color: var(--text-muted);
-
   text-align: right;
 }
 
@@ -513,13 +443,9 @@ svg path {
 
 .qr-box {
   display: inline-block;
-
   padding: 6px;
-
   background: var(--surface);
-
   border-radius: 8px;
-
   border: 1px solid var(--border);
 }
 
@@ -545,10 +471,8 @@ svg path {
 
 .carte-name {
   margin: 20px 0;
-
   font-size: 1.5rem;
   font-weight: 700;
-
   color: var(--brand-darker);
 }
 
@@ -560,56 +484,40 @@ svg path {
 .detail-list {
   display: flex;
   flex-direction: column;
-
   gap: 12px;
-
   margin-bottom: 20px;
 }
 
 .detail-row {
   display: grid;
-
   grid-template-columns:
     66px
     minmax(0, 1fr);
-
   column-gap: 18px;
-
   align-items: center;
-
   padding: 12px 14px;
-
   background: var(--brand-bg);
-
   border-radius: var(--radius);
-
   border: 1px solid var(--border);
 }
 
 .detail-row__label {
   width: 66px;
   min-width: 66px;
-
   font-weight: 600;
-
   color: var(--brand-darker);
 }
 
 .detail-row__value {
   color: var(--text-muted);
-
   text-align: right;
 }
 
 .detail-row__value.participant-input-wrapper {
   min-width: 0;
-
   width: 100%;
-
   display: flex;
-
   align-items: center;
-
   gap: 10px;
 }
 
@@ -620,28 +528,17 @@ svg path {
 
 .info-button {
   background: none;
-
   border: none;
-
   cursor: pointer;
-
   font-size: 1rem;
-
   margin-left: 8px;
-
   padding: 0;
-
   display: inline-flex;
-
   align-items: center;
   justify-content: center;
-
   vertical-align: middle;
-
   color: var(--brand-darker);
-
   font-weight: bold;
-
   text-decoration: none;
 }
 
@@ -656,29 +553,21 @@ svg path {
 
 .info-section {
   margin-bottom: 16px;
-
   padding: 16px;
-
   background: var(--brand-bg);
-
   border: 1px solid var(--border);
-
   border-radius: var(--radius);
 }
 
 .info-section h3 {
   margin: 0 0 10px;
-
   font-size: 1rem;
-
   color: var(--brand-darker);
 }
 
 .info-section ul {
   margin: 0;
-
   padding-left: 18px;
-
   color: var(--text-muted);
 }
 
@@ -689,13 +578,9 @@ svg path {
 
 .info-text a {
   display: block;
-
   text-align: center;
-
   margin: 6px 0;
-
   font-weight: bold;
-
   color: var(--brand);
 }
 
@@ -705,19 +590,14 @@ svg path {
 
 .info-footer {
   margin-top: 12px;
-
   font-weight: bold;
-
   font-size: 0.9rem;
-
   color: var(--brand-darker);
 }
 
 .info-link {
   color: var(--brand);
-
   font-weight: bold;
-
   text-decoration: none;
 }
 
@@ -732,18 +612,13 @@ svg path {
 .modal {
     position: fixed;
     inset: 0;
-
     display: flex;
     align-items: center;
     justify-content: center;
-
     width: 100%;
     min-height: 100dvh;
-
     padding: 20px;
-
     background: var(--overlay-dark);
-
     z-index: 2000;
 }
 
@@ -760,13 +635,9 @@ svg path {
 .modal-content {
     width: 100%;
     max-width: 500px;
-
     padding: 20px;
-
     background: var(--surface);
-
     border-radius: var(--radius);
-
     box-shadow:
         0 8px 30px var(--shadow-color-strong);
 }
@@ -776,12 +647,9 @@ svg path {
  */
 .modal-header {
     margin-bottom: 16px;
-
     text-align: center;
-
     font-size: 1.1rem;
     font-weight: 700;
-
     color: var(--brand-darker);
 }
 
@@ -801,9 +669,7 @@ svg path {
 
 .modal-field label {
     display: block;
-
     margin-bottom: 6px;
-
     font-weight: 600;
     color: var(--text);
 }
@@ -812,14 +678,10 @@ svg path {
 .modal-field select,
 .modal-field textarea {
     width: 100%;
-
     padding: 10px 12px;
-
     font: inherit;
-
     border: 1px solid var(--border);
     border-radius: 8px;
-
     background: var(--surface);
     color: var(--text);
 }
@@ -828,9 +690,7 @@ svg path {
 .modal-field select:focus,
 .modal-field textarea:focus {
     outline: none;
-
     border-color: var(--brand);
-
     box-shadow:
         0 0 0 2px var(--brand-darker-tint);
 }
@@ -840,11 +700,8 @@ svg path {
  */
 .modal-footer {
     display: flex;
-
     justify-content: flex-end;
-
     gap: 10px;
-
     margin-top: 20px;
 }
 
@@ -854,16 +711,11 @@ svg path {
 .btn--confirm {
     background: var(--brand);
     color: var(--surface);
-
     border: none;
-
     padding: 10px 16px;
-
     border-radius: var(--radius);
-
     font: inherit;
     font-weight: 600;
-
     cursor: pointer;
 }
 
@@ -877,7 +729,6 @@ svg path {
 
 .loading-text {
   color: var(--text-muted);
-
   font-size: 0.9rem;
 }
 
@@ -909,9 +760,7 @@ svg path {
 
 .participant-form .detail-row {
   margin-bottom: 14px;
-
   width: 100%;
-
   box-sizing: border-box;
 }
 
@@ -926,39 +775,27 @@ svg path {
 
 .participant-input {
   width: 100%;
-
   min-height: 40px;
   height: 40px;
-
   padding: 8px 12px;
-
   box-sizing: border-box;
-
   font-size: 15px;
-
   line-height: 1.3;
-
   border: 1px solid var(--border);
-
   border-radius: 8px;
-
   background-color: var(--surface);
 }
 
 .participant-input:focus {
   outline: none;
-
   border-color: var(--brand-darker);
-
   box-shadow:
     0 0 0 2px var(--brand-darker-tint);
 }
 
 select.participant-input {
   min-height: 44px;
-
   font-size: 15px;
-
   background-color: var(--surface);
 }
 
@@ -969,21 +806,15 @@ select.participant-input {
 
 .participant-input-wrapper {
   display: flex;
-
   align-items: center;
-
   width: 100%;
-
   gap: 8px;
-
   box-sizing: border-box;
 }
 
 .participant-input-wrapper .participant-input {
   flex: 1;
-
   min-width: 0;
-
   box-sizing: border-box;
 }
 
@@ -1007,53 +838,39 @@ select.participant-input {
 
 .participant-add-box {
   display: flex;
-
   flex-direction: column;
-
   gap: 14px;
-
   margin-top: 12px;
-
   padding: 16px;
-
   border-radius: 8px;
-
   background: var(--brand-pale);
 }
 
 .participant-add-row {
   display: flex;
-
   align-items: flex-end;
-
   gap: 12px;
-
   width: 100%;
 }
 
 .participant-field {
   display: flex;
-
   flex-direction: column;
-
   gap: 6px;
 }
 
 .participant-field--half {
   flex: 1;
-
   min-width: 0;
 }
 
 .participant-field--status {
   flex: 1;
-
   min-width: 0;
 }
 
 .participant-add-button {
   flex: 0 0 auto;
-
   white-space: nowrap;
 }
 
@@ -1068,11 +885,8 @@ select.participant-input {
 
 .participant-field label {
   display: block;
-
   margin-bottom: 6px;
-
   font-size: 15px;
-
   font-weight: 600;
 }
 
@@ -1083,30 +897,20 @@ select.participant-input {
 
 .participant-add-box .participant-input {
   width: 100%;
-
   min-height: 40px;
   height: 40px;
-
   padding: 9px 12px;
-
   box-sizing: border-box;
-
   font-size: 15px;
-
   line-height: 1.3;
-
   border: 1px solid var(--border);
-
   border-radius: 8px;
-
   background-color: var(--surface);
 }
 
 .participant-add-box .participant-input:focus {
   outline: none;
-
   border-color: var(--brand-darker);
-
   box-shadow:
     0 0 0 2px var(--brand-darker-tint);
 }
@@ -1114,9 +918,7 @@ select.participant-input {
 .participant-add-box
 .participant-input-wrapper {
   display: flex;
-
   align-items: center;
-
   gap: 8px;
 }
 
@@ -1124,7 +926,6 @@ select.participant-input {
 .participant-input-wrapper
 .participant-input {
   font-size: 15px;
-
   flex: 1;
 }
 
@@ -1136,7 +937,6 @@ select.participant-input {
 #participants-pilote,
 #participants-copilote {
   cursor: default;
-
   background-color: var(--surface);
 }
 
@@ -1147,20 +947,13 @@ select.participant-input {
 
 .calendar-button {
   flex: 0 0 40px;
-
   width: 40px;
   height: 40px;
-
   border: 1px solid var(--brand-darker);
-
   border-radius: 8px;
-
   background-color: var(--surface);
-
   color: var(--brand-darker);
-
   font-size: 23px;
-
   cursor: pointer;
 }
 
@@ -1177,9 +970,7 @@ select.participant-input {
 #btn-commentaire-participants,
 #btn-transmettre-participants {
   min-height: 40px;
-
   height: 40px;
-
   box-sizing: border-box;
 }
 
@@ -1190,27 +981,17 @@ select.participant-input {
 
 .qr-scan-button {
   flex: 0 0 auto;
-
   width: 40px;
   height: 40px;
-
   padding: 0;
-
   display: inline-flex;
-
   align-items: center;
   justify-content: center;
-
   border-radius: 8px;
-
   background-color: var(--surface);
-
   cursor: pointer;
-
   border: 1px solid var(--brand-darker);
-
   color: var(--brand-darker);
-
   font-size: 25px;
 }
 
@@ -1225,20 +1006,13 @@ select.participant-input {
 
 .participant-delete-button {
   grid-column: 3;
-
   justify-self: end;
-
   width: 34px;
   height: 34px;
-
   border: none;
-
   background: transparent;
-
   cursor: pointer;
-
   font-size: 18px;
-
   color: var(--danger);
 }
 
@@ -1274,112 +1048,75 @@ select.participant-input {
 
 .calendar-overlay {
   position: fixed;
-
   inset: 0;
-
   display: flex;
-
   align-items: center;
   justify-content: center;
-
   padding: 20px;
-
   background: var(--overlay-dark);
-
   z-index: 9999;
 }
 
 .calendar-modal {
   width: 100%;
-
   max-width: 430px;
-
   padding: 22px;
-
   background: var(--surface);
-
   border-radius: 14px;
-
   box-shadow:
     0 8px 30px var(--shadow-color-strong);
 }
 
 .calendar-title {
   margin-bottom: 22px;
-
   text-align: center;
-
   font-size: 20px;
-
   font-weight: 700;
 }
 
 .calendar-wheels {
   display: grid;
-
   grid-template-columns:
     1fr
     1.5fr
     1fr;
-
   gap: 10px;
 }
 
 .calendar-wheel label {
   display: block;
-
   margin-bottom: 6px;
-
   text-align: center;
-
   font-size: 15px;
-
   font-weight: 600;
 }
 
 .calendar-wheel select {
   width: 100%;
-
   min-height: 48px;
-
   padding: 8px;
-
   box-sizing: border-box;
-
   font-size: 17px;
-
   text-align: center;
-
   border: 1px solid var(--border);
-
   border-radius: 8px;
-
   background: var(--surface);
 }
 
 .calendar-selected-date {
   margin-top: 20px;
-
   padding: 10px;
-
   text-align: center;
-
   font-size: 17px;
-
   font-weight: 600;
-
   background: var(--brand-bg);
-
   border-radius: 8px;
 }
 
 .calendar-buttons {
   display: flex;
-
   justify-content: flex-end;
-
   gap: 10px;
-
   margin-top: 20px;
 }
 
@@ -1390,34 +1127,25 @@ select.participant-input {
 
 .participant-list-row {
   display: grid;
-
   grid-template-columns:
     1fr
     140px
     40px;
-
   align-items: center;
-
   width: 100%;
-
   min-height: 44px;
-
   border-bottom: 1px solid var(--divider);
 }
 
 .participant-list-name {
   grid-column: 1;
-
   justify-self: start;
-
   text-align: left;
 }
 
 .participant-list-status {
   grid-column: 2;
-
   text-align: left;
-
   padding-left: 10px;
 }
 
@@ -1428,36 +1156,25 @@ select.participant-input {
 
 .commentaire-overlay {
   position: fixed;
-
   inset: 0;
-
   display: flex;
-
   align-items: center;
   justify-content: center;
-
   background: var(--overlay-dark);
-
   z-index: 1000;
 }
 
 .commentaire-modal {
   width: min(90%, 500px);
-
   background: var(--surface);
-
   border-radius: 8px;
-
   padding: 20px;
-
   box-sizing: border-box;
 }
 
 .commentaire-title {
   font-size: 1.3rem;
-
   font-weight: bold;
-
   margin-bottom: 15px;
 }
 
@@ -1469,10 +1186,8 @@ select.participant-input {
   font-family: inherit;
   font-size: 1rem;
   resize: vertical;
-
   border: 1px solid var(--border);
   border-radius: 8px;
-
   background: var(--brand-bg);
   color: var(--text);
 }
@@ -1489,24 +1204,19 @@ select.participant-input {
 
 .participants-commentaire-box {
   margin-top: 10px;
-
   padding: 10px;
-
   border-radius: 8px;
-
   background: var(--brand-bg);
   border: 1px solid var(--border);
 }
 
 .participants-commentaire-box strong {
   display: block;
-
   margin-bottom: 5px;
 }
 
 .participants-commentaire-box p {
   margin: 0;
-
   white-space: pre-wrap;
 }
 
@@ -1517,60 +1227,41 @@ select.participant-input {
 
 .reset-overlay {
   position: fixed;
-
   inset: 0;
-
   display: flex;
-
   align-items: center;
   justify-content: center;
-
   padding: 20px;
-
   background: var(--overlay-dark);
-
   z-index: 3000;
 }
 
 .reset-modal {
   width: 100%;
-
   max-width: 380px;
-
   padding: 22px;
-
   box-sizing: border-box;
-
   background: var(--surface);
-
   border-radius: var(--radius);
-
   box-shadow: var(--shadow);
-
   text-align: center;
 }
 
 .reset-modal__title {
   margin-bottom: 14px;
-
   font-size: 1.2rem;
-
   font-weight: 700;
-
   color: var(--brand-darker);
 }
 
 .reset-modal__message {
   margin-bottom: 20px;
-
   color: var(--text);
 }
 
 .reset-modal__buttons {
   display: flex;
-
   justify-content: center;
-
   gap: 10px;
 }
 
@@ -1581,88 +1272,57 @@ select.participant-input {
 
 .transmission-overlay {
   position: fixed;
-
   inset: 0;
-
   display: flex;
-
   align-items: center;
   justify-content: center;
-
   padding: 20px;
-
   background: var(--overlay-dark);
-
   z-index: 3000;
 }
 
 .transmission-modal {
   width: 100%;
-
   max-width: 480px;
-
   max-height: 90vh;
-
   padding: 22px;
-
   box-sizing: border-box;
-
   background: var(--surface);
-
   border-radius: var(--radius);
-
   box-shadow: var(--shadow);
-
   overflow-y: auto;
 }
 
 .transmission-title {
   margin-bottom: 16px;
-
   text-align: center;
-
   font-size: 1.2rem;
-
   font-weight: 700;
-
   color: var(--brand-darker);
 }
 
 .transmission-info p {
   margin: 0 0 10px;
-
   color: var(--text);
 }
 
 .transmission-csv-content {
   width: 100%;
-
   min-height: 140px;
-
   box-sizing: border-box;
-
   padding: 10px;
-
   font-family: monospace;
-
   font-size: 0.85rem;
-
   resize: vertical;
-
   border: 1px solid var(--border);
-
   border-radius: 8px;
-
   background: var(--brand-bg);
-
   color: var(--text);
 }
 
 .transmission-actions {
   display: flex;
-
   justify-content: center;
-
   margin: 16px 0;
 }
 
@@ -1673,66 +1333,44 @@ select.participant-input {
 
 .qr-scanner-overlay {
   position: fixed;
-
   inset: 0;
-
   display: flex;
-
   align-items: center;
   justify-content: center;
-
   padding: 20px;
-
   background: var(--overlay-dark);
-
   z-index: 3000;
 }
 
 .qr-scanner-modal {
   width: 100%;
-
   max-width: 380px;
-
   padding: 22px;
-
   box-sizing: border-box;
-
   background: var(--surface);
-
   border-radius: var(--radius);
-
   box-shadow: var(--shadow);
-
   text-align: center;
 }
 
 .qr-scanner-title {
   margin-bottom: 16px;
-
   font-size: 1.2rem;
-
   font-weight: 700;
-
   color: var(--brand-darker);
 }
 
 .qr-reader {
   width: 100%;
-
   overflow: hidden;
-
   border-radius: 8px;
-
   border: 1px solid var(--border);
-
   margin-bottom: 14px;
 }
 
 .qr-scanner-message {
   margin: 0 0 16px;
-
   color: var(--text-muted);
-
   font-size: 0.9rem;
 }
 
