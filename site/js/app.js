@@ -4076,7 +4076,7 @@ function renderParticipants() {
   <!-- Carrés de positionnement (coins) -->
   <!-- Coin supérieur gauche -->
   <rect x="10" y="10" width="70" height="70" />
-  <rect x="20" y="20" width="50" height="50" fill="white" />
+  <rect x="20" y="20" width="50" height="50" fill=var(--surface) />
   <rect x="30" y="30" width="30" height="30" />
 
   <!-- Coin supérieur droit -->
