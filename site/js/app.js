@@ -1663,87 +1663,70 @@ function ouvrirFenetreTransmission() {
         )
         .addEventListener(
             "click",
-            async () => {
+            () => {
+
                 /*
                  * Création du fichier CSV
                  */
                 const fichier =
                     creerFichierCsv();
+
                 /*
                  * Message qui accompagnera le fichier.
                  */
                 const message =
                     `Bonjour, voici la liste de la randonnée du ${date} à ${lieu}.`;
+
                 /*
-                 * Vérifier si le téléphone accepte le partage de fichiers.
-                 */
-                if (
-                    navigator.share &&
-                    navigator.canShare
-                ) {
-                    const partagePossible =
-                        navigator.canShare({
-                            files: [fichier]
-                        });
-                    if (partagePossible) {
-                        try {
-                            await navigator.share({
-                                title:
-                                    "Liste des participant·e·s",
-                                text:
-                                    message,
-                                files:
-                                    [fichier]
-                            });
-                            /*
-                             * Le partage a été proposé avec succès.
-                             */
-                            overlay.remove();
-                            return;
-                        }
-                        catch (erreur) {
-                            /*
-                             * L'utilisateur peut avoir simplement fermé la fenêtre de partage.
-                             */
-                            console.log(
-                                "Partage annulé ou interrompu :",
-                                erreur
-                            );
-                            return;
-                        }
-                    }
-                }
-                /*
-                 * Solution de secours
-                 * Si le navigateur ne permet pas le partage de fichiers, on télécharge le CSV et on ouvre ensuite le SMS.
+                 * Téléchargement du fichier CSV
+                 *
+                 * Le fichier est enregistré sur le téléphone
+                 * afin de pouvoir ensuite être joint manuellement
+                 * au SMS.
                  */
                 const url =
                     URL.createObjectURL(
                         fichier
                     );
+
                 const link =
                     document.createElement("a");
-                link.href =
-                    url;
+
+                link.href = url;
+
                 link.download =
                     nomFichier;
+
                 document.body.appendChild(
                     link
                 );
+
                 link.click();
+
                 document.body.removeChild(
                     link
                 );
+
                 URL.revokeObjectURL(
                     url
                 );
+
                 /*
-                 * Ouvrir ensuite le SMS.
+                 * Ouverture de l'application SMS
+                 *
+                 * Le numéro du trésorier est automatiquement
+                 * renseigné dans le champ destinataire.
+                 *
+                 * Le message est également prérempli.
                  */
                 sendSMSWithBody(
                     tresorerie,
                     message
                 );
+
+                /*
+                 * Fermeture de la fenêtre de transmission.
+                 */
                 overlay.remove();
             }
         );
