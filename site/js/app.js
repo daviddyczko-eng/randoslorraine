@@ -4203,7 +4203,7 @@ function renderParticipants() {
   <rect x="24" y="12" width="4" height="4"/>
   <rect x="36" y="16" width="8" height="8"/>
   <rect x="4" y="24" width="8" height="4"/>
-  <rect x="8" y="32" width="4" height="16"/>
+  <rect x="8" y="32" width="4" height="8"/>
   <rect x="12" y="28" width="8" height="4"/>
   <rect x="24" y="24" width="12" height="4"/>
   <rect x="32" y="20" width="4" height="8"/>
