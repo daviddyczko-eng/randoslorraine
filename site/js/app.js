@@ -4187,7 +4187,7 @@ function renderParticipants() {
                         class="qr-scan-button"
                         id="btn-scan-copilote"
                         title="Scanner le QR code du copilote">
-<svg width="56" height="56" viewBox="0 0 56 56" xmlns="http://www.w3.org/2000/svg" fill="currentColor">
+<svg width="64" height="64" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" fill="currentColor">
   <!-- Marqueur coin haut-gauche -->
   <path d="M4 4h16v16H4V4zm3 3v10h10V7H7zm2 2h6v6H9V9z"/>
 
@@ -4198,31 +4198,26 @@ function renderParticipants() {
   <path d="M4 44h16v16H4V44zm3 3v10h10V47H7zm2 2h6v6H9v-6z"/>
 
   <!-- Petits modules (points aléatoires façon QR code) -->
-  <rect x="24" y="4" width="4" height="4"/>
-  <rect x="32" y="4" width="4" height="4"/>
+  <rect x="24" y="4" width="4" height="8"/>
+  <rect x="32" y="4" width="8" height="4"/>
   <rect x="24" y="12" width="4" height="4"/>
-  <rect x="36" y="12" width="4" height="4"/>
-
-  <rect x="4" y="24" width="4" height="4"/>
+  <rect x="36" y="12" width="8" height="8"/>
+  <rect x="4" y="24" width="8" height="4"/>
   <rect x="4" y="32" width="4" height="4"/>
-  <rect x="12" y="28" width="4" height="4"/>
-
-  <rect x="24" y="24" width="4" height="4"/>
-  <rect x="32" y="24" width="4" height="4"/>
+  <rect x="12" y="28" width="8" height="4"/>
+  <rect x="24" y="24" width="12" height="4"/>
+  <rect x="32" y="24" width="4" height="8"/>
   <rect x="24" y="32" width="4" height="4"/>
   <rect x="32" y="32" width="4" height="4"/>
   <rect x="40" y="28" width="4" height="4"/>
   <rect x="28" y="40" width="4" height="4"/>
-
   <rect x="44" y="24" width="4" height="4"/>
-  <rect x="52" y="24" width="4" height="4"/>
+  <rect x="52" y="24" width="8" height="12"/>
   <rect x="44" y="32" width="4" height="4"/>
   <rect x="52" y="36" width="4" height="4"/>
-
   <rect x="24" y="44" width="4" height="4"/>
   <rect x="24" y="52" width="4" height="4"/>
   <rect x="32" y="48" width="4" height="4"/>
-
   <rect x="44" y="44" width="4" height="4"/>
   <rect x="52" y="44" width="4" height="4"/>
   <rect x="44" y="52" width="4" height="4"/>
