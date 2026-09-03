@@ -1745,6 +1745,7 @@ function ouvrirFenetreTransmission() {
                         });
                     if (partagePossible) {
                         try {
+                            await navigator.clipboard.writeText(tresorerie);
                             await navigator.share({
                                 title:
                                     "Liste des participant·e·s",
