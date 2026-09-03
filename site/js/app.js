@@ -4072,89 +4072,39 @@ function renderParticipants() {
                         class="qr-scan-button"
                         id="btn-scan-pilote"
                         title="Scanner le QR code du pilote">
-<svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-  <!-- Quadrillage dense de points verts dans la zone centrale (hors carrés de positionnement) -->
-  <!-- Points aléatoires dans la zone centrale (10-190 en x et y) -->
-  <rect x="15" y="15" width="3" height="3" fill="var(--brand-darker)" />
-  <rect x="25" y="35" width="3" height="3" fill="var(--brand-darker)" />
-  <rect x="35" y="15" width="3" height="3" fill="var(--brand-darker)" />
-  <rect x="45" y="45" width="3" height="3" fill="var(--brand-darker)" />
-  <rect x="55" y="25" width="3" height="3" fill="var(--brand-darker)" />
-  <rect x="65" y="55" width="3" height="3" fill="var(--brand-darker)" />
-  <rect x="75" y="35" width="3" height="3" fill="var(--brand-darker)" />
-  <rect x="85" y="15" width="3" height="3" fill="var(--brand-darker)" />
-  <rect x="95" y="45" width="3" height="3" fill="var(--brand-darker)" />
-  <rect x="105" y="25" width="3" height="3" fill="var(--brand-darker)" />
-  <rect x="115" y="55" width="3" height="3" fill="var(--brand-darker)" />
-  <rect x="125" y="35" width="3" height="3" fill="var(--brand-darker)" />
-  <rect x="135" y="15" width="3" height="3" fill="var(--brand-darker)" />
-  <rect x="145" y="45" width="3" height="3" fill="var(--brand-darker)" />
-  <rect x="155" y="25" width="3" height="3" fill="var(--brand-darker)" />
-  <rect x="165" y="55" width="3" height="3" fill="var(--brand-darker)" />
-  <rect x="175" y="35" width="3" height="3" fill="var(--brand-darker)" />
-  <rect x="185" y="15" width="3" height="3" fill="var(--brand-darker)" />
-
-  <!-- Deuxième ligne de points -->
-  <rect x="15" y="65" width="3" height="3" fill="var(--brand-darker)" />
-  <rect x="25" y="85" width="3" height="3" fill="var(--brand-darker)" />
-  <rect x="35" y="65" width="3" height="3" fill="var(--brand-darker)" />
-  <rect x="45" y="95" width="3" height="3" fill="var(--brand-darker)" />
-  <rect x="55" y="75" width="3" height="3" fill="var(--brand-darker)" />
-  <rect x="65" y="105" width="3" height="3" fill="var(--brand-darker)" />
-  <rect x="75" y="85" width="3" height="3" fill="var(--brand-darker)" />
-  <rect x="85" y="65" width="3" height="3" fill="var(--brand-darker)" />
-  <rect x="95" y="95" width="3" height="3" fill="var(--brand-darker)" />
-  <rect x="105" y="75" width="3" height="3" fill="var(--brand-darker)" />
-  <rect x="115" y="105" width="3" height="3" fill="var(--brand-darker)" />
-  <rect x="125" y="85" width="3" height="3" fill="var(--brand-darker)" />
-  <rect x="135" y="65" width="3" height="3" fill="var(--brand-darker)" />
-  <rect x="145" y="95" width="3" height="3" fill="var(--brand-darker)" />
-  <rect x="155" y="75" width="3" height="3" fill="var(--brand-darker)" />
-  <rect x="165" y="105" width="3" height="3" fill="var(--brand-darker)" />
-  <rect x="175" y="85" width="3" height="3" fill="var(--brand-darker)" />
-  <rect x="185" y="65" width="3" height="3" fill="var(--brand-darker)" />
-
-  <!-- Troisième ligne de points -->
-  <rect x="15" y="115" width="3" height="3" fill="var(--brand-darker)" />
-  <rect x="25" y="135" width="3" height="3" fill="var(--brand-darker)" />
-  <rect x="35" y="115" width="3" height="3" fill="var(--brand-darker)" />
-  <rect x="45" y="145" width="3" height="3" fill="var(--brand-darker)" />
-  <rect x="55" y="125" width="3" height="3" fill="var(--brand-darker)" />
-  <rect x="65" y="155" width="3" height="3" fill="var(--brand-darker)" />
-  <rect x="75" y="135" width="3" height="3" fill="var(--brand-darker)" />
-  <rect x="85" y="115" width="3" height="3" fill="var(--brand-darker)" />
-  <rect x="95" y="145" width="3" height="3" fill="var(--brand-darker)" />
-  <rect x="105" y="125" width="3" height="3" fill="var(--brand-darker)" />
-  <rect x="115" y="155" width="3" height="3" fill="var(--brand-darker)" />
-  <rect x="125" y="135" width="3" height="3" fill="var(--brand-darker)" />
-  <rect x="135" y="115" width="3" height="3" fill="var(--brand-darker)" />
-  <rect x="145" y="145" width="3" height="3" fill="var(--brand-darker)" />
-  <rect x="155" y="125" width="3" height="3" fill="var(--brand-darker)" />
-  <rect x="165" y="155" width="3" height="3" fill="var(--brand-darker)" />
-  <rect x="175" y="135" width="3" height="3" fill="var(--brand-darker)" />
-  <rect x="185" y="115" width="3" height="3" fill="var(--brand-darker)" />
-
-  <!-- Quatrième ligne de points -->
-  <rect x="15" y="165" width="3" height="3" fill="var(--brand-darker)" />
-  <rect x="25" y="185" width="3" height="3" fill="var(--brand-darker)" />
-  <rect x="35" y="165" width="3" height="3" fill="var(--brand-darker)" />
-  <rect x="45" y="195" width="3" height="3" fill="var(--brand-darker)" />
-
-  <!-- Superposition des trois carrés de positionnement -->
-  <!-- Coin supérieur gauche -->
-  <rect x="10" y="10" width="70" height="70" fill="var(--brand-darker)" />
-  <rect x="20" y="20" width="50" height="50" fill="var(--surface)" />
-  <rect x="30" y="30" width="30" height="30" fill="var(--brand-darker)" />
-
-  <!-- Coin supérieur droit -->
-  <rect x="120" y="10" width="70" height="70" fill="var(--brand-darker)" />
-  <rect x="130" y="20" width="50" height="50" fill="var(--surface)" />
-  <rect x="140" y="30" width="30" height="30" fill="var(--brand-darker)" />
-
-  <!-- Coin inférieur gauche -->
-  <rect x="10" y="120" width="70" height="70" fill="var(--brand-darker)" />
-  <rect x="20" y="130" width="50" height="50" fill="var(--surface)" />
-  <rect x="30" y="140" width="30" height="30" fill="var(--brand-darker)" />
+<svg width="64" height="64" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" fill="currentColor">
+  <!-- Marqueur coin haut-gauche -->
+  <path d="M4 4h16v16H4V4zm3 3v10h10V7H7zm2 2h6v6H9V9z"/>
+  <!-- Marqueur coin haut-droit -->
+  <path d="M44 4h16v16H44V4zm3 3v10h10V7H47zm2 2h6v6h-6V9z"/>
+  <!-- Marqueur coin bas-gauche -->
+  <path d="M4 44h16v16H4V44zm3 3v10h10V47H7zm2 2h6v6H9v-6z"/>
+  <!-- Petits modules (points aléatoires façon QR code) -->
+  <rect x="24" y="4" width="4" height="8"/>
+  <rect x="32" y="8" width="8" height="4"/>
+  <rect x="24" y="12" width="4" height="4"/>
+  <rect x="36" y="16" width="8" height="8"/>
+  <rect x="4" y="24" width="8" height="4"/>
+  <rect x="8" y="32" width="4" height="8"/>
+  <rect x="12" y="28" width="8" height="4"/>
+  <rect x="24" y="24" width="12" height="4"/>
+  <rect x="32" y="20" width="4" height="8"/>
+  <rect x="24" y="32" width="8" height="4"/>
+  <rect x="32" y="32" width="4" height="12"/>
+  <rect x="40" y="28" width="4" height="4"/>
+  <rect x="28" y="40" width="8" height="4"/>
+  <rect x="44" y="20" width="4" height="4"/>
+  <rect x="52" y="24" width="4" height="12"/>
+  <rect x="44" y="32" width="12" height="4"/>
+  <rect x="40" y="36" width="4" height="16"/>
+  <rect x="20" y="44" width="4" height="4"/>
+  <rect x="24" y="52" width="8" height="4"/>
+  <rect x="28" y="40" width="4" height="4"/>
+  <rect x="44" y="44" width="4" height="12"/>
+  <rect x="54" y="44" width="4" height="12"/>
+  <rect x="44" y="56" width="4" height="4"/>
+  <rect x="52" y="52" width="4" height="4"/>
+  <rect x="48" y="48" width="4" height="8"/>
 </svg>
         </button>
                 </span>
@@ -4190,13 +4140,10 @@ function renderParticipants() {
 <svg width="64" height="64" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" fill="currentColor">
   <!-- Marqueur coin haut-gauche -->
   <path d="M4 4h16v16H4V4zm3 3v10h10V7H7zm2 2h6v6H9V9z"/>
-
   <!-- Marqueur coin haut-droit -->
   <path d="M44 4h16v16H44V4zm3 3v10h10V7H47zm2 2h6v6h-6V9z"/>
-
   <!-- Marqueur coin bas-gauche -->
   <path d="M4 44h16v16H4V44zm3 3v10h10V47H7zm2 2h6v6H9v-6z"/>
-
   <!-- Petits modules (points aléatoires façon QR code) -->
   <rect x="24" y="4" width="4" height="8"/>
   <rect x="32" y="8" width="8" height="4"/>
@@ -4289,7 +4236,40 @@ function renderParticipants() {
                         class="qr-scan-button participant-add-qr"
                         id="btn-scan-qr"
                         title="Scanner le QR code de l'adhérent·e">
-                        ▣
+<svg width="64" height="64" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" fill="currentColor">
+  <!-- Marqueur coin haut-gauche -->
+  <path d="M4 4h16v16H4V4zm3 3v10h10V7H7zm2 2h6v6H9V9z"/>
+  <!-- Marqueur coin haut-droit -->
+  <path d="M44 4h16v16H44V4zm3 3v10h10V7H47zm2 2h6v6h-6V9z"/>
+  <!-- Marqueur coin bas-gauche -->
+  <path d="M4 44h16v16H4V44zm3 3v10h10V47H7zm2 2h6v6H9v-6z"/>
+  <!-- Petits modules (points aléatoires façon QR code) -->
+  <rect x="24" y="4" width="4" height="8"/>
+  <rect x="32" y="8" width="8" height="4"/>
+  <rect x="24" y="12" width="4" height="4"/>
+  <rect x="36" y="16" width="8" height="8"/>
+  <rect x="4" y="24" width="8" height="4"/>
+  <rect x="8" y="32" width="4" height="8"/>
+  <rect x="12" y="28" width="8" height="4"/>
+  <rect x="24" y="24" width="12" height="4"/>
+  <rect x="32" y="20" width="4" height="8"/>
+  <rect x="24" y="32" width="8" height="4"/>
+  <rect x="32" y="32" width="4" height="12"/>
+  <rect x="40" y="28" width="4" height="4"/>
+  <rect x="28" y="40" width="8" height="4"/>
+  <rect x="44" y="20" width="4" height="4"/>
+  <rect x="52" y="24" width="4" height="12"/>
+  <rect x="44" y="32" width="12" height="4"/>
+  <rect x="40" y="36" width="4" height="16"/>
+  <rect x="20" y="44" width="4" height="4"/>
+  <rect x="24" y="52" width="8" height="4"/>
+  <rect x="28" y="40" width="4" height="4"/>
+  <rect x="44" y="44" width="4" height="12"/>
+  <rect x="54" y="44" width="4" height="12"/>
+  <rect x="44" y="56" width="4" height="4"/>
+  <rect x="52" y="52" width="4" height="4"/>
+  <rect x="48" y="48" width="4" height="8"/>
+</svg>
                     </button>
                 </div>
             </div>
