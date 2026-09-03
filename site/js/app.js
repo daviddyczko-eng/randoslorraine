@@ -4187,7 +4187,7 @@ function renderParticipants() {
                         class="qr-scan-button"
                         id="btn-scan-copilote"
                         title="Scanner le QR code du copilote">
-<svg width="64" height="64" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" fill="currentColor">
+<svg width="56" height="56" viewBox="0 0 56 56" xmlns="http://www.w3.org/2000/svg" fill="currentColor">
   <!-- Marqueur coin haut-gauche -->
   <path d="M4 4h16v16H4V4zm3 3v10h10V7H7zm2 2h6v6H9V9z"/>
 
