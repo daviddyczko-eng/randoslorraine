@@ -4212,16 +4212,16 @@ function renderParticipants() {
   <rect x="40" y="28" width="4" height="4"/>
   <rect x="28" y="40" width="8" height="4"/>
   <rect x="44" y="24" width="4" height="4"/>
-  <rect x="52" y="24" width="8" height="12"/>
+  <rect x="52" y="24" width="4" height="12"/>
   <rect x="44" y="32" width="12" height="4"/>
   <rect x="52" y="36" width="4" height="16"/>
   <rect x="24" y="44" width="4" height="4"/>
   <rect x="24" y="52" width="8" height="4"/>
   <rect x="32" y="48" width="4" height="4"/>
   <rect x="44" y="44" width="4" height="12"/>
-  <rect x="52" y="44" width="12" height="4"/>
+  <rect x="52" y="44" width="4" height="12"/>
   <rect x="44" y="52" width="4" height="4"/>
-  <rect x="52" y="52" width="16" height="4"/>
+  <rect x="52" y="52" width="4" height="4"/>
   <rect x="48" y="48" width="4" height="8"/>
 </svg>
                     </button>
