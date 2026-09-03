@@ -4198,29 +4198,29 @@ function renderParticipants() {
   <path d="M4 44h16v16H4V44zm3 3v10h10V47H7zm2 2h6v6H9v-6z"/>
 
   <!-- Petits modules (points aléatoires façon QR code) -->
-  <rect x="24" y="4" width="4" height="8"/>
-  <rect x="32" y="4" width="8" height="4"/>
+  <rect x="16" y="4" width="4" height="8"/>
+  <rect x="32" y="8" width="8" height="4"/>
   <rect x="24" y="12" width="4" height="4"/>
-  <rect x="36" y="12" width="8" height="8"/>
+  <rect x="36" y="16" width="8" height="8"/>
   <rect x="4" y="24" width="8" height="4"/>
-  <rect x="4" y="32" width="4" height="16"/>
+  <rect x="8" y="32" width="4" height="16"/>
   <rect x="12" y="28" width="8" height="4"/>
   <rect x="24" y="24" width="12" height="4"/>
-  <rect x="32" y="24" width="4" height="8"/>
+  <rect x="32" y="20" width="4" height="8"/>
   <rect x="24" y="32" width="8" height="4"/>
   <rect x="32" y="32" width="4" height="12"/>
   <rect x="40" y="28" width="4" height="4"/>
   <rect x="28" y="40" width="8" height="4"/>
-  <rect x="44" y="24" width="4" height="4"/>
+  <rect x="44" y="20" width="4" height="4"/>
   <rect x="52" y="24" width="4" height="12"/>
   <rect x="44" y="32" width="12" height="4"/>
-  <rect x="52" y="36" width="4" height="16"/>
-  <rect x="24" y="44" width="4" height="4"/>
+  <rect x="60" y="36" width="4" height="16"/>
+  <rect x="20" y="44" width="4" height="4"/>
   <rect x="24" y="52" width="8" height="4"/>
-  <rect x="32" y="48" width="4" height="4"/>
+  <rect x="28" y="40" width="4" height="4"/>
   <rect x="44" y="44" width="4" height="12"/>
-  <rect x="52" y="44" width="4" height="12"/>
-  <rect x="44" y="52" width="4" height="4"/>
+  <rect x="56" y="44" width="4" height="12"/>
+  <rect x="44" y="56" width="4" height="4"/>
   <rect x="52" y="52" width="4" height="4"/>
   <rect x="48" y="48" width="4" height="8"/>
 </svg>
