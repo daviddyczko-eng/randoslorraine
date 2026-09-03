@@ -4198,7 +4198,7 @@ function renderParticipants() {
   <path d="M4 44h16v16H4V44zm3 3v10h10V47H7zm2 2h6v6H9v-6z"/>
 
   <!-- Petits modules (points aléatoires façon QR code) -->
-  <rect x="16" y="4" width="4" height="8"/>
+  <rect x="24" y="4" width="4" height="8"/>
   <rect x="32" y="8" width="8" height="4"/>
   <rect x="24" y="12" width="4" height="4"/>
   <rect x="36" y="16" width="8" height="8"/>
