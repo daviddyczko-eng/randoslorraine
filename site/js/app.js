@@ -1603,7 +1603,7 @@ function ouvrirFenetreTransmission() {
     const dateForFilename =
         `${String(day).padStart(2, "0")}-${monthNumber}-${year}`;
     const nomFichier =
-        `${dateForFilename}.csv`;
+        `rando-${dateForFilename}.csv`;
     /*
      * Création de la fenêtre
      */
