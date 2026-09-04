@@ -1642,7 +1642,7 @@ function ouvrirFenetreTransmission() {
                     class="btn btn--primary"
                     id="transmission-validate"
                 >
-                    Envoyer ce fichier par SMS à notre trésorier·ère au ${tresorerie}
+                    Envoyer ce fichier par SMS à notre trésorier·ère (utilisez "coller" pour renseigner le numéro de téléphone) 
                 </button>
             </div>
         </div>
