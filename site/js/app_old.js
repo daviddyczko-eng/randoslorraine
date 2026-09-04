@@ -182,7 +182,7 @@ let prochaineRando = null;
  * Covoiturage / Trésorerie
  * ============================================================
  */
-const covoiturage = "+33672997397";
+const covoiturage = "+33672907397";
 const tresorerie = "+33689928560";
 let infoContent = null;
 let backHandler = null;
@@ -1642,7 +1642,7 @@ function ouvrirFenetreTransmission() {
                     class="btn btn--primary"
                     id="transmission-validate"
                 >
-                    Envoyer ce fichier par SMS à notre trésorier·ère au ${tresorerie}
+                    Envoyer ce fichier par SMS à notre trésorier·ère (utilisez "coller" pour renseigner le numéro de téléphone) 
                 </button>
             </div>
         </div>
@@ -5143,7 +5143,7 @@ $("#btn-quit").addEventListener(
         modal.className = "modal";
         modal.innerHTML = `
             <div class="modal-content">
-                <h2>À bientôt !</h2>
+                <h2>Merci de ta visite et à bientôt !</h2>
 
                 <p>
                     N'hésite pas à te renseigner sur notre association.
