@@ -5143,7 +5143,7 @@ $("#btn-quit").addEventListener(
         modal.className = "modal";
         modal.innerHTML = `
             <div class="modal-content">
-                <h2>À bientôt !</h2>
+                <h2>Merci de ta visite et à bientôt !</h2>
 
                 <p>
                     N'hésite pas à te renseigner sur notre association.
