@@ -182,7 +182,7 @@ let prochaineRando = null;
  * Covoiturage / Trésorerie
  * ============================================================
  */
-const covoiturage = "+33672997397";
+const covoiturage = "+33672907397";
 const tresorerie = "+33689928560";
 let infoContent = null;
 let backHandler = null;
