@@ -229,15 +229,22 @@ function escapeHtml(value) {
         .replace(/>/g,"&gt;")
         .replace(/"/g,"&quot;");
 }
-function formatName(name="") {
+function formatName(name = "") {
     return name
         .trim()
         .split(/\s+/)
-        .map(word=>{
-            if(PARTICLES.includes(word.toLowerCase()))
-                return word.toLowerCase();
-            return word.charAt(0).toUpperCase() +
-                   word.slice(1).toLowerCase();
+        .map(word => {
+            // Traite les différentes parties séparées par un tiret
+            return word
+                .split("-")
+                .map(part => {
+                    if (PARTICLES.includes(part.toLowerCase())) {
+                        return part.toLowerCase();
+                    }
+                    return part.charAt(0).toUpperCase()
+                        + part.slice(1).toLowerCase();
+                })
+                .join("-");
         })
         .join(" ");
 }
