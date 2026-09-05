@@ -15,7 +15,19 @@ const ASSETS = [
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => cache.addAll(ASSETS))
+    caches.open(CACHE_NAME).then(async (cache) => {
+      const results = await Promise.allSettled(
+        ASSETS.map((url) => cache.add(url))
+      );
+      const clients = await self.clients.matchAll();
+      results.forEach((r, i) => {
+        if (r.status === "rejected") {
+          clients.forEach((c) =>
+            c.postMessage({ type: "cache-error", asset: ASSETS[i], error: String(r.reason) })
+          );
+        }
+      });
+    })
   );
   self.skipWaiting();
 });
