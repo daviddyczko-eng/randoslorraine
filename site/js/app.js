@@ -912,8 +912,8 @@ function renderRandoDetails(
                                     class="info-button"
                                     onclick="window.open('${mapsUrl}','_blank')"
                                     title="Ouvrir dans Google Maps">
-<svg width="128" height="128" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg">
-  <rect width="128" height="128" rx="28"/>
+<svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+  <rect width="32" height="32" rx="7"/>
   <text x="50%" y="50%" 
         font-family="Arial, Helvetica, sans-serif" 
         font-weight="700" 
