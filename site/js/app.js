@@ -4068,7 +4068,32 @@ function renderParticipants() {
                         class="calendar-button"
                         id="btn-calendrier"
                         title="Choisir une date">
-                        🗒
+<svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+  <mask id="calendar-hole">
+    <rect x="0" y="2.2" width="32" height="29.5" rx="5" fill="#fff"/>
+    <rect x="1.5" y="10.5" width="29" height="20" rx="3.5" fill="#000"/>
+  </mask>
+  <!-- Corps + en-tête (avec découpe intérieure blanche) -->
+  <rect x="0" y="2.2" width="32" height="29.5" rx="5" fill="var(--brand-dark)" mask="url(#calendar-hole)"/>
+  <!-- Anneaux du haut -->
+  <rect x="6.8" y="0" width="2.6" height="7" rx="1.3" fill="var(--brand-dark)"/>
+  <rect x="22.76" y="0" width="2.6" height="7" rx="1.3" fill="var(--brand-dark)"/>
+  <!-- Rangée 1 (4 points) -->
+  <rect x="8.91" y="13.85" width="3.9" height="3.9" rx="1" fill="var(--brand-dark)"/>
+  <rect x="14.09" y="13.85" width="3.9" height="3.9" rx="1" fill="var(--brand-dark)"/>
+  <rect x="19.2" y="13.85" width="3.9" height="3.9" rx="1" fill="var(--brand-dark)"/>
+  <rect x="24.3" y="13.85" width="3.9" height="3.9" rx="1" fill="var(--brand-dark)"/>
+  <!-- Rangée 2 (5 points) -->
+  <rect x="3.75" y="18.88" width="3.9" height="3.9" rx="1" fill="var(--brand-dark)"/>
+  <rect x="8.91" y="18.88" width="3.9" height="3.9" rx="1" fill="var(--brand-dark)"/>
+  <rect x="14.09" y="18.88" width="3.9" height="3.9" rx="1" fill="var(--brand-dark)"/>
+  <rect x="19.2" y="18.88" width="3.9" height="3.9" rx="1" fill="var(--brand-dark)"/>
+  <rect x="24.3" y="18.88" width="3.9" height="3.9" rx="1" fill="var(--brand-dark)"/>
+  <!-- Rangée 3 (3 points) -->
+  <rect x="3.75" y="23.98" width="3.9" height="3.9" rx="1" fill="var(--brand-dark)"/>
+  <rect x="8.91" y="23.98" width="3.9" height="3.9" rx="1" fill="var(--brand-dark)"/>
+  <rect x="14.09" y="23.98" width="3.9" height="3.9" rx="1" fill="var(--brand-dark)"/>
+</svg>
                     </button>
                 </span>
             </div>
