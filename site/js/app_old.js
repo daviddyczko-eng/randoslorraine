@@ -2384,7 +2384,7 @@ function renderAccueil(prenom, nom) {
       </div>
     </div>
   `;
-  renderQr($("#qr-small"), qrData(prenom, nom), 60);
+  renderQr($("#qr-small"), qrData(prenom, nom), 100);
   // Écouteurs pour les boutons
   $("#btn-carte").addEventListener("click", () => {
     navigate("carte", { prenom, nom, title: "Ma carte Rando's Lorraine", showBack: true });
@@ -5709,7 +5709,7 @@ function renderCotisation(prenom, nom, dateInscription) {
         <p>Je déclare sur l'honneur que ma cotisation est à jour pour l'année ${currentYear}.</p>
       </div>
       <div class="btn-row">
-        <button class="btn btn--primary" id="btn-cotisation-ok">Je confirme</button>
+        <button class="btn btn--primary" id="btn-cotisation-ok">Je confirme.</button>
       </div>
     </div>
   `;
@@ -5740,7 +5740,7 @@ function renderCarte(prenom, nom) {
       <button class="btn btn--primary" id="btn-corriger">Corriger</button>
     </div>
   `;
-  renderQr($("#qr-large"), qrData(prenom, nom), 260);
+  renderQr($("#qr-large"), qrData(prenom, nom), 350);
   $("#btn-corriger").addEventListener("click", () => {
     navigate("correction", {
       prenom,
