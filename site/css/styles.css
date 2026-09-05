@@ -938,6 +938,10 @@ select.participant-input {
   flex: 0 0 40px;
   width: 40px;
   height: 40px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   border: 1px solid var(--brand-darker);
   border-radius: 8px;
   background-color: var(--surface);
