@@ -83,5 +83,22 @@
     }
   });
 </script>
+  <script>
+  window.addEventListener("load", async () => {
+    const ASSETS = [
+      "./", "./index.html", "./css/styles.css", "./js/app.js",
+      "./js/storage.js", "./js/qrcode.min.js", "./js/html5-qrcode.min.js",
+      "./data/info.json", "./manifest.webmanifest", "./icons/RL-symb.png"
+    ];
+    for (const url of ASSETS) {
+      try {
+        const resp = await fetch(url);
+        console.log(resp.ok ? "✅ OK" : "❌ ÉCHEC", resp.status, url);
+      } catch (e) {
+        console.error("❌ ERREUR RÉSEAU", url, String(e));
+      }
+    }
+  });
+</script>
 </body>
 </html>
