@@ -881,7 +881,16 @@ function renderRandoDetails(
                                     class="info-button"
                                     onclick="window.open('${randoUrl}','_blank')"
                                     title="Voir la randonnée">
-                                    ⓘ
+<svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+  <rect width="32" height="32" rx="7" fill="var(--brand-dark)"/>
+  <text x="50%" y="50%" 
+        font-family="Arial, Helvetica, sans-serif" 
+        font-weight="700" 
+        font-size="17" 
+        fill="var(--brand-bg)"
+        text-anchor="middle" 
+        dominant-baseline="central">i</text>
+</svg>
                                 </button>`
                                 :
                                 ""
@@ -912,7 +921,16 @@ function renderRandoDetails(
                                     class="info-button"
                                     onclick="window.open('${mapsUrl}','_blank')"
                                     title="Ouvrir dans Google Maps">
-                                    ⓟ
+<svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+  <rect width="32" height="32" rx="7" fill="var(--brand-dark)"/>
+  <text x="50%" y="50%" 
+        font-family="Arial, Helvetica, sans-serif" 
+        font-weight="700" 
+        font-size="17" 
+        fill="var(--brand-bg)"
+        text-anchor="middle" 
+        dominant-baseline="central">P</text>
+</svg>
                                 </button>`
                                 :
                                 ""
@@ -959,8 +977,27 @@ function renderRandoDetails(
                             class="info-button"
                             onclick="window.location.href='tel:${String(tel).replace(/\s/g, "")}'"
                             title="Téléphoner">
-                            ✆
-                        </button>
+<svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+  <rect width="32" height="32" rx="7" fill="var(--brand-dark)"/>
+  <path d="M11 8
+           C 9.5 8, 8.5 9.2, 9 10.6
+           C 9.7 12.6, 11.2 15.3, 13.8 17.9
+           C 16.4 20.5, 19.1 22, 21.1 22.7
+           C 22.5 23.2, 23.7 22.2, 23.7 20.7
+           L 23.7 19
+           C 23.7 18.3, 23.2 17.7, 22.5 17.5
+           L 20 16.8
+           C 19.4 16.6, 18.8 16.8, 18.4 17.2
+           L 17.6 18
+           C 16 17, 14.7 15.7, 13.7 14.1
+           L 14.5 13.3
+           C 14.9 12.9, 15.1 12.3, 14.9 11.7
+           L 14.2 9.2
+           C 14 8.5, 13.4 8, 12.7 8
+           Z"
+<path style="fill: var(--brand-bg);" d="..." />
+</svg>
+</button>
                     </span>
                 </div>
                 `;
@@ -4031,7 +4068,36 @@ function renderParticipants() {
                         class="calendar-button"
                         id="btn-calendrier"
                         title="Choisir une date">
-                        🗒
+<svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+  <mask id="calendar-hole">
+    <rect x="0" y="0" width="32" height="32" fill="#fff"/>
+    <!-- découpe intérieure du corps -->
+    <rect x="3.4" y="10.3" width="25.2" height="17.7" rx="3" fill="#000"/>
+    <!-- contour transparent autour des anneaux -->
+    <rect x="7.5" y="3" width="3.1" height="4.5" rx="1.55" fill="#000"/>
+    <rect x="21.5" y="3" width="3.1" height="4.5" rx="1.55" fill="#000"/>
+  </mask>
+  <!-- Cadre principal (28x26) -->
+  <rect x="2" y="3" width="28" height="26" rx="4" fill="var(--brand-dark)" mask="url(#calendar-hole)"/>
+  <!-- Anneaux du haut -->
+  <rect x="7.9" y="1" width="2.3" height="6.2" rx="1.15" fill="var(--brand-dark)"/>
+  <rect x="21.9" y="1" width="2.3" height="6.2" rx="1.15" fill="var(--brand-dark)"/>
+  <!-- Rangée 1 (4 points) -->
+  <rect x="9.80" y="13.26" width="3.4" height="3.4" rx="0.9" fill="var(--brand-dark)"/>
+  <rect x="14.33" y="13.26" width="3.4" height="3.4" rx="0.9" fill="var(--brand-dark)"/>
+  <rect x="18.80" y="13.26" width="3.4" height="3.4" rx="0.9" fill="var(--brand-dark)"/>
+  <rect x="23.26" y="13.26" width="3.4" height="3.4" rx="0.9" fill="var(--brand-dark)"/>
+  <!-- Rangée 2 (5 points) -->
+  <rect x="5.28" y="17.69" width="3.4" height="3.4" rx="0.9" fill="var(--brand-dark)"/>
+  <rect x="9.80" y="17.69" width="3.4" height="3.4" rx="0.9" fill="var(--brand-dark)"/>
+  <rect x="14.33" y="17.69" width="3.4" height="3.4" rx="0.9" fill="var(--brand-dark)"/>
+  <rect x="18.80" y="17.69" width="3.4" height="3.4" rx="0.9" fill="var(--brand-dark)"/>
+  <rect x="23.26" y="17.69" width="3.4" height="3.4" rx="0.9" fill="var(--brand-dark)"/>
+  <!-- Rangée 3 (3 points) -->
+  <rect x="5.28" y="22.19" width="3.4" height="3.4" rx="0.9" fill="var(--brand-dark)"/>
+  <rect x="9.80" y="22.19" width="3.4" height="3.4" rx="0.9" fill="var(--brand-dark)"/>
+  <rect x="14.33" y="22.19" width="3.4" height="3.4" rx="0.9" fill="var(--brand-dark)"/>
+</svg>
                     </button>
                 </span>
             </div>
@@ -4080,41 +4146,154 @@ function renderParticipants() {
                         class="qr-scan-button"
                         id="btn-scan-pilote"
                         title="Scanner le QR code du pilote">
-<svg width="64" height="64" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" fill="currentColor">
-  <!-- Marqueur coin haut-gauche -->
-  <path d="M4 4h16v16H4V4zm3 3v10h10V7H7zm2 2h6v6H9V9z"/>
-  <!-- Marqueur coin haut-droit -->
-  <path d="M44 4h16v16H44V4zm3 3v10h10V7H47zm2 2h6v6h-6V9z"/>
-  <!-- Marqueur coin bas-gauche -->
-  <path d="M4 44h16v16H4V44zm3 3v10h10V47H7zm2 2h6v6H9v-6z"/>
-  <!-- Petits modules (points aléatoires façon QR code) -->
-  <rect x="24" y="4" width="4" height="8"/>
-  <rect x="32" y="8" width="8" height="4"/>
-  <rect x="24" y="12" width="4" height="4"/>
-  <rect x="36" y="16" width="8" height="8"/>
-  <rect x="4" y="24" width="8" height="4"/>
-  <rect x="8" y="32" width="4" height="8"/>
-  <rect x="12" y="28" width="8" height="4"/>
-  <rect x="24" y="24" width="12" height="4"/>
-  <rect x="32" y="20" width="4" height="8"/>
-  <rect x="24" y="32" width="8" height="4"/>
-  <rect x="32" y="32" width="4" height="12"/>
-  <rect x="40" y="28" width="4" height="4"/>
-  <rect x="28" y="40" width="8" height="4"/>
-  <rect x="44" y="20" width="4" height="4"/>
-  <rect x="52" y="24" width="4" height="12"/>
-  <rect x="44" y="32" width="12" height="4"/>
-  <rect x="40" y="36" width="4" height="16"/>
-  <rect x="20" y="44" width="4" height="4"/>
-  <rect x="24" y="52" width="8" height="4"/>
-  <rect x="28" y="40" width="4" height="4"/>
-  <rect x="44" y="44" width="4" height="12"/>
-  <rect x="54" y="44" width="4" height="12"/>
-  <rect x="44" y="56" width="4" height="4"/>
-  <rect x="52" y="52" width="4" height="4"/>
-  <rect x="48" y="48" width="4" height="8"/>
+<svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+  <rect x="3" y="3" width="8" height="1" fill="var(--brand-dark)"/>
+  <rect x="15" y="3" width="4" height="1" fill="var(--brand-dark)"/>
+  <rect x="21" y="3" width="8" height="1" fill="var(--brand-dark)"/>
+  <rect x="3" y="4" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="10" y="4" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="14" y="4" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="21" y="4" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="28" y="4" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="3" y="5" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="5" y="5" width="4" height="1" fill="var(--brand-dark)"/>
+  <rect x="10" y="5" width="2" height="1" fill="var(--brand-dark)"/>
+  <rect x="14" y="5" width="4" height="1" fill="var(--brand-dark)"/>
+  <rect x="21" y="5" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="23" y="5" width="4" height="1" fill="var(--brand-dark)"/>
+  <rect x="28" y="5" width="2" height="1" fill="var(--brand-dark)"/>
+  <rect x="3" y="6" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="5" y="6" width="4" height="1" fill="var(--brand-dark)"/>
+  <rect x="10" y="6" width="2" height="1" fill="var(--brand-dark)"/>
+  <rect x="14" y="6" width="4" height="1" fill="var(--brand-dark)"/>
+  <rect x="21" y="6" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="23" y="6" width="4" height="1" fill="var(--brand-dark)"/>
+  <rect x="28" y="6" width="2" height="1" fill="var(--brand-dark)"/>
+  <rect x="3" y="7" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="5" y="7" width="4" height="1" fill="var(--brand-dark)"/>
+  <rect x="10" y="7" width="2" height="1" fill="var(--brand-dark)"/>
+  <rect x="14" y="7" width="2" height="1" fill="var(--brand-dark)"/>
+  <rect x="17" y="7" width="2" height="1" fill="var(--brand-dark)"/>
+  <rect x="21" y="7" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="23" y="7" width="4" height="1" fill="var(--brand-dark)"/>
+  <rect x="28" y="7" width="2" height="1" fill="var(--brand-dark)"/>
+  <rect x="3" y="8" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="5" y="8" width="4" height="1" fill="var(--brand-dark)"/>
+  <rect x="10" y="8" width="2" height="1" fill="var(--brand-dark)"/>
+  <rect x="14" y="8" width="5" height="1" fill="var(--brand-dark)"/>
+  <rect x="21" y="8" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="23" y="8" width="4" height="1" fill="var(--brand-dark)"/>
+  <rect x="28" y="8" width="2" height="1" fill="var(--brand-dark)"/>
+  <rect x="3" y="9" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="10" y="9" width="2" height="1" fill="var(--brand-dark)"/>
+  <rect x="13" y="9" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="21" y="9" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="28" y="9" width="2" height="1" fill="var(--brand-dark)"/>
+  <rect x="3" y="10" width="8" height="1" fill="var(--brand-dark)"/>
+  <rect x="13" y="10" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="18" y="10" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="21" y="10" width="9" height="1" fill="var(--brand-dark)"/>
+  <rect x="3" y="11" width="8" height="1" fill="var(--brand-dark)"/>
+  <rect x="13" y="11" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="15" y="11" width="2" height="1" fill="var(--brand-dark)"/>
+  <rect x="18" y="11" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="21" y="11" width="8" height="1" fill="var(--brand-dark)"/>
+  <rect x="15" y="12" width="2" height="1" fill="var(--brand-dark)"/>
+  <rect x="3" y="13" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="7" y="13" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="9" y="13" width="3" height="1" fill="var(--brand-dark)"/>
+  <rect x="13" y="13" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="15" y="13" width="6" height="1" fill="var(--brand-dark)"/>
+  <rect x="22" y="13" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="3" y="14" width="2" height="1" fill="var(--brand-dark)"/>
+  <rect x="7" y="14" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="13" y="14" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="15" y="14" width="3" height="1" fill="var(--brand-dark)"/>
+  <rect x="19" y="14" width="2" height="1" fill="var(--brand-dark)"/>
+  <rect x="22" y="14" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="27" y="14" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="3" y="15" width="2" height="1" fill="var(--brand-dark)"/>
+  <rect x="6" y="15" width="2" height="1" fill="var(--brand-dark)"/>
+  <rect x="13" y="15" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="16" y="15" width="2" height="1" fill="var(--brand-dark)"/>
+  <rect x="21" y="15" width="3" height="1" fill="var(--brand-dark)"/>
+  <rect x="26" y="15" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="4" y="16" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="6" y="16" width="2" height="1" fill="var(--brand-dark)"/>
+  <rect x="11" y="16" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="13" y="16" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="17" y="16" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="20" y="16" width="7" height="1" fill="var(--brand-dark)"/>
+  <rect x="3" y="17" width="3" height="1" fill="var(--brand-dark)"/>
+  <rect x="8" y="17" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="12" y="17" width="3" height="1" fill="var(--brand-dark)"/>
+  <rect x="18" y="17" width="8" height="1" fill="var(--brand-dark)"/>
+  <rect x="27" y="17" width="3" height="1" fill="var(--brand-dark)"/>
+  <rect x="5" y="18" width="2" height="1" fill="var(--brand-dark)"/>
+  <rect x="9" y="18" width="4" height="1" fill="var(--brand-dark)"/>
+  <rect x="14" y="18" width="4" height="1" fill="var(--brand-dark)"/>
+  <rect x="19" y="18" width="4" height="1" fill="var(--brand-dark)"/>
+  <rect x="28" y="18" width="2" height="1" fill="var(--brand-dark)"/>
+  <rect x="13" y="19" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="19" y="19" width="3" height="1" fill="var(--brand-dark)"/>
+  <rect x="23" y="19" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="13" y="20" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="19" y="20" width="3" height="1" fill="var(--brand-dark)"/>
+  <rect x="23" y="20" width="2" height="1" fill="var(--brand-dark)"/>
+  <rect x="3" y="21" width="8" height="1" fill="var(--brand-dark)"/>
+  <rect x="17" y="21" width="2" height="1" fill="var(--brand-dark)"/>
+  <rect x="21" y="21" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="23" y="21" width="3" height="1" fill="var(--brand-dark)"/>
+  <rect x="2" y="22" width="2" height="1" fill="var(--brand-dark)"/>
+  <rect x="10" y="22" width="2" height="1" fill="var(--brand-dark)"/>
+  <rect x="13" y="22" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="15" y="22" width="2" height="1" fill="var(--brand-dark)"/>
+  <rect x="21" y="22" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="24" y="22" width="2" height="1" fill="var(--brand-dark)"/>
+  <rect x="27" y="22" width="2" height="1" fill="var(--brand-dark)"/>
+  <rect x="3" y="23" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="5" y="23" width="4" height="1" fill="var(--brand-dark)"/>
+  <rect x="10" y="23" width="2" height="1" fill="var(--brand-dark)"/>
+  <rect x="14" y="23" width="2" height="1" fill="var(--brand-dark)"/>
+  <rect x="18" y="23" width="4" height="1" fill="var(--brand-dark)"/>
+  <rect x="24" y="23" width="5" height="1" fill="var(--brand-dark)"/>
+  <rect x="3" y="24" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="5" y="24" width="4" height="1" fill="var(--brand-dark)"/>
+  <rect x="10" y="24" width="2" height="1" fill="var(--brand-dark)"/>
+  <rect x="13" y="24" width="2" height="1" fill="var(--brand-dark)"/>
+  <rect x="19" y="24" width="3" height="1" fill="var(--brand-dark)"/>
+  <rect x="25" y="24" width="4" height="1" fill="var(--brand-dark)"/>
+  <rect x="3" y="25" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="5" y="25" width="4" height="1" fill="var(--brand-dark)"/>
+  <rect x="10" y="25" width="2" height="1" fill="var(--brand-dark)"/>
+  <rect x="13" y="25" width="2" height="1" fill="var(--brand-dark)"/>
+  <rect x="19" y="25" width="4" height="1" fill="var(--brand-dark)"/>
+  <rect x="26" y="25" width="3" height="1" fill="var(--brand-dark)"/>
+  <rect x="3" y="26" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="5" y="26" width="4" height="1" fill="var(--brand-dark)"/>
+  <rect x="10" y="26" width="2" height="1" fill="var(--brand-dark)"/>
+  <rect x="14" y="26" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="17" y="26" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="19" y="26" width="4" height="1" fill="var(--brand-dark)"/>
+  <rect x="26" y="26" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="28" y="26" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="3" y="27" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="10" y="27" width="2" height="1" fill="var(--brand-dark)"/>
+  <rect x="16" y="27" width="3" height="1" fill="var(--brand-dark)"/>
+  <rect x="22" y="27" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="25" y="27" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="27" y="27" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="3" y="28" width="9" height="1" fill="var(--brand-dark)"/>
+  <rect x="13" y="28" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="19" y="28" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="22" y="28" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="24" y="28" width="3" height="1" fill="var(--brand-dark)"/>
+  <rect x="3" y="29" width="8" height="1" fill="var(--brand-dark)"/>
+  <rect x="13" y="29" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="22" y="29" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="25" y="29" width="1" height="1" fill="var(--brand-dark)"/>
 </svg>
-        </button>
+</button>
                 </span>
             </div>
             <!-- ==================================================
@@ -4145,39 +4324,152 @@ function renderParticipants() {
                         class="qr-scan-button"
                         id="btn-scan-copilote"
                         title="Scanner le QR code du copilote">
-<svg width="64" height="64" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" fill="currentColor">
-  <!-- Marqueur coin haut-gauche -->
-  <path d="M4 4h16v16H4V4zm3 3v10h10V7H7zm2 2h6v6H9V9z"/>
-  <!-- Marqueur coin haut-droit -->
-  <path d="M44 4h16v16H44V4zm3 3v10h10V7H47zm2 2h6v6h-6V9z"/>
-  <!-- Marqueur coin bas-gauche -->
-  <path d="M4 44h16v16H4V44zm3 3v10h10V47H7zm2 2h6v6H9v-6z"/>
-  <!-- Petits modules (points aléatoires façon QR code) -->
-  <rect x="24" y="4" width="4" height="8"/>
-  <rect x="32" y="8" width="8" height="4"/>
-  <rect x="24" y="12" width="4" height="4"/>
-  <rect x="36" y="16" width="8" height="8"/>
-  <rect x="4" y="24" width="8" height="4"/>
-  <rect x="8" y="32" width="4" height="8"/>
-  <rect x="12" y="28" width="8" height="4"/>
-  <rect x="24" y="24" width="12" height="4"/>
-  <rect x="32" y="20" width="4" height="8"/>
-  <rect x="24" y="32" width="8" height="4"/>
-  <rect x="32" y="32" width="4" height="12"/>
-  <rect x="40" y="28" width="4" height="4"/>
-  <rect x="28" y="40" width="8" height="4"/>
-  <rect x="44" y="20" width="4" height="4"/>
-  <rect x="52" y="24" width="4" height="12"/>
-  <rect x="44" y="32" width="12" height="4"/>
-  <rect x="40" y="36" width="4" height="16"/>
-  <rect x="20" y="44" width="4" height="4"/>
-  <rect x="24" y="52" width="8" height="4"/>
-  <rect x="28" y="40" width="4" height="4"/>
-  <rect x="44" y="44" width="4" height="12"/>
-  <rect x="54" y="44" width="4" height="12"/>
-  <rect x="44" y="56" width="4" height="4"/>
-  <rect x="52" y="52" width="4" height="4"/>
-  <rect x="48" y="48" width="4" height="8"/>
+<svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+  <rect x="3" y="3" width="8" height="1" fill="var(--brand-dark)"/>
+  <rect x="15" y="3" width="4" height="1" fill="var(--brand-dark)"/>
+  <rect x="21" y="3" width="8" height="1" fill="var(--brand-dark)"/>
+  <rect x="3" y="4" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="10" y="4" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="14" y="4" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="21" y="4" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="28" y="4" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="3" y="5" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="5" y="5" width="4" height="1" fill="var(--brand-dark)"/>
+  <rect x="10" y="5" width="2" height="1" fill="var(--brand-dark)"/>
+  <rect x="14" y="5" width="4" height="1" fill="var(--brand-dark)"/>
+  <rect x="21" y="5" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="23" y="5" width="4" height="1" fill="var(--brand-dark)"/>
+  <rect x="28" y="5" width="2" height="1" fill="var(--brand-dark)"/>
+  <rect x="3" y="6" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="5" y="6" width="4" height="1" fill="var(--brand-dark)"/>
+  <rect x="10" y="6" width="2" height="1" fill="var(--brand-dark)"/>
+  <rect x="14" y="6" width="4" height="1" fill="var(--brand-dark)"/>
+  <rect x="21" y="6" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="23" y="6" width="4" height="1" fill="var(--brand-dark)"/>
+  <rect x="28" y="6" width="2" height="1" fill="var(--brand-dark)"/>
+  <rect x="3" y="7" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="5" y="7" width="4" height="1" fill="var(--brand-dark)"/>
+  <rect x="10" y="7" width="2" height="1" fill="var(--brand-dark)"/>
+  <rect x="14" y="7" width="2" height="1" fill="var(--brand-dark)"/>
+  <rect x="17" y="7" width="2" height="1" fill="var(--brand-dark)"/>
+  <rect x="21" y="7" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="23" y="7" width="4" height="1" fill="var(--brand-dark)"/>
+  <rect x="28" y="7" width="2" height="1" fill="var(--brand-dark)"/>
+  <rect x="3" y="8" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="5" y="8" width="4" height="1" fill="var(--brand-dark)"/>
+  <rect x="10" y="8" width="2" height="1" fill="var(--brand-dark)"/>
+  <rect x="14" y="8" width="5" height="1" fill="var(--brand-dark)"/>
+  <rect x="21" y="8" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="23" y="8" width="4" height="1" fill="var(--brand-dark)"/>
+  <rect x="28" y="8" width="2" height="1" fill="var(--brand-dark)"/>
+  <rect x="3" y="9" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="10" y="9" width="2" height="1" fill="var(--brand-dark)"/>
+  <rect x="13" y="9" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="21" y="9" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="28" y="9" width="2" height="1" fill="var(--brand-dark)"/>
+  <rect x="3" y="10" width="8" height="1" fill="var(--brand-dark)"/>
+  <rect x="13" y="10" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="18" y="10" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="21" y="10" width="9" height="1" fill="var(--brand-dark)"/>
+  <rect x="3" y="11" width="8" height="1" fill="var(--brand-dark)"/>
+  <rect x="13" y="11" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="15" y="11" width="2" height="1" fill="var(--brand-dark)"/>
+  <rect x="18" y="11" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="21" y="11" width="8" height="1" fill="var(--brand-dark)"/>
+  <rect x="15" y="12" width="2" height="1" fill="var(--brand-dark)"/>
+  <rect x="3" y="13" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="7" y="13" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="9" y="13" width="3" height="1" fill="var(--brand-dark)"/>
+  <rect x="13" y="13" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="15" y="13" width="6" height="1" fill="var(--brand-dark)"/>
+  <rect x="22" y="13" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="3" y="14" width="2" height="1" fill="var(--brand-dark)"/>
+  <rect x="7" y="14" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="13" y="14" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="15" y="14" width="3" height="1" fill="var(--brand-dark)"/>
+  <rect x="19" y="14" width="2" height="1" fill="var(--brand-dark)"/>
+  <rect x="22" y="14" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="27" y="14" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="3" y="15" width="2" height="1" fill="var(--brand-dark)"/>
+  <rect x="6" y="15" width="2" height="1" fill="var(--brand-dark)"/>
+  <rect x="13" y="15" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="16" y="15" width="2" height="1" fill="var(--brand-dark)"/>
+  <rect x="21" y="15" width="3" height="1" fill="var(--brand-dark)"/>
+  <rect x="26" y="15" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="4" y="16" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="6" y="16" width="2" height="1" fill="var(--brand-dark)"/>
+  <rect x="11" y="16" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="13" y="16" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="17" y="16" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="20" y="16" width="7" height="1" fill="var(--brand-dark)"/>
+  <rect x="3" y="17" width="3" height="1" fill="var(--brand-dark)"/>
+  <rect x="8" y="17" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="12" y="17" width="3" height="1" fill="var(--brand-dark)"/>
+  <rect x="18" y="17" width="8" height="1" fill="var(--brand-dark)"/>
+  <rect x="27" y="17" width="3" height="1" fill="var(--brand-dark)"/>
+  <rect x="5" y="18" width="2" height="1" fill="var(--brand-dark)"/>
+  <rect x="9" y="18" width="4" height="1" fill="var(--brand-dark)"/>
+  <rect x="14" y="18" width="4" height="1" fill="var(--brand-dark)"/>
+  <rect x="19" y="18" width="4" height="1" fill="var(--brand-dark)"/>
+  <rect x="28" y="18" width="2" height="1" fill="var(--brand-dark)"/>
+  <rect x="13" y="19" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="19" y="19" width="3" height="1" fill="var(--brand-dark)"/>
+  <rect x="23" y="19" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="13" y="20" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="19" y="20" width="3" height="1" fill="var(--brand-dark)"/>
+  <rect x="23" y="20" width="2" height="1" fill="var(--brand-dark)"/>
+  <rect x="3" y="21" width="8" height="1" fill="var(--brand-dark)"/>
+  <rect x="17" y="21" width="2" height="1" fill="var(--brand-dark)"/>
+  <rect x="21" y="21" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="23" y="21" width="3" height="1" fill="var(--brand-dark)"/>
+  <rect x="2" y="22" width="2" height="1" fill="var(--brand-dark)"/>
+  <rect x="10" y="22" width="2" height="1" fill="var(--brand-dark)"/>
+  <rect x="13" y="22" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="15" y="22" width="2" height="1" fill="var(--brand-dark)"/>
+  <rect x="21" y="22" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="24" y="22" width="2" height="1" fill="var(--brand-dark)"/>
+  <rect x="27" y="22" width="2" height="1" fill="var(--brand-dark)"/>
+  <rect x="3" y="23" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="5" y="23" width="4" height="1" fill="var(--brand-dark)"/>
+  <rect x="10" y="23" width="2" height="1" fill="var(--brand-dark)"/>
+  <rect x="14" y="23" width="2" height="1" fill="var(--brand-dark)"/>
+  <rect x="18" y="23" width="4" height="1" fill="var(--brand-dark)"/>
+  <rect x="24" y="23" width="5" height="1" fill="var(--brand-dark)"/>
+  <rect x="3" y="24" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="5" y="24" width="4" height="1" fill="var(--brand-dark)"/>
+  <rect x="10" y="24" width="2" height="1" fill="var(--brand-dark)"/>
+  <rect x="13" y="24" width="2" height="1" fill="var(--brand-dark)"/>
+  <rect x="19" y="24" width="3" height="1" fill="var(--brand-dark)"/>
+  <rect x="25" y="24" width="4" height="1" fill="var(--brand-dark)"/>
+  <rect x="3" y="25" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="5" y="25" width="4" height="1" fill="var(--brand-dark)"/>
+  <rect x="10" y="25" width="2" height="1" fill="var(--brand-dark)"/>
+  <rect x="13" y="25" width="2" height="1" fill="var(--brand-dark)"/>
+  <rect x="19" y="25" width="4" height="1" fill="var(--brand-dark)"/>
+  <rect x="26" y="25" width="3" height="1" fill="var(--brand-dark)"/>
+  <rect x="3" y="26" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="5" y="26" width="4" height="1" fill="var(--brand-dark)"/>
+  <rect x="10" y="26" width="2" height="1" fill="var(--brand-dark)"/>
+  <rect x="14" y="26" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="17" y="26" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="19" y="26" width="4" height="1" fill="var(--brand-dark)"/>
+  <rect x="26" y="26" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="28" y="26" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="3" y="27" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="10" y="27" width="2" height="1" fill="var(--brand-dark)"/>
+  <rect x="16" y="27" width="3" height="1" fill="var(--brand-dark)"/>
+  <rect x="22" y="27" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="25" y="27" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="27" y="27" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="3" y="28" width="9" height="1" fill="var(--brand-dark)"/>
+  <rect x="13" y="28" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="19" y="28" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="22" y="28" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="24" y="28" width="3" height="1" fill="var(--brand-dark)"/>
+  <rect x="3" y="29" width="8" height="1" fill="var(--brand-dark)"/>
+  <rect x="13" y="29" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="22" y="29" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="25" y="29" width="1" height="1" fill="var(--brand-dark)"/>
 </svg>
                     </button>
                 </span>
@@ -4244,39 +4536,152 @@ function renderParticipants() {
                         class="qr-scan-button participant-add-qr"
                         id="btn-scan-qr"
                         title="Scanner le QR code de l'adhérent·e">
-<svg width="64" height="64" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" fill="currentColor">
-  <!-- Marqueur coin haut-gauche -->
-  <path d="M4 4h16v16H4V4zm3 3v10h10V7H7zm2 2h6v6H9V9z"/>
-  <!-- Marqueur coin haut-droit -->
-  <path d="M44 4h16v16H44V4zm3 3v10h10V7H47zm2 2h6v6h-6V9z"/>
-  <!-- Marqueur coin bas-gauche -->
-  <path d="M4 44h16v16H4V44zm3 3v10h10V47H7zm2 2h6v6H9v-6z"/>
-  <!-- Petits modules (points aléatoires façon QR code) -->
-  <rect x="24" y="4" width="4" height="8"/>
-  <rect x="32" y="8" width="8" height="4"/>
-  <rect x="24" y="12" width="4" height="4"/>
-  <rect x="36" y="16" width="8" height="8"/>
-  <rect x="4" y="24" width="8" height="4"/>
-  <rect x="8" y="32" width="4" height="8"/>
-  <rect x="12" y="28" width="8" height="4"/>
-  <rect x="24" y="24" width="12" height="4"/>
-  <rect x="32" y="20" width="4" height="8"/>
-  <rect x="24" y="32" width="8" height="4"/>
-  <rect x="32" y="32" width="4" height="12"/>
-  <rect x="40" y="28" width="4" height="4"/>
-  <rect x="28" y="40" width="8" height="4"/>
-  <rect x="44" y="20" width="4" height="4"/>
-  <rect x="52" y="24" width="4" height="12"/>
-  <rect x="44" y="32" width="12" height="4"/>
-  <rect x="40" y="36" width="4" height="16"/>
-  <rect x="20" y="44" width="4" height="4"/>
-  <rect x="24" y="52" width="8" height="4"/>
-  <rect x="28" y="40" width="4" height="4"/>
-  <rect x="44" y="44" width="4" height="12"/>
-  <rect x="54" y="44" width="4" height="12"/>
-  <rect x="44" y="56" width="4" height="4"/>
-  <rect x="52" y="52" width="4" height="4"/>
-  <rect x="48" y="48" width="4" height="8"/>
+<svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+  <rect x="3" y="3" width="8" height="1" fill="var(--brand-dark)"/>
+  <rect x="15" y="3" width="4" height="1" fill="var(--brand-dark)"/>
+  <rect x="21" y="3" width="8" height="1" fill="var(--brand-dark)"/>
+  <rect x="3" y="4" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="10" y="4" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="14" y="4" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="21" y="4" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="28" y="4" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="3" y="5" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="5" y="5" width="4" height="1" fill="var(--brand-dark)"/>
+  <rect x="10" y="5" width="2" height="1" fill="var(--brand-dark)"/>
+  <rect x="14" y="5" width="4" height="1" fill="var(--brand-dark)"/>
+  <rect x="21" y="5" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="23" y="5" width="4" height="1" fill="var(--brand-dark)"/>
+  <rect x="28" y="5" width="2" height="1" fill="var(--brand-dark)"/>
+  <rect x="3" y="6" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="5" y="6" width="4" height="1" fill="var(--brand-dark)"/>
+  <rect x="10" y="6" width="2" height="1" fill="var(--brand-dark)"/>
+  <rect x="14" y="6" width="4" height="1" fill="var(--brand-dark)"/>
+  <rect x="21" y="6" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="23" y="6" width="4" height="1" fill="var(--brand-dark)"/>
+  <rect x="28" y="6" width="2" height="1" fill="var(--brand-dark)"/>
+  <rect x="3" y="7" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="5" y="7" width="4" height="1" fill="var(--brand-dark)"/>
+  <rect x="10" y="7" width="2" height="1" fill="var(--brand-dark)"/>
+  <rect x="14" y="7" width="2" height="1" fill="var(--brand-dark)"/>
+  <rect x="17" y="7" width="2" height="1" fill="var(--brand-dark)"/>
+  <rect x="21" y="7" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="23" y="7" width="4" height="1" fill="var(--brand-dark)"/>
+  <rect x="28" y="7" width="2" height="1" fill="var(--brand-dark)"/>
+  <rect x="3" y="8" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="5" y="8" width="4" height="1" fill="var(--brand-dark)"/>
+  <rect x="10" y="8" width="2" height="1" fill="var(--brand-dark)"/>
+  <rect x="14" y="8" width="5" height="1" fill="var(--brand-dark)"/>
+  <rect x="21" y="8" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="23" y="8" width="4" height="1" fill="var(--brand-dark)"/>
+  <rect x="28" y="8" width="2" height="1" fill="var(--brand-dark)"/>
+  <rect x="3" y="9" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="10" y="9" width="2" height="1" fill="var(--brand-dark)"/>
+  <rect x="13" y="9" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="21" y="9" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="28" y="9" width="2" height="1" fill="var(--brand-dark)"/>
+  <rect x="3" y="10" width="8" height="1" fill="var(--brand-dark)"/>
+  <rect x="13" y="10" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="18" y="10" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="21" y="10" width="9" height="1" fill="var(--brand-dark)"/>
+  <rect x="3" y="11" width="8" height="1" fill="var(--brand-dark)"/>
+  <rect x="13" y="11" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="15" y="11" width="2" height="1" fill="var(--brand-dark)"/>
+  <rect x="18" y="11" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="21" y="11" width="8" height="1" fill="var(--brand-dark)"/>
+  <rect x="15" y="12" width="2" height="1" fill="var(--brand-dark)"/>
+  <rect x="3" y="13" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="7" y="13" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="9" y="13" width="3" height="1" fill="var(--brand-dark)"/>
+  <rect x="13" y="13" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="15" y="13" width="6" height="1" fill="var(--brand-dark)"/>
+  <rect x="22" y="13" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="3" y="14" width="2" height="1" fill="var(--brand-dark)"/>
+  <rect x="7" y="14" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="13" y="14" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="15" y="14" width="3" height="1" fill="var(--brand-dark)"/>
+  <rect x="19" y="14" width="2" height="1" fill="var(--brand-dark)"/>
+  <rect x="22" y="14" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="27" y="14" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="3" y="15" width="2" height="1" fill="var(--brand-dark)"/>
+  <rect x="6" y="15" width="2" height="1" fill="var(--brand-dark)"/>
+  <rect x="13" y="15" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="16" y="15" width="2" height="1" fill="var(--brand-dark)"/>
+  <rect x="21" y="15" width="3" height="1" fill="var(--brand-dark)"/>
+  <rect x="26" y="15" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="4" y="16" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="6" y="16" width="2" height="1" fill="var(--brand-dark)"/>
+  <rect x="11" y="16" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="13" y="16" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="17" y="16" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="20" y="16" width="7" height="1" fill="var(--brand-dark)"/>
+  <rect x="3" y="17" width="3" height="1" fill="var(--brand-dark)"/>
+  <rect x="8" y="17" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="12" y="17" width="3" height="1" fill="var(--brand-dark)"/>
+  <rect x="18" y="17" width="8" height="1" fill="var(--brand-dark)"/>
+  <rect x="27" y="17" width="3" height="1" fill="var(--brand-dark)"/>
+  <rect x="5" y="18" width="2" height="1" fill="var(--brand-dark)"/>
+  <rect x="9" y="18" width="4" height="1" fill="var(--brand-dark)"/>
+  <rect x="14" y="18" width="4" height="1" fill="var(--brand-dark)"/>
+  <rect x="19" y="18" width="4" height="1" fill="var(--brand-dark)"/>
+  <rect x="28" y="18" width="2" height="1" fill="var(--brand-dark)"/>
+  <rect x="13" y="19" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="19" y="19" width="3" height="1" fill="var(--brand-dark)"/>
+  <rect x="23" y="19" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="13" y="20" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="19" y="20" width="3" height="1" fill="var(--brand-dark)"/>
+  <rect x="23" y="20" width="2" height="1" fill="var(--brand-dark)"/>
+  <rect x="3" y="21" width="8" height="1" fill="var(--brand-dark)"/>
+  <rect x="17" y="21" width="2" height="1" fill="var(--brand-dark)"/>
+  <rect x="21" y="21" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="23" y="21" width="3" height="1" fill="var(--brand-dark)"/>
+  <rect x="2" y="22" width="2" height="1" fill="var(--brand-dark)"/>
+  <rect x="10" y="22" width="2" height="1" fill="var(--brand-dark)"/>
+  <rect x="13" y="22" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="15" y="22" width="2" height="1" fill="var(--brand-dark)"/>
+  <rect x="21" y="22" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="24" y="22" width="2" height="1" fill="var(--brand-dark)"/>
+  <rect x="27" y="22" width="2" height="1" fill="var(--brand-dark)"/>
+  <rect x="3" y="23" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="5" y="23" width="4" height="1" fill="var(--brand-dark)"/>
+  <rect x="10" y="23" width="2" height="1" fill="var(--brand-dark)"/>
+  <rect x="14" y="23" width="2" height="1" fill="var(--brand-dark)"/>
+  <rect x="18" y="23" width="4" height="1" fill="var(--brand-dark)"/>
+  <rect x="24" y="23" width="5" height="1" fill="var(--brand-dark)"/>
+  <rect x="3" y="24" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="5" y="24" width="4" height="1" fill="var(--brand-dark)"/>
+  <rect x="10" y="24" width="2" height="1" fill="var(--brand-dark)"/>
+  <rect x="13" y="24" width="2" height="1" fill="var(--brand-dark)"/>
+  <rect x="19" y="24" width="3" height="1" fill="var(--brand-dark)"/>
+  <rect x="25" y="24" width="4" height="1" fill="var(--brand-dark)"/>
+  <rect x="3" y="25" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="5" y="25" width="4" height="1" fill="var(--brand-dark)"/>
+  <rect x="10" y="25" width="2" height="1" fill="var(--brand-dark)"/>
+  <rect x="13" y="25" width="2" height="1" fill="var(--brand-dark)"/>
+  <rect x="19" y="25" width="4" height="1" fill="var(--brand-dark)"/>
+  <rect x="26" y="25" width="3" height="1" fill="var(--brand-dark)"/>
+  <rect x="3" y="26" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="5" y="26" width="4" height="1" fill="var(--brand-dark)"/>
+  <rect x="10" y="26" width="2" height="1" fill="var(--brand-dark)"/>
+  <rect x="14" y="26" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="17" y="26" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="19" y="26" width="4" height="1" fill="var(--brand-dark)"/>
+  <rect x="26" y="26" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="28" y="26" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="3" y="27" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="10" y="27" width="2" height="1" fill="var(--brand-dark)"/>
+  <rect x="16" y="27" width="3" height="1" fill="var(--brand-dark)"/>
+  <rect x="22" y="27" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="25" y="27" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="27" y="27" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="3" y="28" width="9" height="1" fill="var(--brand-dark)"/>
+  <rect x="13" y="28" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="19" y="28" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="22" y="28" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="24" y="28" width="3" height="1" fill="var(--brand-dark)"/>
+  <rect x="3" y="29" width="8" height="1" fill="var(--brand-dark)"/>
+  <rect x="13" y="29" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="22" y="29" width="1" height="1" fill="var(--brand-dark)"/>
+  <rect x="25" y="29" width="1" height="1" fill="var(--brand-dark)"/>
 </svg>
                     </button>
                 </div>
