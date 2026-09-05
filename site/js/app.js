@@ -2384,7 +2384,7 @@ function renderAccueil(prenom, nom) {
       </div>
     </div>
   `;
-  renderQr($("#qr-small"), qrData(prenom, nom), 90);
+  renderQr($("#qr-small"), qrData(prenom, nom), 100);
   // Écouteurs pour les boutons
   $("#btn-carte").addEventListener("click", () => {
     navigate("carte", { prenom, nom, title: "Ma carte Rando's Lorraine", showBack: true });
@@ -5740,7 +5740,7 @@ function renderCarte(prenom, nom) {
       <button class="btn btn--primary" id="btn-corriger">Corriger</button>
     </div>
   `;
-  renderQr($("#qr-large"), qrData(prenom, nom), 260);
+  renderQr($("#qr-large"), qrData(prenom, nom), 300);
   $("#btn-corriger").addEventListener("click", () => {
     navigate("correction", {
       prenom,
