@@ -978,7 +978,7 @@ function renderRandoDetails(
                             onclick="window.location.href='tel:${String(tel).replace(/\s/g, "")}'"
                             title="Téléphoner">
 <svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
-  <rect width="32" height="32" rx="7" fill="#000000"/>
+  <rect width="32" height="32" rx="7" fill="var(--brand-dark)"/>
   <path d="M11 8
            C 9.5 8, 8.5 9.2, 9 10.6
            C 9.7 12.6, 11.2 15.3, 13.8 17.9
@@ -995,7 +995,7 @@ function renderRandoDetails(
            L 14.2 9.2
            C 14 8.5, 13.4 8, 12.7 8
            Z"
-        fill="#ffffff"/>
+        fill="var(--brand-bg)"/>
 </svg>                        </button>
                     </span>
                 </div>
