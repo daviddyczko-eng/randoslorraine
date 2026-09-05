@@ -11,6 +11,7 @@ const ASSETS = [
   "./data/info.json",
   "./manifest.webmanifest",
   "./icons/RL-ico.png",
+  "./icons/RL-logo.png"
 ];
 
 self.addEventListener("install", (event) => {
