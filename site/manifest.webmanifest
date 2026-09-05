@@ -11,14 +11,14 @@
   "lang": "fr",
   "icons": [
     {
-      "src": "icons/RL-symb.png",
-      "sizes": "any",
+      "src": "icons/RL-ico.png",
+      "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "icons/RL-symb.png",
-      "sizes": "any",
+      "src": "icons/RL-ico.png",
+      "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
     }
