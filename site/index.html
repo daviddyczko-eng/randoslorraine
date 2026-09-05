@@ -62,5 +62,26 @@
     }
   });
 </script>
+  <script>
+  window.addEventListener("load", async () => {
+    // 1. État du service worker
+    const regs = await navigator.serviceWorker.getRegistrations();
+    console.log("Service workers enregistrés :", regs.map(r => ({
+      scope: r.scope,
+      actif: !!r.active,
+      enInstallation: !!r.installing,
+      enAttente: !!r.waiting
+    })));
+
+    // 2. Contenu réel du cache
+    const names = await caches.keys();
+    console.log("Caches existants :", names);
+    for (const name of names) {
+      const cache = await caches.open(name);
+      const keys = await cache.keys();
+      console.log(`→ Fichiers dans "${name}" (${keys.length}) :`, keys.map(k => k.url));
+    }
+  });
+</script>
 </body>
 </html>
