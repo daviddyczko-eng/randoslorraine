@@ -10,7 +10,7 @@ const ASSETS = [
   "./js/html5-qrcode.min.js",
   "./data/info.json",
   "./manifest.webmanifest",
-  "./icons/RL-symb.png",
+  "./icons/RL-ico.png",
 ];
 
 self.addEventListener("install", (event) => {
