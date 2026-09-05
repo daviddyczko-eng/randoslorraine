@@ -913,12 +913,12 @@ function renderRandoDetails(
                                     onclick="window.open('${mapsUrl}','_blank')"
                                     title="Ouvrir dans Google Maps">
 <svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
-  <rect width="32" height="32" rx="7"/>
+  <rect width="32" height="32" rx="7" fill=var(--brand)/>
   <text x="50%" y="50%" 
         font-family="Arial, Helvetica, sans-serif" 
         font-weight="700" 
-        font-size="68" 
-        fill="#ffffff" 
+        font-size="17" 
+        fill=var(--brand-pale)
         text-anchor="middle" 
         dominant-baseline="central">P</text>
 </svg>
