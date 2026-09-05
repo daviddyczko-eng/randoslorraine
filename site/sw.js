@@ -7,6 +7,7 @@ const ASSETS = [
   "./js/app.js",
   "./js/storage.js",
   "./js/qrcode.min.js",
+  "./js/html5-qrcode.min.js",
   "./data/info.json",
   "./manifest.webmanifest",
   "./icons/RL-symb.png",
