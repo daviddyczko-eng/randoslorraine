@@ -44,14 +44,17 @@ self.addEventListener("activate", (event) => {
 
 self.addEventListener("fetch", (event) => {
   if (event.request.method !== "GET") return;
+
   if (event.request.mode === "navigate") {
     return event.respondWith(
-      fetch(event.request).catch(() => caches.match("./index.html"))
+      fetch(event.request).catch(() =>
+        caches.match("./index.html", { ignoreVary: true })
+      )
     );
-}
+  }
 
   event.respondWith(
-    caches.match(event.request).then((cached) => {
+    caches.match(event.request, { ignoreVary: true }).then((cached) => {
       const network = fetch(event.request)
         .then((response) => {
           if (response.ok) {
@@ -61,7 +64,6 @@ self.addEventListener("fetch", (event) => {
           return response;
         })
         .catch(() => cached);
-
       return cached || network;
     })
   );
