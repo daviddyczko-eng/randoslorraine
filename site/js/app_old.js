@@ -1603,7 +1603,7 @@ function ouvrirFenetreTransmission() {
     const dateForFilename =
         `${String(day).padStart(2, "0")}-${monthNumber}-${year}`;
     const nomFichier =
-        `${dateForFilename}.csv`;
+        `rando-${dateForFilename}.csv`;
     /*
      * Création de la fenêtre
      */
@@ -1742,58 +1742,43 @@ function ouvrirFenetreTransmission() {
                 /*
                  * Vérifier si le téléphone accepte le partage de fichiers.
                  */
-if (
-    navigator.share &&
-    navigator.canShare
-) {
-    const partagePossible =
-        navigator.canShare({
-            files: [fichier]
-        });
-    if (partagePossible) {
-        try {
-            await navigator.clipboard.writeText(
-                tresorerie
-            );
-            await navigator.share({
-                title:
-                    "Liste des participant·e·s",
-                text:
-                    message,
-                files:
-                    [fichier]
-            });
-            /*
-             * Le partage a été proposé avec succès.
-             */
-            overlay.remove();
-            return;
-        }
-        catch (erreur) {
-            /*
-             * L'utilisateur a simplement fermé
-             * la fenêtre de partage.
-             */
-            console.log(
-                "Partage annulé ou interrompu :",
-                erreur
-            );
-            /*
-             * Si c'est une annulation volontaire,
-             * on ne déclenche pas la solution de secours.
-             */
-            if (
-                erreur.name === "AbortError"
-            ) {
-                return;
-            }
-            /*
-             * Sinon, on continue vers la
-             * solution de secours ci-dessous.
-             */
-        }
-    }
-}
+                if (
+                    navigator.share &&
+                    navigator.canShare
+                ) {
+                    const partagePossible =
+                        navigator.canShare({
+                            files: [fichier]
+                        });
+                    if (partagePossible) {
+                        try {
+                            await navigator.clipboard.writeText(tresorerie);
+                            await navigator.share({
+                                title:
+                                    "Liste des participant·e·s",
+                                text:
+                                    message,
+                                files:
+                                    [fichier]
+                            });
+                            /*
+                             * Le partage a été proposé avec succès.
+                             */
+                            overlay.remove();
+                            return;
+                        }
+                        catch (erreur) {
+                            /*
+                             * L'utilisateur peut avoir simplement fermé la fenêtre de partage.
+                             */
+                            console.log(
+                                "Partage annulé ou interrompu :",
+                                erreur
+                            );
+                            return;
+                        }
+                    }
+                }
                 /*
                  * Solution de secours
                  * Si le navigateur ne permet pas le partage de fichiers, on télécharge le CSV et on ouvre ensuite le SMS.
