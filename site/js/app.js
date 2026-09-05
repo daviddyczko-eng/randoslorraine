@@ -2384,7 +2384,7 @@ function renderAccueil(prenom, nom) {
       </div>
     </div>
   `;
-  renderQr($("#qr-small"), qrData(prenom, nom), 60);
+  renderQr($("#qr-small"), qrData(prenom, nom), 90);
   // Écouteurs pour les boutons
   $("#btn-carte").addEventListener("click", () => {
     navigate("carte", { prenom, nom, title: "Ma carte Rando's Lorraine", showBack: true });
