@@ -995,8 +995,9 @@ function renderRandoDetails(
            L 14.2 9.2
            C 14 8.5, 13.4 8, 12.7 8
            Z"
-        fill="var(--brand-bg)"/>
-</svg>                        </button>
+<path style="fill: var(--brand-bg);" d="..." />
+</svg>
+</button>
                     </span>
                 </div>
                 `;
