@@ -20,7 +20,7 @@ self.addEventListener("install", (event) => {
       const results = await Promise.allSettled(
         ASSETS.map((url) => cache.add(url))
       );
-      const clients = await self.clients.matchAll();
+      const clients = await self.clients.matchAll({ includeUncontrolled: true });
       results.forEach((r, i) => {
         if (r.status === "rejected") {
           clients.forEach((c) =>
