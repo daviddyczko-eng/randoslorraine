@@ -977,8 +977,26 @@ function renderRandoDetails(
                             class="info-button"
                             onclick="window.location.href='tel:${String(tel).replace(/\s/g, "")}'"
                             title="Téléphoner">
-                            ✆
-                        </button>
+<svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+  <rect width="32" height="32" rx="7" fill="#000000"/>
+  <path d="M11 8
+           C 9.5 8, 8.5 9.2, 9 10.6
+           C 9.7 12.6, 11.2 15.3, 13.8 17.9
+           C 16.4 20.5, 19.1 22, 21.1 22.7
+           C 22.5 23.2, 23.7 22.2, 23.7 20.7
+           L 23.7 19
+           C 23.7 18.3, 23.2 17.7, 22.5 17.5
+           L 20 16.8
+           C 19.4 16.6, 18.8 16.8, 18.4 17.2
+           L 17.6 18
+           C 16 17, 14.7 15.7, 13.7 14.1
+           L 14.5 13.3
+           C 14.9 12.9, 15.1 12.3, 14.9 11.7
+           L 14.2 9.2
+           C 14 8.5, 13.4 8, 12.7 8
+           Z"
+        fill="#ffffff"/>
+</svg>                        </button>
                     </span>
                 </div>
                 `;
