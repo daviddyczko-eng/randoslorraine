@@ -5711,7 +5711,7 @@ $("#btn-quit").addEventListener(
 */
 function renderCotisation(prenom, nom, dateInscription) {
   // const currentYear = new Date().getFullYear();
-    const currentYear = 2027;
+    const currentYear = "2027";
   screenRoot.innerHTML = `
     <div class="screen">
       <div class="cotisation-box">
