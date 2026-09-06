@@ -5725,8 +5725,7 @@ function renderCotisation(prenom, nom, dateInscription) {
     const user = getUser();
     saveUser({
       ...user,
-      cotisationAnnee: currentYear,
-      tarif: 0
+      dateInscription: new Date().toISOString()
     });
     navigate("accueil", { prenom, nom });
   });
