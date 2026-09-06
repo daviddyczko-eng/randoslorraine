@@ -5722,13 +5722,10 @@ function renderCotisation(prenom, nom, dateInscription) {
     </div>
   `;
   $("#btn-cotisation-ok").addEventListener("click", () => {
-                  const dateInscription =
-                new Date().toISOString();
     const user = getUser();
     saveUser({
       ...user,
-      cotisationAnnee: currentYear,
-      tarif: 0
+      dateInscription: new Date().toISOString()
     });
     navigate("accueil", { prenom, nom });
   });
