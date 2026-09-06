@@ -5722,6 +5722,8 @@ function renderCotisation(prenom, nom, dateInscription) {
     </div>
   `;
   $("#btn-cotisation-ok").addEventListener("click", () => {
+                  const dateInscription =
+                new Date().toISOString();
     const user = getUser();
     saveUser({
       ...user,
