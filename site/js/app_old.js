@@ -14,10 +14,18 @@ import {
  * ============================================================
  */
 if ("serviceWorker" in navigator) {
-    navigator.serviceWorker.getRegistrations()
-        .then(registrations => {
-            registrations.forEach(reg => reg.unregister());
-        });
+    window.addEventListener("load", () => {
+        navigator.serviceWorker.register("/sw.js")
+            .then(() => {
+                console.log("Service Worker enregistré");
+            })
+            .catch(error => {
+                console.error(
+                    "Erreur Service Worker :",
+                    error
+                );
+            });
+    });
 }
 if ("caches" in window) {
     caches.keys().then(keys => {
