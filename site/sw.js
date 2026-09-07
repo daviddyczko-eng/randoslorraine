@@ -1,4 +1,4 @@
-const CACHE_NAME = "randos-lorraine-v3"; // Changez la version pour forcer la mise à jour
+const CACHE_NAME = "randos-lorraine-v4"; // Changez la version pour forcer la mise à jour
 
 const ASSETS = [
   "/",
@@ -11,66 +11,83 @@ const ASSETS = [
   "/data/info.json",
   "/manifest.webmanifest",
   "/icons/RL-ico.png",
-  "/icons/RL-ico192.png",
   "/icons/RL-logo.png",
 ];
 
 // Installation : mise en cache des ressources
 self.addEventListener("install", (event) => {
+  console.log("[SW] Installation du Service Worker...");
   event.waitUntil(
     caches.open(CACHE_NAME)
-      .then((cache) => cache.addAll(ASSETS))
-      .then(() => self.skipWaiting()) // Force le nouveau SW à devenir actif
-      .catch((error) => console.error("Erreur de cache :", error))
+      .then((cache) => {
+        console.log("[SW] Ouverture du cache :", CACHE_NAME);
+        return cache.addAll(ASSETS);
+      })
+      .then(() => {
+        console.log("[SW] Toutes les ressources sont en cache.");
+        return self.skipWaiting(); // Force le nouveau SW à devenir actif
+      })
+      .catch((error) => {
+        console.error("[SW] Erreur lors de la mise en cache :", error);
+      })
   );
 });
 
 // Activation : suppression des anciens caches
 self.addEventListener("activate", (event) => {
+  console.log("[SW] Activation du Service Worker...");
   event.waitUntil(
     caches.keys().then((keys) => {
       return Promise.all(
-        keys.filter((key) => key !== CACHE_NAME).map((key) => caches.delete(key))
+        keys.filter((key) => key !== CACHE_NAME).map((key) => {
+          console.log("[SW] Suppression de l'ancien cache :", key);
+          return caches.delete(key);
+        })
       );
     })
   );
-  self.clients.claim(); // Prend le contrôle des clients immédiatement
+  self.clients.claim(); // Prend le contrôle de tous les clients immédiatement
+  console.log("[SW] Le Service Worker est maintenant actif et contrôle les clients.");
 });
 
-// Interception des requêtes (stratégie : Cache First, Network Fallback)
+// Interception des requêtes
 self.addEventListener("fetch", (event) => {
+  console.log("[SW] Requête interceptée :", event.request.url);
+
   // Ignorer les requêtes POST
   if (event.request.method !== "GET") return;
 
-  // Pour les requêtes de navigation (ex: chargement de la page)
-  if (event.request.mode === "navigate") {
-    event.respondWith(
-      caches.match("/index.html").then((response) => {
-        return response || fetch(event.request);
-      })
-    );
-    return;
-  }
-
-  // Pour les autres requêtes (CSS, JS, images, etc.)
+  // Stratégie : Cache First, Network Fallback
   event.respondWith(
     caches.match(event.request).then((cachedResponse) => {
-      // Si la ressource est en cache, on la retourne
-      if (cachedResponse) return cachedResponse;
+      if (cachedResponse) {
+        console.log("[SW] Ressource servie depuis le cache :", event.request.url);
+        return cachedResponse;
+      }
 
-      // Sinon, on la récupère depuis le réseau et on la met en cache
-      return fetch(event.request).then((response) => {
-        if (response.ok) {
-          const responseClone = response.clone();
-          caches.open(CACHE_NAME).then((cache) => {
-            cache.put(event.request, responseClone);
-          });
-        }
-        return response;
-      }).catch(() => {
-        // Si le réseau échoue, on retourne une réponse vide (ou une erreur 404)
-        return new Response(null, { status: 404 });
-      });
+      // Si pas en cache, on récupère depuis le réseau
+      console.log("[SW] Ressource non trouvée en cache, chargement depuis le réseau :", event.request.url);
+      return fetch(event.request)
+        .then((response) => {
+          if (response.ok) {
+            const responseClone = response.clone();
+            caches.open(CACHE_NAME).then((cache) => {
+              console.log("[SW] Mise en cache de :", event.request.url);
+              cache.put(event.request, responseClone);
+            });
+          }
+          return response;
+        })
+        .catch(() => {
+          console.log("[SW] Échec du chargement depuis le réseau pour :", event.request.url);
+          // Si la requête est une navigation (ex: chargement de la page), on retourne index.html
+          if (event.request.mode === "navigate") {
+            console.log("[SW] Retour de /index.html depuis le cache.");
+            return caches.match("/index.html");
+          }
+          // Sinon, on retourne une réponse vide
+          return new Response(null, { status: 404 });
+        });
     })
   );
 });
