@@ -1,5 +1,6 @@
-const CACHE_NAME = "randos-lorraine-v4"; // Changez la version pour forcer la mise à jour
+const CACHE_NAME = "randos-lorraine-v5"; // Changez la version pour forcer la mise à jour
 
+// Liste des fichiers à mettre en cache (chemins absolus depuis la racine)
 const ASSETS = [
   "/",
   "/index.html",
@@ -16,76 +17,62 @@ const ASSETS = [
 
 // Installation : mise en cache des ressources
 self.addEventListener("install", (event) => {
-  console.log("[SW] Installation du Service Worker...");
+  console.log("[SW] Installation...");
   event.waitUntil(
     caches.open(CACHE_NAME)
-      .then((cache) => {
-        console.log("[SW] Ouverture du cache :", CACHE_NAME);
-        return cache.addAll(ASSETS);
-      })
-      .then(() => {
-        console.log("[SW] Toutes les ressources sont en cache.");
-        return self.skipWaiting(); // Force le nouveau SW à devenir actif
-      })
-      .catch((error) => {
-        console.error("[SW] Erreur lors de la mise en cache :", error);
-      })
+      .then((cache) => cache.addAll(ASSETS))
+      .then(() => self.skipWaiting()) // Force le nouveau SW à devenir actif
+      .catch((error) => console.error("[SW] Erreur d'installation :", error))
   );
 });
 
 // Activation : suppression des anciens caches
 self.addEventListener("activate", (event) => {
-  console.log("[SW] Activation du Service Worker...");
+  console.log("[SW] Activation...");
   event.waitUntil(
     caches.keys().then((keys) => {
       return Promise.all(
-        keys.filter((key) => key !== CACHE_NAME).map((key) => {
-          console.log("[SW] Suppression de l'ancien cache :", key);
-          return caches.delete(key);
-        })
+        keys.filter((key) => key !== CACHE_NAME).map((key) => caches.delete(key))
       );
     })
   );
-  self.clients.claim(); // Prend le contrôle de tous les clients immédiatement
-  console.log("[SW] Le Service Worker est maintenant actif et contrôle les clients.");
+  self.clients.claim(); // Prend le contrôle des clients immédiatement
 });
 
-// Interception des requêtes
+// Interception des requêtes : Cache First, Network Fallback
 self.addEventListener("fetch", (event) => {
-  console.log("[SW] Requête interceptée :", event.request.url);
-
   // Ignorer les requêtes POST
   if (event.request.method !== "GET") return;
 
-  // Stratégie : Cache First, Network Fallback
+  // Stratégie : Cache First
   event.respondWith(
     caches.match(event.request).then((cachedResponse) => {
+      // Si la ressource est en cache, on la retourne
       if (cachedResponse) {
-        console.log("[SW] Ressource servie depuis le cache :", event.request.url);
+        console.log("[SW] Servi depuis le cache :", event.request.url);
         return cachedResponse;
       }
 
-      // Si pas en cache, on récupère depuis le réseau
-      console.log("[SW] Ressource non trouvée en cache, chargement depuis le réseau :", event.request.url);
+      // Sinon, on essaie de la récupérer depuis le réseau
+      console.log("[SW] Non trouvé en cache, chargement depuis le réseau :", event.request.url);
       return fetch(event.request)
         .then((response) => {
+          // Si la réponse est valide, on la met en cache
           if (response.ok) {
             const responseClone = response.clone();
             caches.open(CACHE_NAME).then((cache) => {
-              console.log("[SW] Mise en cache de :", event.request.url);
               cache.put(event.request, responseClone);
             });
           }
           return response;
         })
         .catch(() => {
-          console.log("[SW] Échec du chargement depuis le réseau pour :", event.request.url);
-          // Si la requête est une navigation (ex: chargement de la page), on retourne index.html
+          // Si le réseau échoue, on essaie de retourner index.html pour les requêtes de navigation
           if (event.request.mode === "navigate") {
             console.log("[SW] Retour de /index.html depuis le cache.");
             return caches.match("/index.html");
           }
-          // Sinon, on retourne une réponse vide
+          // Sinon, on retourne une réponse vide (404)
           return new Response(null, { status: 404 });
         });
     })
