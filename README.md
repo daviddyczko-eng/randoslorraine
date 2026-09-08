@@ -26,8 +26,9 @@ site
     data
         info.json
     icons
+        RL-ico.png
+        RL-ico192.png
         RL-logo.png
-        RL-symb.png
     js
         app.js
         html5-qrcode.min.js
