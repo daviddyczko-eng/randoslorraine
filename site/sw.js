@@ -12,7 +12,9 @@ const ASSETS = [
   "/data/info.json",
   "/manifest.webmanifest",
   "/icons/RL-ico.png",
+  "/icons/RL-ico192.png",
   "/icons/RL-logo.png",
+  "/icons/RL-symb.png",
 ];
 
 // Installation : mise en cache des ressources
