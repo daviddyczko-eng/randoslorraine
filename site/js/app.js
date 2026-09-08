@@ -10,19 +10,21 @@ import {
     qrData
 } from "./storage.js";
 /* ============================================================
- * Désactivation du Service Worker (développement)
+ * Service Worker
  * ============================================================
  */
 if ("serviceWorker" in navigator) {
     window.addEventListener("load", () => {
-        navigator.serviceWorker.register("/sw.js") // Chemin absolu
-            .then(() => console.log("✅ Service Worker enregistré"))
-            .catch((error) => console.error("❌ Erreur Service Worker :", error));
-    });
-}
-if ("caches" in window) {
-    caches.keys().then(keys => {
-        keys.forEach(key => caches.delete(key));
+        navigator.serviceWorker.register("/sw.js")
+            .then(() =>
+                console.log("✅ Service Worker enregistré")
+            )
+            .catch((error) =>
+                console.error(
+                    "❌ Erreur Service Worker :",
+                    error
+                )
+            );
     });
 }
 
