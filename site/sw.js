@@ -39,42 +39,45 @@ self.addEventListener("activate", (event) => {
   self.clients.claim(); // Prend le contrôle des clients immédiatement
 });
 
-// Interception des requêtes : Cache First, Network Fallback
+// Interception des requêtes : Network First, Cache Fallback
 self.addEventListener("fetch", (event) => {
   // Ignorer les requêtes POST
   if (event.request.method !== "GET") return;
 
-  // Stratégie : Cache First
   event.respondWith(
-    caches.match(event.request).then((cachedResponse) => {
-      // Si la ressource est en cache, on la retourne
-      if (cachedResponse) {
-        console.log("[SW] Servi depuis le cache :", event.request.url);
-        return cachedResponse;
-      }
+    // On essaie d'abord de récupérer la version actuelle depuis le réseau
+    fetch(event.request)
+      .then((response) => {
+        if (response.ok) {
+          // On met à jour le cache avec la nouvelle version
+          const responseClone = response.clone();
 
-      // Sinon, on essaie de la récupérer depuis le réseau
-      console.log("[SW] Non trouvé en cache, chargement depuis le réseau :", event.request.url);
-      return fetch(event.request)
-        .then((response) => {
-          // Si la réponse est valide, on la met en cache
-          if (response.ok) {
-            const responseClone = response.clone();
-            caches.open(CACHE_NAME).then((cache) => {
-              cache.put(event.request, responseClone);
-            });
+          caches.open(CACHE_NAME).then((cache) => {
+            cache.put(event.request, responseClone);
+          });
+
+          console.log("[SW] Version réseau utilisée :", event.request.url);
+        }
+
+        return response;
+      })
+      .catch(() => {
+        // Si le réseau est indisponible, on utilise le cache
+        console.log("[SW] Réseau indisponible, utilisation du cache :", event.request.url);
+
+        return caches.match(event.request).then((cachedResponse) => {
+          if (cachedResponse) {
+            return cachedResponse;
           }
-          return response;
-        })
-        .catch(() => {
-          // Si le réseau échoue, on essaie de retourner index.html pour les requêtes de navigation
+
+          // Pour une navigation, on retourne index.html
           if (event.request.mode === "navigate") {
-            console.log("[SW] Retour de /index.html depuis le cache.");
             return caches.match("/index.html");
           }
-          // Sinon, on retourne une réponse vide (404)
+
+          // Ressource non disponible ni sur le réseau ni dans le cache
           return new Response(null, { status: 404 });
         });
-    })
+      })
   );
 });
