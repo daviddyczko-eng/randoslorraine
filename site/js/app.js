@@ -5939,7 +5939,7 @@ function renderCorrection(
  * ============================================================
  */
 async function init(){
-    console.log("Initialisation - TEST PWA v6");
+    console.log("Initialisation");
     const start=await checkUserAndStart();
     await new Promise(resolve=>setTimeout(resolve,200));
     splashEl.classList.add("hidden");
