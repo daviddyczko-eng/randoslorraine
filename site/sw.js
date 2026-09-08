@@ -1,4 +1,4 @@
-const CACHE_NAME = "randos-lorraine-v5"; // Changez la version pour forcer la mise à jour
+const CACHE_NAME = "randos-lorraine-v1";
 
 // Liste des fichiers à mettre en cache (chemins absolus depuis la racine)
 const ASSETS = [
