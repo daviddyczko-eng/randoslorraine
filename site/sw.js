@@ -13,6 +13,7 @@ const ASSETS = [
   "/manifest.webmanifest",
   "/icons/RL-ico.png",
   "/icons/RL-ico192.png",
+  "/icons/RL-ico-maskable.png",
   "/icons/RL-logo.png",
 ];
 
