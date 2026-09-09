@@ -1,6 +1,6 @@
-const CACHE_NAME = "randos-lorraine-v6";
+const CACHE_NAME = "randos-lorraine-version1";
 
-// Liste des fichiers à mettre en cache (chemins absolus depuis la racine)
+// Liste des fichiers à mettre en cache
 const ASSETS = [
   "/",
   "/index.html",
@@ -51,12 +51,9 @@ self.addEventListener("fetch", (event) => {
   // ============================================================
   // CAS PARTICULIER : API des randonnées
   // ============================================================
-  // Le paramètre "v" sert uniquement à forcer le rafraîchissement.
-  // Il ne doit donc pas créer une nouvelle entrée dans le cache.
   if (url.pathname === "/api/rando") {
     event.respondWith(
       (async () => {
-        // Création d'une URL de cache sans le paramètre "v"
         const cacheUrl = new URL(url);
         cacheUrl.searchParams.delete("v");
 
