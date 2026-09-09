@@ -1,5 +1,6 @@
 {
   "name": "Rando's Lorraine",
+  "id": "/",
   "short_name": "Rando's Lorraine",
   "description": "Application des adhérent.e.s Rando's Lorraine",
   "start_url": "/",
