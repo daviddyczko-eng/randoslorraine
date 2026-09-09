@@ -23,7 +23,7 @@
       "purpose": "any"
     },
     {
-      "src": "/icons/RL-ico.png",
+      "src": "/icons/RL-ico-maskable.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
