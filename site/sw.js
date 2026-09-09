@@ -1,4 +1,4 @@
-const CACHE_NAME = "randos-lorraine-v0";
+const CACHE_NAME = "randos-lorraine-v6";
 
 // Liste des fichiers à mettre en cache (chemins absolus depuis la racine)
 const ASSETS = [
@@ -46,26 +46,108 @@ self.addEventListener("fetch", (event) => {
   // Ignorer les requêtes POST
   if (event.request.method !== "GET") return;
 
+  const url = new URL(event.request.url);
+
+  // ============================================================
+  // CAS PARTICULIER : API des randonnées
+  // ============================================================
+  // Le paramètre "v" sert uniquement à forcer le rafraîchissement.
+  // Il ne doit donc pas créer une nouvelle entrée dans le cache.
+  if (url.pathname === "/api/rando") {
+    event.respondWith(
+      (async () => {
+        // Création d'une URL de cache sans le paramètre "v"
+        const cacheUrl = new URL(url);
+        cacheUrl.searchParams.delete("v");
+
+        const cacheRequest = new Request(cacheUrl.toString(), {
+          method: "GET"
+        });
+
+        try {
+          // ------------------------------------------------------
+          // 1. Réseau d'abord
+          // ------------------------------------------------------
+          const response = await fetch(event.request);
+
+          if (response.ok) {
+            const responseClone = response.clone();
+
+            const cache = await caches.open(CACHE_NAME);
+
+            // On remplace l'ancienne version des données
+            // par la nouvelle version.
+            await cache.put(cacheRequest, responseClone);
+
+            console.log(
+              "[SW] API réseau utilisée et cache mis à jour :",
+              cacheUrl.pathname + cacheUrl.search
+            );
+          }
+
+          return response;
+
+        } catch (error) {
+          // ------------------------------------------------------
+          // 2. Si le réseau est indisponible : cache
+          // ------------------------------------------------------
+          console.log(
+            "[SW] API hors ligne, utilisation du cache :",
+            cacheUrl.pathname + cacheUrl.search
+          );
+
+          const cachedResponse = await caches.match(cacheRequest);
+
+          if (cachedResponse) {
+            return cachedResponse;
+          }
+
+          // Aucune donnée disponible hors ligne
+          return new Response(
+            JSON.stringify({
+              error: "Données des randonnées indisponibles hors ligne."
+            }),
+            {
+              status: 503,
+              headers: {
+                "Content-Type": "application/json"
+              }
+            }
+          );
+        }
+      })()
+    );
+
+    return;
+  }
+
+  // ============================================================
+  // AUTRES REQUÊTES : Network First classique
+  // ============================================================
+
   event.respondWith(
-    // On essaie d'abord de récupérer la version actuelle depuis le réseau
     fetch(event.request)
       .then((response) => {
         if (response.ok) {
-          // On met à jour le cache avec la nouvelle version
           const responseClone = response.clone();
 
           caches.open(CACHE_NAME).then((cache) => {
             cache.put(event.request, responseClone);
           });
 
-          console.log("[SW] Version réseau utilisée :", event.request.url);
+          console.log(
+            "[SW] Version réseau utilisée :",
+            event.request.url
+          );
         }
 
         return response;
       })
       .catch(() => {
-        // Si le réseau est indisponible, on utilise le cache
-        console.log("[SW] Réseau indisponible, utilisation du cache :", event.request.url);
+        console.log(
+          "[SW] Réseau indisponible, utilisation du cache :",
+          event.request.url
+        );
 
         return caches.match(event.request).then((cachedResponse) => {
           if (cachedResponse) {
@@ -77,7 +159,7 @@ self.addEventListener("fetch", (event) => {
             return caches.match("/index.html");
           }
 
-          // Ressource non disponible ni sur le réseau ni dans le cache
+          // Ressource non disponible
           return new Response(null, { status: 404 });
         });
       })
