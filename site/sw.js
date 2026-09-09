@@ -1,4 +1,4 @@
-const CACHE_NAME = "randos-lorraine-v1";
+const CACHE_NAME = "randos-lorraine-v0";
 
 // Liste des fichiers à mettre en cache (chemins absolus depuis la racine)
 const ASSETS = [
