@@ -4,7 +4,7 @@ Application web installable pour les adhérent.e.s de Rando's Lorraine
 
 - Inscription (prénom / nom) avec stockage local
 - Vérification annuelle de cotisation
-- Accueil avec : QR adhérent.e, prochaine rando, infos pratiques
+- Accueil avec : QR adhérent.e, prochaine rando, liste des participant.e.s, infos pratiques
 - Permet de s'inscrire sur l'application pour éditer son QR code
 - Aide les pilotes à éditer la liste des participant.e.s
 - Pages : Avant le départ, En cas d'accident, Liens internet
@@ -26,6 +26,7 @@ site
     data
         info.json
     icons
+        RL-ico-maskable.png
         RL-ico.png
         RL-ico192.png
         RL-logo.png
