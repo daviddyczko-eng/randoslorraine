@@ -1,6 +1,6 @@
-const CACHE_NAME = "randos-lorraine-version1";
+const CACHE_NAME = "randos-lorraine-v1";
 
-// Liste des fichiers à mettre en cache
+// Ressources nécessaires au fonctionnement hors ligne
 const ASSETS = [
   "/",
   "/index.html",
@@ -17,148 +17,179 @@ const ASSETS = [
   "/icons/RL-logo.png",
 ];
 
-// Installation : mise en cache des ressources
+// ============================================================
+// INSTALLATION
+// ============================================================
+
 self.addEventListener("install", (event) => {
-  console.log("[SW] Installation...");
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then((cache) => cache.addAll(ASSETS))
-      .then(() => self.skipWaiting()) // Force le nouveau SW à devenir actif
-      .catch((error) => console.error("[SW] Erreur d'installation :", error))
+      .then(() => self.skipWaiting())
+      .catch((error) => {
+        console.error("[SW] Erreur d'installation :", error);
+        throw error;
+      })
   );
 });
 
-// Activation : suppression des anciens caches
+// ============================================================
+// ACTIVATION
+// ============================================================
+
 self.addEventListener("activate", (event) => {
-  console.log("[SW] Activation...");
   event.waitUntil(
-    caches.keys().then((keys) => {
-      return Promise.all(
-        keys.filter((key) => key !== CACHE_NAME).map((key) => caches.delete(key))
-      );
-    })
+    caches.keys()
+      .then((cacheNames) =>
+        Promise.all(
+          cacheNames
+            .filter((cacheName) => cacheName !== CACHE_NAME)
+            .map((cacheName) => caches.delete(cacheName))
+        )
+      )
+      .then(() => self.clients.claim())
   );
-  self.clients.claim(); // Prend le contrôle des clients immédiatement
 });
 
-// Interception des requêtes : Network First, Cache Fallback
+// ============================================================
+// INTERCEPTION DES REQUÊTES
+// Network First + Cache Fallback
+// ============================================================
+
 self.addEventListener("fetch", (event) => {
-  // Ignorer les requêtes POST
-  if (event.request.method !== "GET") return;
-
-  const url = new URL(event.request.url);
-
-  // ============================================================
-  // CAS PARTICULIER : API des randonnées
-  // ============================================================
-  if (url.pathname === "/api/rando") {
-    event.respondWith(
-      (async () => {
-        const cacheUrl = new URL(url);
-        cacheUrl.searchParams.delete("v");
-
-        const cacheRequest = new Request(cacheUrl.toString(), {
-          method: "GET"
-        });
-
-        try {
-          // ------------------------------------------------------
-          // 1. Réseau d'abord
-          // ------------------------------------------------------
-          const response = await fetch(event.request);
-
-          if (response.ok) {
-            const responseClone = response.clone();
-
-            const cache = await caches.open(CACHE_NAME);
-
-            // On remplace l'ancienne version des données
-            // par la nouvelle version.
-            await cache.put(cacheRequest, responseClone);
-
-            console.log(
-              "[SW] API réseau utilisée et cache mis à jour :",
-              cacheUrl.pathname + cacheUrl.search
-            );
-          }
-
-          return response;
-
-        } catch (error) {
-          // ------------------------------------------------------
-          // 2. Si le réseau est indisponible : cache
-          // ------------------------------------------------------
-          console.log(
-            "[SW] API hors ligne, utilisation du cache :",
-            cacheUrl.pathname + cacheUrl.search
-          );
-
-          const cachedResponse = await caches.match(cacheRequest);
-
-          if (cachedResponse) {
-            return cachedResponse;
-          }
-
-          // Aucune donnée disponible hors ligne
-          return new Response(
-            JSON.stringify({
-              error: "Données des randonnées indisponibles hors ligne."
-            }),
-            {
-              status: 503,
-              headers: {
-                "Content-Type": "application/json"
-              }
-            }
-          );
-        }
-      })()
-    );
-
+  // Les requêtes POST ne sont pas gérées par le Service Worker.
+  if (event.request.method !== "GET") {
     return;
   }
 
-  // ============================================================
-  // AUTRES REQUÊTES : Network First classique
-  // ============================================================
+  const url = new URL(event.request.url);
 
-  event.respondWith(
-    fetch(event.request)
-      .then((response) => {
-        if (response.ok) {
-          const responseClone = response.clone();
+  // ==========================================================
+  // API DES RANDONNÉES
+  // ==========================================================
 
-          caches.open(CACHE_NAME).then((cache) => {
-            cache.put(event.request, responseClone);
-          });
+  if (url.pathname === "/api/rando") {
+    event.respondWith(handleRandoApi(event.request));
+    return;
+  }
 
-          console.log(
-            "[SW] Version réseau utilisée :",
-            event.request.url
-          );
-        }
+  // ==========================================================
+  // AUTRES RESSOURCES
+  // ==========================================================
 
-        return response;
-      })
-      .catch(() => {
-        console.log(
-          "[SW] Réseau indisponible, utilisation du cache :",
-          event.request.url
-        );
-
-        return caches.match(event.request).then((cachedResponse) => {
-          if (cachedResponse) {
-            return cachedResponse;
-          }
-
-          // Pour une navigation, on retourne index.html
-          if (event.request.mode === "navigate") {
-            return caches.match("/index.html");
-          }
-
-          // Ressource non disponible
-          return new Response(null, { status: 404 });
-        });
-      })
-  );
+  event.respondWith(handleRequest(event.request));
 });
+
+// ============================================================
+// GESTION DE L'API /api/rando
+// ============================================================
+
+async function handleRandoApi(request) {
+  const url = new URL(request.url);
+
+  // Le paramètre "v" sert uniquement à forcer le rafraîchissement.
+  // Il ne doit pas créer une nouvelle entrée dans le cache.
+  url.searchParams.delete("v");
+
+  const cacheRequest = new Request(url.toString(), {
+    method: "GET"
+  });
+
+  try {
+    // --------------------------------------------------------
+    // 1. Réseau d'abord
+    // --------------------------------------------------------
+
+    const response = await fetch(request);
+
+    if (response.ok) {
+      const responseClone = response.clone();
+      const cache = await caches.open(CACHE_NAME);
+
+      await cache.put(cacheRequest, responseClone);
+    }
+
+    return response;
+
+  } catch (error) {
+    // --------------------------------------------------------
+    // 2. Réseau indisponible : cache
+    // --------------------------------------------------------
+
+    const cachedResponse = await caches.match(cacheRequest);
+
+    if (cachedResponse) {
+      return cachedResponse;
+    }
+
+    // --------------------------------------------------------
+    // 3. Aucune donnée disponible
+    // --------------------------------------------------------
+
+    return new Response(
+      JSON.stringify({
+        error: "Données des randonnées indisponibles hors ligne."
+      }),
+      {
+        status: 503,
+        headers: {
+          "Content-Type": "application/json"
+        }
+      }
+    );
+  }
+}
+
+// ============================================================
+// GESTION DES AUTRES REQUÊTES
+// ============================================================
+
+async function handleRequest(request) {
+  try {
+    // --------------------------------------------------------
+    // 1. Réseau d'abord
+    // --------------------------------------------------------
+
+    const response = await fetch(request);
+
+    if (response.ok) {
+      const responseClone = response.clone();
+      const cache = await caches.open(CACHE_NAME);
+
+      await cache.put(request, responseClone);
+    }
+
+    return response;
+
+  } catch (error) {
+    // --------------------------------------------------------
+    // 2. Réseau indisponible : cache
+    // --------------------------------------------------------
+
+    const cachedResponse = await caches.match(request);
+
+    if (cachedResponse) {
+      return cachedResponse;
+    }
+
+    // --------------------------------------------------------
+    // 3. Navigation : retour vers l'application
+    // --------------------------------------------------------
+
+    if (request.mode === "navigate") {
+      const cachedIndex = await caches.match("/index.html");
+
+      if (cachedIndex) {
+        return cachedIndex;
+      }
+    }
+
+    // --------------------------------------------------------
+    // 4. Ressource indisponible
+    // --------------------------------------------------------
+
+    return new Response(null, {
+      status: 404
+    });
+  }
+}
