@@ -490,17 +490,23 @@ function sendSMSWithBody(number, body) {
         );
         return;
     }
+
     const cleanNumber =
         number.replace(/\s/g, "");
+
     const isIOS =
         /iPad|iPhone|iPod/.test(
             navigator.userAgent
         ) &&
         !window.MSStream;
-    const separator =
-        isIOS ? "&" : "?";
-    window.location.href =
-        `sms:${cleanNumber}${separator}body=${encodeURIComponent(body)}`;
+
+    if (isIOS) {
+        window.location.href =
+            `sms:${cleanNumber}&body=${encodeURIComponent(body)}`;
+    } else {
+        window.location.href =
+            `smsto:${cleanNumber}?body=${encodeURIComponent(body)}`;
+    }
 }
 
 /* ============================================================
