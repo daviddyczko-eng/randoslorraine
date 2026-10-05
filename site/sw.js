@@ -1,4 +1,4 @@
-const CACHE_NAME = "randos-lorraine-v1";
+const CACHE_NAME = "randos-lorraine-v2";
 
 // Ressources nécessaires au fonctionnement hors ligne
 const ASSETS = [
