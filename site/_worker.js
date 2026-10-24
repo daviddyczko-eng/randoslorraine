@@ -56,6 +56,12 @@ async function getFullRando() {
   }
 
   const firstBlock = rows[0][0];
+  const annulationText = extract(
+  firstBlock,
+  /field-name-field-rando-annulee[^>]*>[\s\S]*?<div class="field-item">([\s\S]*?)<\/div>/i
+);
+
+const annulee = /annulée/i.test(annulationText || "");
 
   // 3️⃣ Trouver le premier lien de la rando
   const hrefMatch = firstBlock.match(/href="([^"]+)"/);
@@ -119,6 +125,7 @@ async function getFullRando() {
     url: randoUrl,
     titre: title,
     date,
+    annulee,
     lieu: {
       commune,
       pays,
