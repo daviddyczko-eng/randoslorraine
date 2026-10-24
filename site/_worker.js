@@ -48,29 +48,27 @@ async function getFullRando() {
 
   const html = await resp.text();
 
-  // 2️⃣ Capturer le premier bloc views-row ENTIER
-  const rows = [...html.matchAll(/<div class="views-row[\s\S]*?(?=<div class="views-row|\Z)/g)];
-
-  if (rows.length === 0) {
-    return json({ error: "Aucune randonnée trouvée." }, 404);
+  if (annulee) {
+    continue;
   }
 
-  const firstBlock = rows[0][0];
-  const annulationText = extract(
-  firstBlock,
-  /field-name-field-rando-annulee[^>]*>[\s\S]*?<div class="field-item">([\s\S]*?)<\/div>/i
-);
-
-const annulee = /annulée/i.test(annulationText || "");
-
-  // 3️⃣ Trouver le premier lien de la rando
-  const hrefMatch = firstBlock.match(/href="([^"]+)"/);
+  // Récupérer le lien de cette randonnée
+  const hrefMatch = block.match(/href="([^"]+)"/);
 
   if (!hrefMatch) {
-    return json({ error: "Aucun lien de randonnée trouvé." }, 404);
+    continue;
   }
 
-  const randoUrl = base + hrefMatch[1];
+  firstBlock = block;
+  randoUrl = new URL(hrefMatch[1], base).href;
+  break;
+}
+
+if (!randoUrl) {
+  return json({
+    error: "Aucune randonnée non annulée trouvée."
+  }, 404);
+}
 
   // 4️⃣ Charger la fiche individuelle
   const page = await fetch(randoUrl, {
