@@ -159,7 +159,7 @@ async function getFullRando() {
 
   const heureDepart = extract(
     fiche,
-    /field-name-field-rando-heure[^>]*>\s*([^<]+)</i
+    /field-name-field-rando-heure[^>]*>[\s\S]*?<div class="field-item">([\s\S]*?)<\/div>/i
   );
 
   const pilotes = extract(
